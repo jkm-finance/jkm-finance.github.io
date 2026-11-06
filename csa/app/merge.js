@@ -165,6 +165,7 @@ export async function applyReview(doc0, file) {
   doc.assignment = clone(p.assignment);
   doc.reviewerName = p.reviewerName || doc.reviewerName;
   if (p.prior) doc.prior = clone(p.prior); else delete doc.prior;
+  if (p.hints) doc.hints = clone(p.hints); else delete doc.hints;
   const added = mergeComments(doc.comments, p.comments);
   const events = [ev(doc, 'import', null, { kind: 'review', createdAt: file.createdAt, counts: { ...counts, returned: counts.returned.length }, comments: added })];
   return { doc, events, counts };
@@ -180,6 +181,7 @@ export async function applyAssignment(doc0, file) {
   doc.assignment = clone(p.assignment);
   doc.reviewerName = p.reviewerName || doc.reviewerName;
   if (p.prior) doc.prior = clone(p.prior); else delete doc.prior;
+  if (p.hints) doc.hints = clone(p.hints); else delete doc.hints;
   mergeComments(doc.comments, p.master.comments);
   return { doc, events: [ev(doc, 'import', null, { kind: 'assignment', version: p.assignment.version, counts })], counts };
 }

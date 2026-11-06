@@ -8,6 +8,8 @@ import * as wf from './workflow.js';
 import { policyEl } from './policy.js';
 import { abIdOf } from './abexport.js';
 import { priorOf } from './prior.js';
+import { hintOf, HINT_MAX } from './hints.js';
+import { pathsIn } from './util.js';
 import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush, guideLink } from './main.js';
 import { renderAssign, renderFiles, renderBackupPane } from './ui-flow.js';
 import { renderReportPane } from './ui-report.js';
@@ -329,6 +331,18 @@ function detail(ctl, set, id, redraw) {
   if (it.differsFromMaster) b.appendChild(h('div', { class: 'diffbar', text: t('detail.differs', { st: t('status.' + (it.masterStatus || 'draft')) }) }));
   else if (it.masterStatus === 'returned' && it.status !== 'returned') b.appendChild(h('div', { class: 'diffbar', text: t('detail.wasReturned') }));
 
+  const hint = hintOf(doc, id);
+  const canHint = doc.local.role === 'reviewer' && !s.readonly && !s.fatal;
+  if (hint || canHint) b.appendChild(h('div', { class: 'hintbox' + (hint ? '' : ' empty') },
+    hint ? h('span', { class: 'pre', text: '📌 ' + hint }) : h('span', { class: 'wsmeta', text: t('hint.none') }),
+    canHint ? h('button', { class: 'btn btn-l hintedit', text: hint ? t('hint.edit') : t('hint.add'), onclick: async () => {
+      const ta = h('textarea', { rows: '3', maxlength: String(HINT_MAX), value: hint });
+      const v = await modal({ title: t('hint.title', { no: meta.no }), body: h('div', null, h('p', { class: 'wsmeta', text: t('hint.help') }), ta), onMount: () => ta.focus(),
+        buttons: [{ label: t('btn.cancel'), value: null }, { label: t('btn.ok'), cls: 'btn-p', value: () => ta.value }] });
+      if (v === null || v === undefined) return;
+      const r = await run((d) => wf.setHint(d, id, v), { render: true });
+      if (r) redraw();
+    } }) : null));
   b.appendChild(h('div', { class: 'fl', text: t('detail.workStep') }));
   b.appendChild(h('div', { class: 'tbox', text: tr.ws }));
   if (tr.translated) b.appendChild(h('details', null, h('summary', { text: t('detail.original') }), h('div', { class: 'tbox en', text: meta.ws })));
@@ -362,7 +376,7 @@ function detail(ctl, set, id, redraw) {
   b.appendChild(h('div', { class: 'igrid', style: { marginTop: '12px' } },
     field('process', t('detail.process'), MAX_TEXT, 5, t('detail.processHelp')),
     field('response', t('detail.response'), MAX_TEXT, 4, t('detail.responseHelp')),
-    field('evidence', t('detail.evidence'), MAX_TEXT, 3),
+    evidenceField(field('evidence', t('detail.evidence'), MAX_TEXT, 3), it.evidence),
     field('sample', t('detail.sample'), MAX_TEXT, 3)));
 
   // remediation
@@ -409,6 +423,26 @@ function detail(ctl, set, id, redraw) {
   });
   b.appendChild(det);
   return card;
+}
+
+// Evidence: each path or link in the text gets a "copy path" button (and "open" for web links).
+function evidenceField(wrap, value) {
+  const box = h('div', { class: 'paths' });
+  const draw = (v) => {
+    clear(box);
+    for (const p of pathsIn(v)) {
+      box.appendChild(h('div', { class: 'pathrow' }, h('code', { text: p.text, title: p.text }),
+        h('button', { class: 'btn btn-l', type: 'button', text: '📋 ' + t('ev.copy'), onclick: async () => {
+          try { await navigator.clipboard.writeText(p.text); toast(t('ev.copied')); } catch { toast(t('err.clipboard')); }
+        } }),
+        p.url ? h('a', { class: 'btn btn-l', href: p.text, target: '_blank', rel: 'noopener noreferrer', text: t('ev.open') + ' ↗' }) : null));
+    }
+    if (box.childNodes.length) box.appendChild(h('div', { class: 'wsmeta', text: t('ev.help') }));
+  };
+  wrap.querySelector('textarea').addEventListener('input', (e) => draw(e.target.value));
+  draw(value || '');
+  wrap.appendChild(box);
+  return wrap;
 }
 
 // Assignee of one item. The reviewer can give the item its own assignee(s) instead of the section's.

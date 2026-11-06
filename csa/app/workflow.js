@@ -3,6 +3,7 @@
 import { clone, nowISO, uuid, normText, hashOf } from './util.js';
 import { contentOf, isAnswered, isItemAssigned, sameContent, MAX_COMMENT, MAX_SHORT, MAX_ASSIGNEES, emptyContent } from './model.js';
 import { getItemSet } from './itemsets.js';
+import { HINT_MAX } from './hints.js';
 
 const EDITABLE_BY_PREPARER = ['empty', 'draft', 'submitted', 'returned'];
 
@@ -245,6 +246,21 @@ export function setPrior(doc0, prior) {
   const doc = clone(doc0);
   if (prior) doc.prior = clone(prior); else delete doc.prior;
   return { doc, events: [ev(doc, 'prior', null, prior ? { year: prior.year, file: prior.file, matched: Object.keys(prior.items).length } : { removed: true })] };
+}
+
+// Item guidance notes (doc.hints). Reviewer only. setHints replaces the whole map (null = none);
+// setHint changes one item ('' = remove). Item content is not touched.
+export function setHints(doc0, hints, detail = {}) {
+  assertOk(can('assign', { role: doc0.local.role }));
+  const doc = clone(doc0);
+  const clean = {};
+  for (const [id, v] of Object.entries(hints || {})) { const s = normText(v).slice(0, HINT_MAX); if (s) clean[id] = s; }
+  if (Object.keys(clean).length) doc.hints = clean; else delete doc.hints;
+  return { doc, events: [ev(doc, 'hints', null, { count: Object.keys(clean).length, ...detail })] };
+}
+
+export function setHint(doc0, id, text) {
+  return setHints(doc0, { ...(doc0.hints || {}), [id]: text }, { item: id });
 }
 
 // ---- finalization -----------------------------------------------------------

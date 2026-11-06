@@ -52,3 +52,19 @@ export function fileSafe(s, max = 40) {
   const t = String(s || '').replace(/[\\/:*?"<>|\s]+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
   return (t || 'hotel').slice(0, max);
 }
+
+// Evidence text -> folder/file paths and web links, one per line (SPEC §5.2, proposal ⑦).
+// A web page cannot open L:\ or \\server paths, so the screen offers "copy path" for them.
+// Windows paths may contain spaces, so a path runs to the end of its line.
+export function pathsIn(text, max = 10) {
+  const out = [];
+  for (const raw of String(text || '').split(/\r?\n/)) {
+    const m = /([A-Za-z]:\\[^\t"<>|]*|\\\\[^\t"<>|]+|https?:\/\/[^\s"<>]+)/.exec(raw);
+    if (!m) continue;
+    const p = m[1].trim().replace(/[)\].,;]+$/, '');
+    const url = /^https?:\/\//i.test(p);
+    if (p.length > 3 && !out.some((o) => o.text === p)) out.push({ text: p, url });
+    if (out.length >= max) break;
+  }
+  return out;
+}
