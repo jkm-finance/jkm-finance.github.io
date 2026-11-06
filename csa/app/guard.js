@@ -35,6 +35,13 @@ export const MIGRATIONS = {
     d.schema = 1;
     return d;
   },
+  // 1 -> 2: preparer's internal description (`process`) separated from the AuditBoard Response.
+  // Existing Response text stays where it is; nothing is moved or guessed.
+  1: (d) => {
+    for (const it of Object.values(d.items || {})) if (it.process === undefined) it.process = '';
+    d.schema = 2;
+    return d;
+  },
 };
 
 export function needsMigration(doc) {

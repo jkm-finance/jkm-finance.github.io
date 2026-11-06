@@ -18,7 +18,7 @@ export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) =>
   if (focus) header.push('HTL/FSSC', 'CPA link');
   header.push('Work Step (EN)');
   if (lang !== 'en') header.push('Work Step (' + lang.toUpperCase() + ')');
-  header.push('Policy', 'Result', 'Response', 'Evidence', 'Sample', 'Remediation Action', 'Remediation Owner', 'Due Date', 'Status', 'Preparer', 'Last Updated', 'Reviewer Comment (latest)', 'AuditBoard Entered');
+  header.push('Policy', 'Result', 'Preparer Description (internal)', 'AuditBoard Response', 'Evidence', 'Sample', 'Remediation Action', 'Remediation Owner', 'Due Date', 'Status', 'Preparer', 'Last Updated', 'Reviewer Comment (latest)', 'AuditBoard Entered');
   const rows = [header];
   for (const m of set.items) {
     if (onlyMine && !assignedTo(doc, m.section).includes(doc.local.me)) continue;
@@ -28,7 +28,7 @@ export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) =>
     if (focus) r.push(m.tower || '', m.cpaLink || '');
     r.push(m.ws);
     if (lang !== 'en') r.push(itemText ? itemText(m, lang).ws : m.ws);
-    r.push(m.policy, RES[it.result] || '', it.response, it.evidence, it.sample,
+    r.push(m.policy, RES[it.result] || '', it.process || '', it.response, it.evidence, it.sample,
       it.remediation.action, it.remediation.owner, it.remediation.due || '', statusLabel(it.status),
       it.submittedBy || it.updatedBy || '', it.updatedAt ? it.updatedAt.slice(0, 16).replace('T', ' ') : '',
       comments.length ? comments[comments.length - 1].text : '', it.enteredAt ? it.enteredAt.slice(0, 10) : '');

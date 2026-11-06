@@ -152,7 +152,7 @@ function contentView(c, base) {
   const r = c.remediation || {};
   return h('div', null,
     line('result', t('detail.result'), { yes: 'Yes', no: 'No', na: 'N/A', hold: 'Hold' }[c.result] || ''),
-    line('response', t('detail.response'), c.response), line('evidence', t('detail.evidence'), c.evidence), line('sample', t('detail.sample'), c.sample),
+    line('process', t('detail.process'), c.process), line('response', t('detail.response'), c.response), line('evidence', t('detail.evidence'), c.evidence), line('sample', t('detail.sample'), c.sample),
     line('remediation', t('detail.remediation'), [r.action, r.owner, r.due].filter(Boolean).join(' / ')));
 }
 

@@ -88,6 +88,7 @@
 </ol>
 <h3>3-4. Review — approve and return</h3>
 <ul>
+  <li>Preparers write the <span class="ui">Preparer description (internal)</span>; the reviewer writes and confirms the <span class="ui">AuditBoard Response (English, reviewer-confirmed)</span> from it. Tick <span class="ui">No AuditBoard Response</span> in the filters to list items still missing the English Response.</li>
   <li>Submitted items appear on the <span class="ui">Review queue</span> tab. Open an item and click <span class="ui">Approve</span> or <span class="ui">Return</span>. A reason is required to return.</li>
   <li>Use <span class="ui">Approve all n with a result</span> to approve many at once.</li>
   <li>Add notes under <span class="ui">Review comments</span> (comments can be added, not deleted).</li>
@@ -97,7 +98,7 @@
 <p><span class="ui">Merge &amp; finalize</span> tab → <span class="ui">Download review file</span> → send it to preparers. Approvals, returns and comments go back to them; edits they made in the meantime are not overwritten.</p>
 <h3>3-6. Enter in AuditBoard and lock</h3>
 <ol class="steps">
-  <li>Enter approved items into Hilton AuditBoard. <span class="ui">Copy for AuditBoard</span> on the item screen copies the result, Response and evidence location to the clipboard (the format will be adjusted once the AuditBoard screen is confirmed).</li>
+  <li>Enter approved items into Hilton AuditBoard. <span class="ui">Copy for AuditBoard</span> on the item screen copies the result, AuditBoard Response and evidence location to the clipboard (not the preparer description; you are warned if the Response is empty) (the format will be adjusted once the AuditBoard screen is confirmed).</li>
   <li>When an item is entered, click <span class="ui">Mark entered in AuditBoard</span>. The item is <strong>locked</strong>: nobody can edit it and later submissions for it are refused.</li>
   <li>To correct a locked item, use <span class="ui">Unlock</span> (reason required). A restore point is made first.</li>
 </ol>
@@ -128,7 +129,9 @@
 <ul>
   <li>Open your section from the tabs at the top and pick an item on the left. Filters (risk, status, unanswered only …) narrow the list.</li>
   <li><strong>Result</strong>: <span class="r-y">Yes</span> (control operating) · <span class="r-n">No</span> (gap) · <span class="r-a">N/A</span> (not applicable) · <span class="r-h">Hold</span> (pending — still checking).</li>
-  <li><span class="ui">Response</span>: what you checked and how. <span class="ui">Evidence location</span>: file path or where it is kept. <span class="ui">Samples tested</span>: samples checked (period, count …). Up to 5,000 characters each.</li>
+  <li><span class="ui">Preparer description (internal)</span>: who does it, the current process and the evidence, in your own language. It is not entered in AuditBoard.</li>
+  <li><span class="ui">AuditBoard Response (English, reviewer-confirmed)</span>: the English text entered in AuditBoard as is. Preparers may draft it; the reviewer confirms it from the preparer description.</li>
+  <li><span class="ui">Evidence location</span>: file path or where it is kept. <span class="ui">Samples tested</span>: samples checked (period, count …). Up to 5,000 characters each.</li>
   <li>If the result is <span class="r-n">No</span>, always fill in the <span class="ui">Remediation plan</span> (action, owner, due date).</li>
   <li>Input is saved automatically (the save time shows at the top right). There is no save button.</li>
   <li>Hover over a greyed-out button or field to see why it is disabled (e.g. “Item is locked”, “Not your assigned section”).</li>

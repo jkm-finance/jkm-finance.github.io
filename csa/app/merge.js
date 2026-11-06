@@ -109,7 +109,7 @@ export function applySubmissions(doc0, files, plan, choices = {}) {
     const chosen = d.candidates.find((c) => c.source === pickSrc);
     if (!chosen) throw new Error('Bad resolution for ' + d.id);
     const before = contentOf(it);
-    Object.assign(it, clone(chosen.content), {
+    Object.assign(it, { process: '' }, clone(chosen.content), {
       status: 'submitted', submittedAt: chosen.submittedAt || at, submittedBy: chosen.submitter,
       updatedAt: at, updatedBy: chosen.submitter, rev: (it.rev || 0) + 1,
     });
@@ -139,7 +139,7 @@ async function takeMaster(it, m, { forceIfLocked = true } = {}) {
     it.differsFromMaster = key(it) !== key(m);
     return 'keptLocal';
   }
-  Object.assign(it, contentOf(m), {
+  Object.assign(it, { process: '' }, contentOf(m), {
     status: m.status, rev: m.rev || 0, baseRev: m.rev || 0,
     reviewedAt: m.reviewedAt || null, reviewedBy: m.reviewedBy || null,
     enteredAt: m.enteredAt || null, enteredBy: m.enteredBy || null,

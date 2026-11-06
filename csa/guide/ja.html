@@ -88,6 +88,7 @@
 </ol>
 <h3>3-4. レビュー — 承認と差戻し</h3>
 <ul>
+  <li>作成者は <span class="ui">作成者説明（社内用）</span> を書き、レビュアーはそれをもとに <span class="ui">AuditBoard Response（英語・レビュアー確定）</span> を作成・確定します。フィルターの <span class="ui">AuditBoard Responseなし</span> で英文Responseが未作成の項目だけを表示できます。</li>
   <li><span class="ui">レビュー待ち</span> タブに提出された項目が集まります。項目を開いて <span class="ui">承認</span> または <span class="ui">差戻し</span> を押します。差戻しには理由の入力が必要です。</li>
   <li><span class="ui">結果のあるn件を一括承認</span> でまとめて承認できます。</li>
   <li>項目下の <span class="ui">レビューコメント</span> に意見を残せます（追加のみ、削除不可）。</li>
@@ -97,7 +98,7 @@
 <p><span class="ui">マージ・確定</span> タブ → <span class="ui">レビュー結果ファイルをダウンロード</span> → 作成者に送ります。承認・差戻しとコメントが伝わり、作成者がその間に修正した内容は上書きされません。</p>
 <h3>3-6. AuditBoard入力とロック</h3>
 <ol class="steps">
-  <li>承認済みの項目をHilton AuditBoardに入力します。項目画面の <span class="ui">AuditBoard用にコピー</span> で結果・Response・証憑の保管場所がクリップボードにコピーされます（形式はAuditBoard画面の確認後に調整予定）。</li>
+  <li>承認済みの項目をHilton AuditBoardに入力します。項目画面の <span class="ui">AuditBoard用にコピー</span> で結果・AuditBoard Response・証憑の保管場所がクリップボードにコピーされます（作成者説明はコピーされません。Responseが空なら警告）（形式はAuditBoard画面の確認後に調整予定）。</li>
   <li>入力が終わった項目は <span class="ui">AuditBoard入力完了</span> を押します。項目が<strong>ロック</strong>され誰も修正できず、以後の提出も拒否されます。</li>
   <li>修正が必要な場合は <span class="ui">ロック解除</span>（理由必須）。解除直前に復元ポイントが作成されます。</li>
 </ol>
@@ -128,7 +129,9 @@
 <ul>
   <li>上部のセクションタブから担当セクションを開き、左の一覧で項目を選びます。フィルター（リスク・ステータス・未回答のみ など）で絞り込めます。</li>
   <li><strong>結果</strong>: <span class="r-y">Yes</span>（統制が運用されている）· <span class="r-n">No</span>（不備）· <span class="r-a">N/A</span>（該当なし）· <span class="r-h">Hold</span>（判定保留 — 確認中）。</li>
-  <li><span class="ui">説明・根拠（Response）</span>: 何をどう確認したか。<span class="ui">証憑の保管場所</span>: ファイルのパスや保管場所。<span class="ui">サンプルテスト内容</span>: 確認したサンプル（期間・件数など）。各5,000文字まで。</li>
+  <li><span class="ui">作成者説明（社内用）</span>: 担当者・現在のプロセス・証憑を記入します。AuditBoardには入力しません。</li>
+  <li><span class="ui">AuditBoard Response（英語・レビュアー確定）</span>: AuditBoardにそのまま入力する英文です。作成者が下書きしてもよく、レビュアーが作成者説明をもとに確定します。</li>
+  <li><span class="ui">証憑の保管場所</span>: ファイルのパスや保管場所。<span class="ui">サンプルテスト内容</span>: 確認したサンプル（期間・件数など）。各5,000文字まで。</li>
   <li>結果が <span class="r-n">No</span> の場合は必ず <span class="ui">改善計画</span>（対応内容・担当者・完了予定日）を入力します。</li>
   <li>入力は自動保存されます（右上に保存時刻を表示）。保存ボタンはありません。</li>
   <li>グレーで押せないボタンや入力欄にマウスを置くと理由が表示されます（例:「ロックされた項目です」「担当セクションではありません」）。</li>

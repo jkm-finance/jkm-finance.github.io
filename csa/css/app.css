@@ -145,6 +145,8 @@ a.polcell{color:var(--p)}
 .ig{display:flex;flex-direction:column;gap:4px}
 .ig.full{grid-column:1/-1}
 .ig label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;display:flex;justify-content:space-between}
+.fhelp{font-size:11px;color:var(--mu);margin-top:-2px}
+.ig.ab-resp textarea{border-color:var(--p);background:#fbfdfc}
 .ig input,.ig textarea,.ig select{padding:6px 9px;border:1px solid var(--bd);border-radius:4px;font-size:12.5px;background:#fff}
 .ig textarea{resize:vertical;min-height:70px;line-height:1.5}
 .ig input:focus,.ig textarea:focus{outline:none;border-color:var(--p)}

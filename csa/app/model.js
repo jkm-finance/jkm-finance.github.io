@@ -5,7 +5,7 @@ import { getItemSet } from './itemsets.js';
 
 export const STATUSES = ['empty', 'draft', 'submitted', 'returned', 'approved', 'entered'];
 export const RESULTS = ['yes', 'no', 'na', 'hold'];
-export const TEXT_FIELDS = ['response', 'evidence', 'sample'];
+export const TEXT_FIELDS = ['process', 'response', 'evidence', 'sample'];
 export const MAX_TEXT = 5000;
 export const MAX_SHORT = 200;
 export const MAX_COMMENT = 2000;
@@ -15,7 +15,7 @@ export const ROLES = ['reviewer', 'preparer'];
 const WS_COLORS = ['#2f6f73', '#7a5c2e', '#4f5d8a', '#6b4f72', '#3f6b45', '#8a4f4f', '#4f6f8a', '#6f6a3f'];
 
 export function emptyContent() {
-  return { result: null, response: '', evidence: '', sample: '', remediation: { action: '', owner: '', due: null } };
+  return { result: null, process: '', response: '', evidence: '', sample: '', remediation: { action: '', owner: '', due: null } };
 }
 
 export function emptyItem() {
@@ -30,10 +30,14 @@ export function emptyItem() {
 }
 
 // The comparable part of an item. Text is normalized so CRLF/space differences are not changes.
+// `process` (preparer's internal description, schema 2) is included only when filled, so the content
+// - and every hash made from it (syncHash, final contentHash) - of items without it is unchanged.
 export function contentOf(item) {
   const r = item.remediation || {};
+  const process = normText(item.process);
   return {
     result: item.result ?? null,
+    ...(process ? { process } : {}),
     response: normText(item.response),
     evidence: normText(item.evidence),
     sample: normText(item.sample),
@@ -47,7 +51,7 @@ export function contentHash(item) {
 
 export function isAnswered(item) {
   const c = contentOf(item);
-  return !!(c.result || c.response || c.evidence || c.sample || c.remediation.action || c.remediation.owner || c.remediation.due);
+  return !!(c.result || c.process || c.response || c.evidence || c.sample || c.remediation.action || c.remediation.owner || c.remediation.due);
 }
 
 export function sameContent(a, b) {

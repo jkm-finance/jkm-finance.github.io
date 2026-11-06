@@ -88,6 +88,7 @@
 </ol>
 <h3>3-4. 검토 — 승인과 반려</h3>
 <ul>
+  <li>작성자는 <span class="ui">작성자 설명 (국문 · 내부용)</span>을 쓰고, 리뷰어는 이를 바탕으로 <span class="ui">AuditBoard Response (영문 · 리뷰어 확정)</span>을 작성·확정합니다. 왼쪽 필터의 <span class="ui">AuditBoard Response 없음</span>으로 아직 영문 Response가 없는 문항만 모아 볼 수 있습니다.</li>
   <li><span class="ui">검토함</span> 탭에 제출된 문항이 모입니다. 문항을 열어 내용을 보고 <span class="ui">승인</span> 또는 <span class="ui">반려</span>를 누릅니다. 반려는 사유를 꼭 입력해야 합니다.</li>
   <li>여러 건은 <span class="ui">결과가 있는 n건 일괄 승인</span>으로 한 번에 승인할 수 있습니다.</li>
   <li>문항 아래 <span class="ui">리뷰 코멘트</span>에 의견을 남길 수 있습니다(추가만 가능, 지울 수 없음).</li>
@@ -97,7 +98,7 @@
 <p><span class="ui">병합·확정</span> 탭 → <span class="ui">검토 결과 파일 내려받기</span> → 작성자에게 보냅니다. 승인·반려 상태와 코멘트가 전달되며, 작성자가 그사이 고친 내용은 덮어쓰지 않습니다.</p>
 <h3>3-6. AuditBoard 입력과 잠금</h3>
 <ol class="steps">
-  <li>승인된 문항을 Hilton AuditBoard에 입력합니다. 문항 화면의 <span class="ui">AuditBoard용 복사</span>를 누르면 결과·Response·증빙 위치가 클립보드에 복사됩니다(복사 형식은 AuditBoard 화면 확인 후 조정 예정).</li>
+  <li>승인된 문항을 Hilton AuditBoard에 입력합니다. 문항 화면의 <span class="ui">AuditBoard용 복사</span>를 누르면 결과·AuditBoard Response·증빙 위치가 클립보드에 복사됩니다(작성자 설명은 복사되지 않음, Response가 비어 있으면 경고)(복사 형식은 AuditBoard 화면 확인 후 조정 예정).</li>
   <li>입력이 끝난 문항은 <span class="ui">AuditBoard 입력 완료</span>를 누릅니다. 문항이 <strong>잠겨</strong> 누구도 고칠 수 없고, 이후 들어오는 제출도 거부됩니다.</li>
   <li>잘못 잠갔거나 고쳐야 하면 <span class="ui">잠금 해제</span>(사유 필수). 해제 직전에 복원 지점이 만들어집니다.</li>
 </ol>
@@ -128,7 +129,9 @@
 <ul>
   <li>상단 섹션 탭에서 내 담당 섹션을 열고, 왼쪽 목록에서 문항을 고릅니다. 필터(위험 등급·상태·미응답만 등)로 좁힐 수 있습니다.</li>
   <li><strong>결과</strong>: <span class="r-y">Yes</span>(통제가 잘 운영됨) · <span class="r-n">No</span>(미흡) · <span class="r-a">N/A</span>(해당 없음) · <span class="r-h">Hold</span>(판정 보류 — 확인 중).</li>
-  <li><span class="ui">설명·근거 (Response)</span>: 무엇을 어떻게 확인했는지. <span class="ui">증빙 자료 위치</span>: 파일 경로나 보관 위치. <span class="ui">샘플 테스트 내역</span>: 확인한 샘플(기간·건수 등). 각 5,000자까지.</li>
+  <li><span class="ui">작성자 설명 (국문 · 내부용)</span>: 담당자, 현재 수행 중인 프로세스, 증빙을 국문으로 적습니다. AuditBoard에는 들어가지 않습니다.</li>
+  <li><span class="ui">AuditBoard Response (영문 · 리뷰어 확정)</span>: AuditBoard에 그대로 입력할 영문 문장입니다. 작성자가 초안을 써도 되지만, 리뷰어가 작성자 설명을 보고 확정합니다.</li>
+  <li><span class="ui">증빙 자료 위치</span>: 파일 경로나 보관 위치. <span class="ui">샘플 테스트 내역</span>: 확인한 샘플(기간·건수 등). 각 5,000자까지.</li>
   <li>결과가 <span class="r-n">No</span>이면 <span class="ui">개선계획</span>(조치 내용·담당자·완료 예정일)을 꼭 입력합니다.</li>
   <li>입력은 자동 저장됩니다(상단 오른쪽에 저장 시각 표시). 따로 저장 버튼은 없습니다.</li>
   <li>회색으로 꺼진 버튼이나 입력란에 마우스를 올리면 이유가 나옵니다(예: “잠긴 문항입니다”, “내 담당 섹션이 아닙니다”).</li>

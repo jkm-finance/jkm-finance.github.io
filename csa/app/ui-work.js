@@ -222,6 +222,7 @@ function userFilter(ctl, meta, it) {
   if (f.tower && meta.tower !== f.tower) return false;
   if (f.cpa && meta.cpaLink !== f.cpa) return false;
   if (f.unanswered && it.result) return false;
+  if (f.noResponse && !(it.result && !(it.response || '').trim())) return false;
   if (f.assignee && !assignedTo(doc, meta.section).includes(f.assignee)) return false;
   return true;
 }
@@ -236,7 +237,8 @@ function filterBar(ctl, set, rerender) {
     doc.assignment.members.length ? sel('assignee', t('flt.assignee'), doc.assignment.members.map((m) => [m, m])) : null,
     doc.serviceType === 'focus' ? sel('tower', 'HTL/FSSC', ['HTL', 'FSSC-RTR', 'FSSC-OTC', 'FSSC-RA', 'FSSC-PTP'].map((x) => [x, x])) : null,
     doc.serviceType === 'focus' ? sel('cpa', t('flt.cpa'), ['CSA', 'CSA,CPA', 'CSA,CPA,Validation'].map((x) => [x, x])) : null,
-    h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.unanswered, onchange: (e) => { f.unanswered = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.unanswered')));
+    h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.unanswered, onchange: (e) => { f.unanswered = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.unanswered')),
+    h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.noResponse, onchange: (e) => { f.noResponse = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.noResponse')));
   return bar;
 }
 
@@ -329,16 +331,17 @@ function detail(ctl, set, id, redraw) {
   }
   b.appendChild(rrow);
 
-  const field = (key, label, max, rows = 4) => {
+  const field = (key, label, max, rows = 4, help = null) => {
     const cnt = h('span', { class: 'cnt' });
     const ta = h('textarea', { rows: String(rows), maxlength: String(max), disabled: !editable, why, value: it[key] || '', 'aria-label': label });
     const upd = () => { cnt.textContent = `${ta.value.length}/${max}`; cnt.classList.toggle('over', ta.value.length >= max); };
     ta.addEventListener('input', () => { upd(); ed({ [key]: ta.value }); });
     upd();
-    return h('div', { class: 'ig full' }, h('label', null, h('span', { text: label }), cnt), ta);
+    return h('div', { class: 'ig full' + (key === 'response' ? ' ab-resp' : '') }, h('label', null, h('span', { text: label }), cnt), help ? h('div', { class: 'fhelp', text: help }) : null, ta);
   };
   b.appendChild(h('div', { class: 'igrid', style: { marginTop: '12px' } },
-    field('response', t('detail.response'), MAX_TEXT, 5),
+    field('process', t('detail.process'), MAX_TEXT, 5, t('detail.processHelp')),
+    field('response', t('detail.response'), MAX_TEXT, 4, t('detail.responseHelp')),
     field('evidence', t('detail.evidence'), MAX_TEXT, 3),
     field('sample', t('detail.sample'), MAX_TEXT, 3)));
 
@@ -419,6 +422,7 @@ export async function askReason(title, label) {
 async function copyForAuditBoard(ctl, set, id) {
   const it = ctl.state.doc.items[id], m = set.byId[id];
   const res = { yes: 'Yes', no: 'No', na: 'N/A', hold: 'Hold' }[it.result] || '';
+  if (!(it.response || '').trim()) { toast(t('detail.noResponse'), 5000); return; }
   const parts = [res, it.response || ''];
   if (it.evidence) parts.push('Evidence: ' + it.evidence);
   if (it.sample) parts.push('Sample: ' + it.sample);

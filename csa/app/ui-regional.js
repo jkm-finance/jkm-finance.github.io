@@ -112,7 +112,7 @@ function exportRegional(rows) {
     f.workspace.hotelName, f.workspace.serviceType, f.payload.finalVersion, f.payload.finalizedAt, sum.score, sum.byRisk.Key.score, sum.byRisk.HR.score, sum.byRisk.MR.score,
     sum.counts.yes, sum.counts.no, sum.counts.na, sum.counts.hold, Math.round(sum.enteredRate * 1000) / 10]));
   const heat = [['Hotel'].concat(SECTIONS)].concat(rows.map(({ f, sum, set }) => [f.workspace.hotelName].concat(SECTIONS.map((s) => (set.sections.includes(s) ? sum.bySection[s].score : '')))));
-  const findings = [['Hotel', 'No', 'Section', 'Risk', 'Policy', 'Work Step', 'Response', 'Remediation', 'Owner', 'Due']].concat(rows.flatMap(({ f, set }) => set.items.filter((m) => f.payload.items[m.id].result === 'no').map((m) => {
+  const findings = [['Hotel', 'No', 'Section', 'Risk', 'Policy', 'Work Step', 'AuditBoard Response', 'Remediation', 'Owner', 'Due']].concat(rows.flatMap(({ f, set }) => set.items.filter((m) => f.payload.items[m.id].result === 'no').map((m) => {
     const it = f.payload.items[m.id];
     return [f.workspace.hotelName, m.no, m.section, m.risk, m.policy, m.ws, it.response, it.remediation.action, it.remediation.owner, it.remediation.due || ''];
   })));
