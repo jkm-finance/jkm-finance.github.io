@@ -69,6 +69,7 @@
 <ol class="steps">
   <li>パスワード <code>jkm</code> → <span class="ui">お名前</span> を入力 → <span class="ui">新規CSA（レビュアー）</span>。</li>
   <li>ホテル名を入力し、サービス区分 <strong>Full</strong>（240項目）または <strong>Focus</strong>（145項目）を選んで <span class="ui">作成</span>。</li>
+  <li><strong>または</strong> <span class="ui">AuditBoardエクスポートから開始（レビュアー）</span>: AuditBoardからダウンロードした監査Excel（.xlsx）を入れると、Full/Focusとホテル名が自動入力され、各項目にAuditBoard IDが紐付きます。作成前に一致した項目数と一致しない行が表示されます。既存のワークスペースには「割当」タブの <span class="ui">AuditBoard IDを紐付け</span> でIDのみ追加できます（入力内容は変わりません）。</li>
   <li>上部に黄色の案内が出たら <span class="ui">バックアップ先を指定</span> を押し、<strong>OneDrive内のフォルダ</strong>（例: <code>OneDrive › Finance › CSA 2026 Backup</code>）を選びます。<a href="#safety">7章</a>参照。</li>
 </ol>
 <h3>3-2. セクション割当と割当ファイル</h3>
@@ -98,6 +99,7 @@
 <p><span class="ui">マージ・確定</span> タブ → <span class="ui">レビュー結果ファイルをダウンロード</span> → 作成者に送ります。承認・差戻しとコメントが伝わり、作成者がその間に修正した内容は上書きされません。</p>
 <h3>3-6. AuditBoard入力とロック</h3>
 <ol class="steps">
+  <li>AuditBoard IDが紐付いていると項目の上部に <code>AB 1283309</code> のように表示され、一覧上の検索欄にAuditBoard IDや#番号を入れるとその項目へ移動できます。</li>
   <li>承認済みの項目をHilton AuditBoardに入力します。項目画面の <span class="ui">AuditBoard用にコピー</span> で結果・AuditBoard Response・証憑の保管場所がクリップボードにコピーされます（作成者説明はコピーされません。Responseが空なら警告）（形式はAuditBoard画面の確認後に調整予定）。</li>
   <li>入力が終わった項目は <span class="ui">AuditBoard入力完了</span> を押します。項目が<strong>ロック</strong>され誰も修正できず、以後の提出も拒否されます。</li>
   <li>修正が必要な場合は <span class="ui">ロック解除</span>（理由必須）。解除直前に復元ポイントが作成されます。</li>

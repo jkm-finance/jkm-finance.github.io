@@ -5,7 +5,7 @@ import { fileSafe, todayLocal } from './util.js';
 import { toast } from './dom.js';
 
 let loading = null;
-function loadXLSX() {
+export function loadXLSX() {
   if (globalThis.XLSX) return Promise.resolve(globalThis.XLSX);
   loading = loading || new Promise((res, rej) => {
     const s = document.createElement('script');

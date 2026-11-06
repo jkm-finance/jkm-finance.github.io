@@ -8,6 +8,7 @@ import { readAndVerify } from './files.js';
 import { workspaceFromAssignment, applyAssignment } from './merge.js';
 import { openWorkspace, setUserName, langRow, openDof } from './main.js';
 import { FinalStore } from './store.js';
+import { newFromExport } from './ui-ab.js';
 
 export async function renderStart(ctl) {
   const root = clear(document.getElementById('root'));
@@ -43,6 +44,7 @@ export async function renderStart(ctl) {
   box.appendChild(h('div', { class: 'gsec', text: t('start.begin') }));
   box.appendChild(h('div', { class: 'gacts' },
     h('button', { class: 'gbtn', text: t('start.newCsa'), onclick: () => { const me = needName(); if (me) newCsaDialog(ctl, me); } }),
+    h('button', { class: 'gbtn', text: t('start.fromExport'), onclick: () => { const me = needName(); if (me) newFromExport(ctl, me, { openWorkspace }); } }),
     h('button', { class: 'gbtn alt', text: t('start.loadAssignment'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'assignment', me); } }),
     h('button', { class: 'gbtn alt', text: t('start.openFinal'), onclick: () => fileDialog(ctl, 'final') }),
     h('button', { class: 'gbtn alt', text: t('start.restoreBackup'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'backup', me); } })));

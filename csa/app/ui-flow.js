@@ -9,6 +9,7 @@ import { previewSubmissions, applySubmissions, applyReview, applyAssignment } fr
 import { run, withRestorePoint, flush, chooseBackupDir, reconnectBackup, fullBackupFile, restoreSnapshot, goStart, ctl as CTL } from './main.js';
 import { renderWorkspace } from './ui-work.js';
 import { exportWorkspaceExcel } from './excel.js';
+import { linkExport } from './ui-ab.js';
 
 const pane = (...kids) => h('div', { class: 'pane' }, ...kids);
 const card = (title, ...kids) => h('div', { class: 'card' }, h('div', { class: 'ctitle', text: title }), h('div', { class: 'cbodyp' }, ...kids));
@@ -44,7 +45,10 @@ export function renderAssign(ctl) {
       h('p', { class: 'wsmeta', text: t('assign.fileHelp', { v: doc.assignment.version }) }),
       h('div', { class: 'acts' },
         h('button', { class: 'btn btn-g', disabled: !doc.assignment.version, why: t('why.noAssignment'), text: t('assign.exportAll'), onclick: () => exportFile('') }),
-        doc.assignment.members.map((m) => h('button', { class: 'btn btn-l', text: t('assign.exportFor', { name: m }), onclick: () => exportFile(m) })))));
+        doc.assignment.members.map((m) => h('button', { class: 'btn btn-l', text: t('assign.exportFor', { name: m }), onclick: () => exportFile(m) })))),
+    card(t('ab.cardTitle'),
+      h('p', { class: 'wsmeta', text: doc.ab ? t('ab.cardLinked', { file: doc.ab.file, n: Object.keys(doc.ab.ids).length, total: set.items.length, at: fmtTime(doc.ab.importedAt), by: doc.ab.importedBy }) : t('ab.cardNone') }),
+      h('div', { class: 'acts' }, h('button', { class: 'btn btn-l', disabled: ctl.state.readonly, why: t('err.readonly'), text: doc.ab ? t('ab.relink') : t('ab.linkTitle'), onclick: () => linkExport(ctl, { withRestorePoint, linkAuditBoard: wf.linkAuditBoard }) }))));
 }
 
 // ---- files tab ------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 import { APP_ID, APP_VERSION, DOC_SCHEMA } from './version.js';
 import { uuid, nowISO, normText, isISODate, hashOf } from './util.js';
 import { getItemSet } from './itemsets.js';
+import { validateAb } from './abexport.js';
 
 export const STATUSES = ['empty', 'draft', 'submitted', 'returned', 'approved', 'entered'];
 export const RESULTS = ['yes', 'no', 'na', 'hold'];
@@ -146,6 +147,7 @@ export function validateDoc(doc, key) {
   if (extra.length) errs.push(`unknown items: ${extra.length}`);
   for (const id of keys) if (set.byId[id]) checkItemValue(id, items[id], errs);
   validateComments(doc.comments, set, errs);
+  validateAb(doc.ab, set, errs);
   if (!Number.isInteger(doc.saveSeq) || doc.saveSeq < 0) errs.push('saveSeq invalid');
   return errs;
 }

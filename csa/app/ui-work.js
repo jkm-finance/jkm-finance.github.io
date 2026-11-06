@@ -6,6 +6,7 @@ import { summarize, perAssignee } from './summary.js';
 import { MAX_TEXT, MAX_SHORT, isAnswered, assignedTo } from './model.js';
 import * as wf from './workflow.js';
 import { policyEl } from './policy.js';
+import { abIdOf } from './abexport.js';
 import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush, guideLink } from './main.js';
 import { renderAssign, renderFiles, renderBackupPane } from './ui-flow.js';
 import { renderReportPane } from './ui-report.js';
@@ -224,6 +225,12 @@ function userFilter(ctl, meta, it) {
   if (f.unanswered && it.result) return false;
   if (f.noResponse && !(it.result && !(it.response || '').trim())) return false;
   if (f.assignee && !assignedTo(doc, meta.section).includes(f.assignee)) return false;
+  if (f.q) {
+    // '#12' or '12' = item number, an AuditBoard ID, or (3+ characters) words in the work step
+    const q = f.q.trim().toLowerCase(), n = q.replace(/^#/, '');
+    const hit = String(meta.no) === n || abIdOf(doc, meta.id) === n || (q.length >= 3 && (meta.ws.toLowerCase().includes(q) || itemText(meta).ws.toLowerCase().includes(q)));
+    if (!hit) return false;
+  }
   return true;
 }
 
@@ -231,7 +238,9 @@ function filterBar(ctl, set, rerender) {
   const f = ctl.state.filters, doc = ctl.state.doc;
   const sel = (key, label, opts) => h('select', { 'aria-label': label, onchange: (e) => { f[key] = e.target.value || undefined; rerender(); } },
     h('option', { value: '', text: label }), opts.map(([v, l]) => h('option', { value: v, text: l, selected: f[key] === v })));
-  const bar = h('div', { class: 'flt' },
+  const q = h('input', { type: 'search', class: 'fq', value: f.q || '', placeholder: doc.ab ? t('flt.qAb') : t('flt.q'), 'aria-label': t('flt.q'), maxlength: '100' });
+  q.addEventListener('change', () => { f.q = q.value.trim() || undefined; rerender(); });
+  const bar = h('div', { class: 'flt' }, q,
     sel('risk', t('flt.risk'), [['Key', 'Key'], ['HR', 'HR'], ['MR', 'MR']]),
     sel('status', t('flt.status'), ['empty', 'draft', 'submitted', 'returned', 'approved', 'entered'].map((x) => [x, t('status.' + x)])),
     doc.assignment.members.length ? sel('assignee', t('flt.assignee'), doc.assignment.members.map((m) => [m, m])) : null,
@@ -303,6 +312,7 @@ function detail(ctl, set, id, redraw) {
     meta.tower ? h('span', { class: 'badge tw' + (meta.tower === 'HTL' ? ' tw-HTL' : ''), text: meta.tower }) : null,
     meta.cpaLink ? h('span', { class: 'badge cpa', text: meta.cpaLink.replace(/,/g, ' · ') }) : null,
     h('span', { class: 'badge st st-' + it.status, text: t('status.' + it.status) }),
+    abIdOf(doc, id) ? h('span', { class: 'badge abid', title: t('ab.idTitle'), text: 'AB ' + abIdOf(doc, id) }) : null,
     h('span', { class: 'hchip', text: t('col.assignee') + ': ' + (assignedTo(doc, meta.section).join(', ') || '—') })));
   const b = h('div', { class: 'cbody' });
   card.appendChild(b);
@@ -427,7 +437,7 @@ async function copyForAuditBoard(ctl, set, id) {
   if (it.evidence) parts.push('Evidence: ' + it.evidence);
   if (it.sample) parts.push('Sample: ' + it.sample);
   if (it.result === 'no' && it.remediation && it.remediation.action) parts.push(`Remediation: ${it.remediation.action}${it.remediation.owner ? ' / ' + it.remediation.owner : ''}${it.remediation.due ? ' / ' + it.remediation.due : ''}`);
-  try { await navigator.clipboard.writeText(parts.filter(Boolean).join('\n')); toast(t('detail.copied', { no: m.no })); } catch { toast(t('err.clipboard')); }
+  try { await navigator.clipboard.writeText(parts.filter(Boolean).join('\n')); toast(t('detail.copied', { no: m.no }) + (abIdOf(ctl.state.doc, id) ? ` · AuditBoard ID ${abIdOf(ctl.state.doc, id)}` : '')); } catch { toast(t('err.clipboard')); }
 }
 
 export { setView, isAnswered };

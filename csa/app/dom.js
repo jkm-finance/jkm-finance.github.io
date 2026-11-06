@@ -77,12 +77,12 @@ export function download(text, name, type = 'application/json') {
 }
 
 // File picker + drag & drop area. onFiles receives [{ name, text }].
-export function dropZone(label, onFiles, { multiple = true } = {}) {
-  const input = h('input', { type: 'file', accept: '.json,application/json', multiple, class: 'hidden' });
+export function dropZone(label, onFiles, { multiple = true, accept = '.json,application/json', binary = false } = {}) {
+  const input = h('input', { type: 'file', accept, multiple, class: 'hidden' });
   const zone = h('div', { class: 'drop', tabindex: '0', role: 'button', text: label });
   const read = async (list) => {
     const out = [];
-    for (const f of list) out.push({ name: f.name, text: await f.text(), size: f.size });
+    for (const f of list) out.push(binary ? { name: f.name, file: f, size: f.size } : { name: f.name, text: await f.text(), size: f.size });
     onFiles(out);
   };
   zone.addEventListener('click', () => input.click());

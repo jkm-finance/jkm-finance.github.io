@@ -14,7 +14,8 @@ export function safeCell(v) {
 export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) => s, onlyMine = false } = {}) {
   const set = getItemSet(doc.itemSetId);
   const focus = doc.serviceType === 'focus';
-  const header = ['No', 'Section', 'Risk'];
+  const ab = doc.ab && doc.ab.ids;
+  const header = ab ? ['No', 'AuditBoard ID', 'Section', 'Risk'] : ['No', 'Section', 'Risk'];
   if (focus) header.push('HTL/FSSC', 'CPA link');
   header.push('Work Step (EN)');
   if (lang !== 'en') header.push('Work Step (' + lang.toUpperCase() + ')');
@@ -24,7 +25,7 @@ export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) =>
     if (onlyMine && !assignedTo(doc, m.section).includes(doc.local.me)) continue;
     const it = doc.items[m.id];
     const comments = (doc.comments[m.id] || []).filter((c) => c.role === 'reviewer');
-    const r = [m.no, m.section, m.risk];
+    const r = ab ? [m.no, ab[m.id] || '', m.section, m.risk] : [m.no, m.section, m.risk];
     if (focus) r.push(m.tower || '', m.cpaLink || '');
     r.push(m.ws);
     if (lang !== 'en') r.push(itemText ? itemText(m, lang).ws : m.ws);

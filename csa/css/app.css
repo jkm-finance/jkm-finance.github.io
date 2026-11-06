@@ -230,3 +230,8 @@ a.polcell{color:var(--p)}
   .heat td.hc,.sbar i,.badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 @media (max-width:900px){#lp{width:240px}.igrid{grid-template-columns:1fr}}
+.badge.abid{background:#eef1f6;color:#3d4f6b;border:1px solid #c9d2e0;font-variant-numeric:tabular-nums}
+.flt .fq{min-width:200px;flex:1 1 200px;max-width:320px}
+.abprev .tbl th{width:30%}
+.abiss{margin:6px 0}
+.abiss .pre{white-space:pre-wrap;max-height:180px;overflow:auto;font-size:12px}

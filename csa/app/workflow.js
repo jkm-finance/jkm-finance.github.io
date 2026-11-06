@@ -208,6 +208,15 @@ export function setAssignment(doc0, sections) {
   return { doc, events: [ev(doc, 'assign', null, { version: doc.assignment.version, sections: clean })] };
 }
 
+// AuditBoard export link (doc.ab): IDs and AuditBoard preparer/reviewer per item. Reviewer only.
+// Replaces any earlier link; item content is not touched.
+export function linkAuditBoard(doc0, ab) {
+  assertOk(can('assign', { role: doc0.local.role }));
+  const doc = clone(doc0);
+  doc.ab = clone(ab);
+  return { doc, events: [ev(doc, 'ab-link', null, { file: ab.file, matched: Object.keys(ab.ids).length })] };
+}
+
 // ---- finalization -----------------------------------------------------------
 
 export function finalizeBlockers(doc) {
