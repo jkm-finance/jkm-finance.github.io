@@ -4,6 +4,7 @@ import { nowISO, hashOf, clone, fileSafe, canonicalJSON } from './util.js';
 import { getItemSet } from './itemsets.js';
 import { validatePrior, priorForFile } from './prior.js';
 import { validateHints } from './hints.js';
+import { validateSchedule } from './schedule.js';
 import { contentOf, emptyItem, checkItemValue, validateComments, isAnswered, validateDoc, isItemAssigned, hasItemsIn, validateAssignment } from './model.js';
 import { finalSummary } from './summary.js';
 import { needsMigration, isTooNew, migrate } from './guard.js';
@@ -65,14 +66,14 @@ function masterItem(it) {
 
 export function assignmentPayload(doc) {
   return {
-    reviewerName: doc.reviewerName, assignment: doc.assignment, prior: priorForFile(doc), hints: doc.hints,
+    reviewerName: doc.reviewerName, assignment: doc.assignment, prior: priorForFile(doc), hints: doc.hints, schedule: doc.schedule,
     master: { items: Object.fromEntries(Object.entries(doc.items).map(([id, it]) => [id, masterItem(it)])), comments: doc.comments },
   };
 }
 
 export function reviewPayload(doc) {
   return {
-    reviewerName: doc.reviewerName, assignment: doc.assignment, prior: priorForFile(doc), hints: doc.hints,
+    reviewerName: doc.reviewerName, assignment: doc.assignment, prior: priorForFile(doc), hints: doc.hints, schedule: doc.schedule,
     items: Object.fromEntries(Object.entries(doc.items).map(([id, it]) => [id, masterItem(it)])),
     comments: doc.comments,
   };
@@ -204,9 +205,10 @@ export async function verifyFile(obj, ctx) {
     validatePrior(p.prior, set, errs, { year: w.year });
     if (errs.length) throw new FileError('badValues', errs.slice(0, 5).join('; '));
   }
-  if (p.hints !== undefined && ['assignment', 'review'].includes(obj.kind)) {
+  if ((p.hints !== undefined || p.schedule !== undefined) && ['assignment', 'review'].includes(obj.kind)) {
     const errs = [];
     validateHints(p.hints, set, errs);
+    validateSchedule(p.schedule, errs);
     if (errs.length) throw new FileError('badValues', errs.slice(0, 5).join('; '));
   }
   switch (obj.kind) {

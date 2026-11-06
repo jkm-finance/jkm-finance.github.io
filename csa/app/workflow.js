@@ -263,6 +263,27 @@ export function setHint(doc0, id, text) {
   return setHints(doc0, { ...(doc0.hints || {}), [id]: text }, { item: id });
 }
 
+// Stage schedule (doc.schedule). Reviewer only; stages: [{ key, label, due, done }].
+export function setSchedule(doc0, stages) {
+  assertOk(can('assign', { role: doc0.local.role }));
+  const doc = clone(doc0);
+  const clean = (stages || []).map((s) => ({ key: String(s.key), label: normText(s.label).slice(0, 80), due: s.due || null, done: s.done || null }));
+  if (clean.some((s) => s.due || s.done || s.label)) doc.schedule = { stages: clean }; else delete doc.schedule;
+  return { doc, events: [ev(doc, 'schedule', null, { stages: clean.filter((s) => s.due || s.done).map((s) => ({ key: s.key, due: s.due, done: s.done })) })] };
+}
+
+// Reviewer changes the result of an item that was already approved: a reason is required. The reason
+// is kept as a comment (visible to preparers and in files) and in the history.
+const RES_LABEL = { yes: 'Yes', no: 'No', na: 'N/A', hold: 'Hold' };
+export function changeResult(doc0, id, result, reason) {
+  const r = normText(reason);
+  if (!r) throw Object.assign(new Error('Reason required'), { code: 'reasonRequired' });
+  const from = doc0.items[id].result;
+  const a = editItem(doc0, id, { result });
+  const b = addComment(a.doc, id, `Result changed: ${RES_LABEL[from] || '—'} → ${RES_LABEL[result] || '—'} — ${r}`.slice(0, MAX_COMMENT));
+  return { doc: b.doc, events: [...a.events, ...b.events, ev(b.doc, 'result-change', id, { from, to: result, reason: r })] };
+}
+
 // ---- finalization -----------------------------------------------------------
 
 export function finalizeBlockers(doc) {

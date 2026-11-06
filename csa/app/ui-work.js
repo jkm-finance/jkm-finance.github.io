@@ -9,7 +9,8 @@ import { policyEl } from './policy.js';
 import { abIdOf } from './abexport.js';
 import { priorOf } from './prior.js';
 import { hintOf, HINT_MAX } from './hints.js';
-import { pathsIn } from './util.js';
+import { pathsIn, todayLocal } from './util.js';
+import { openStages, progressDiffs, emptySchedule, STAGE_KEYS } from './schedule.js';
 import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush, guideLink } from './main.js';
 import { renderAssign, renderFiles, renderBackupPane } from './ui-flow.js';
 import { renderReportPane } from './ui-report.js';
@@ -101,6 +102,8 @@ export function refreshChrome(ctl) {
     if (!s.readonly && s.backup.status === 'none' && doc.local.role === 'reviewer') ban.appendChild(h('div', { class: 'banner warn' }, t('ban.noBackup'), h('button', { class: 'btn btn-p', text: t('backup.choose'), onclick: () => chooseBackupDir() })));
     if (!s.readonly && s.backup.status === 'needPermission') ban.appendChild(h('div', { class: 'banner warn' }, t('ban.backupPermission'), h('button', { class: 'btn btn-p', text: t('backup.reconnect'), onclick: () => reconnectBackup() })));
     if (!s.readonly && s.backup.status === 'unsupported' && doc.local.role === 'reviewer') ban.appendChild(h('div', { class: 'banner warn', text: t('ban.backupUnsupported') }));
+    const due = openStages(doc.schedule, todayLocal()).find((x) => x.days <= 7);
+    if (due) ban.appendChild(h('div', { class: 'banner ' + (due.days < 0 ? 'warn' : 'info'), text: t(due.days < 0 ? 'sch.overdue' : 'sch.upcoming', { stage: stageLabel(due), due: due.due, n: Math.abs(due.days) }) }));
     if (s.newVersion) ban.appendChild(h('div', { class: 'banner info', text: t('ban.newVersion', { v: s.newVersion }) }));
     if (doc.finalize.lastVersion && !doc.finalize.current && doc.local.role === 'reviewer') ban.appendChild(h('div', { class: 'banner info', text: t('ban.unfinalized', { v: doc.finalize.lastVersion }) }));
   }
@@ -173,6 +176,44 @@ function shrinkPane(ctl) {
 
 // ---- overview ------------------------------------------------------------------
 
+export function stageLabel(st) {
+  return st.label || (STAGE_KEYS.includes(st.key) ? t('sch.' + st.key) : st.key);
+}
+
+// Overview cards for ⑥: schedule, progress by date, result changes after approval.
+function scheduleCards(ctl, pane) {
+  const doc = ctl.state.doc, today = todayLocal();
+  if (doc.schedule) {
+    const rows = doc.schedule.stages.filter((st) => st.due || st.done).map((st) => {
+      const days = st.due && !st.done ? Math.round((Date.parse(st.due) - Date.parse(today)) / 86400000) : null;
+      const state = st.done ? t('sch.doneOn', { d: st.done }) : days === null ? '—' : days < 0 ? t('sch.late', { n: -days }) : days === 0 ? t('sch.today') : 'D-' + days;
+      return h('tr', { class: st.done ? 'sch-done' : days !== null && days < 0 ? 'sch-late' : '' }, h('td', { text: stageLabel(st) }), h('td', { text: st.due || '—' }), h('td', { text: state }));
+    });
+    pane.appendChild(h('div', { class: 'card' }, h('div', { class: 'ctitle', text: t('sch.title') }), h('div', { class: 'cbodyp' },
+      h('table', { class: 'tbl' }, h('thead', null, h('tr', null, [t('sch.stage'), t('sch.due'), t('sch.state')].map((x) => h('th', { text: x })))), h('tbody', null, rows)))));
+  }
+  if (doc.progress && doc.progress.length) {
+    const fmt = (r, k) => String(r[k]) + (r.diff[k] ? ` (${r.diff[k] > 0 ? '+' : ''}${r.diff[k]})` : '');
+    pane.appendChild(h('div', { class: 'card' }, h('div', { class: 'ctitle', text: t('prog.title') }), h('div', { class: 'cbodyp' },
+      h('p', { class: 'wsmeta', text: t('prog.help') }),
+      h('table', { class: 'tbl' }, h('thead', null, h('tr', null, [t('prog.date'), 'Yes', 'No', 'N/A', 'Hold', t('col.answered'), t('prog.approved')].map((x, i) => h('th', { class: i ? 'num' : '', text: x })))),
+        h('tbody', null, progressDiffs(doc.progress).map((r) => h('tr', null, h('td', { text: r.d }), ...['yes', 'no', 'na', 'hold', 'answered', 'approved'].map((k) => h('td', { class: 'num' + (r.diff[k] ? ' chg' : ''), text: fmt(r, k) })))))))));
+  }
+  const box = h('div', { class: 'cbodyp' }, h('p', { class: 'wsmeta', text: t('detail.loading') }));
+  const card = h('div', { class: 'card' }, h('div', { class: 'ctitle', text: t('chg.listTitle') }), box);
+  pane.appendChild(card);
+  ctl.store.history(doc.wsId).then((list) => {
+    const set = getItemSet(doc.itemSetId);
+    const ch = list.filter((e) => e.action === 'result-change').reverse();
+    clear(box);
+    if (!ch.length) { card.remove(); return; }
+    box.appendChild(h('table', { class: 'tbl' }, h('thead', null, h('tr', null, [t('prog.date'), '#', t('col.section'), t('chg.change'), t('chg.reason'), t('chg.by')].map((x) => h('th', { text: x })))),
+      h('tbody', null, ch.map((e) => { const m = set.byId[e.itemId]; return h('tr', { style: { cursor: 'pointer' }, onclick: () => { Object.assign(ctl.state, { itemId: e.itemId }); setView(ctl, 'section', m.section); } },
+        h('td', { text: fmtTime(e.at) }), h('td', { text: m ? m.no : '' }), h('td', { text: m ? m.section : '' }),
+        h('td', { text: `${PRIOR_LABEL[e.detail.from] || '—'} → ${PRIOR_LABEL[e.detail.to] || '—'}` }), h('td', { class: 'pre', text: e.detail.reason }), h('td', { text: e.by })); }))));
+  }).catch(() => card.remove());
+}
+
 function overviewPane(ctl, set) {
   const doc = ctl.state.doc;
   const sum = summarize(doc.items, doc.itemSetId);
@@ -196,6 +237,7 @@ function overviewPane(ctl, set) {
   pane.appendChild(h('div', { class: 'card' }, h('div', { class: 'ctitle', text: t('ov.bySection') }), h('div', { class: 'cbodyp' },
     h('table', { class: 'tbl' }, h('thead', null, h('tr', null, [t('col.section'), t('col.items'), t('col.progress'), 'Yes', 'No', 'N/A', 'Hold', t('col.score'), t('col.assignee')].map((x, i) => h('th', { class: i && i < 8 && i !== 2 ? 'num' : '', text: x })))), h('tbody', null, rows)))));
 
+  scheduleCards(ctl, pane);
   const pa = perAssignee(doc);
   if (Object.keys(pa).length) {
     pane.appendChild(h('div', { class: 'card' }, h('div', { class: 'ctitle', text: t('ov.byAssignee') }), h('div', { class: 'cbodyp' },
@@ -361,7 +403,15 @@ function detail(ctl, set, id, redraw) {
   const rrow = h('div', { class: 'rsrow' });
   for (const [val, cls, label] of [['yes', 'rby', 'Yes'], ['no', 'rbn', 'No'], ['na', 'rbna', 'N/A'], ['hold', 'rbh', 'Hold']]) {
     rrow.appendChild(h('button', { class: 'rsb ' + cls + (it.result === val ? ' act' : ''), disabled: !editable, why, text: label,
-      onclick: () => { ed({ result: ctl.state.doc.items[id].result === val ? null : val }); redraw(); } }));
+      onclick: async () => {
+        const cur = ctl.state.doc.items[id], next = cur.result === val ? null : val;
+        if (cur.status === 'approved' && ctl.state.doc.local.role === 'reviewer' && cur.result !== next) {
+          const reason = await askReason(t('chg.title', { no: meta.no }), t('chg.help', { from: PRIOR_LABEL[cur.result] || '—', to: PRIOR_LABEL[next] || '—' }));
+          if (!reason) return;
+          await run((d) => wf.changeResult(d, id, next, reason));
+        } else ed({ result: next });
+        redraw();
+      } }));
   }
   b.appendChild(rrow);
 

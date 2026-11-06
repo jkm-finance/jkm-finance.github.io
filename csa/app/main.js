@@ -1,5 +1,7 @@
 // Boot, gates and the workspace controller (autosave, restore points, backups, tab lock).
 import { APP_VERSION, YEAR } from './version.js';
+import { withProgress } from './schedule.js';
+import { todayLocal } from './util.js';
 import { h, clear, toast, modal, download } from './dom.js';
 import { t, getLang, setLang } from './i18n.js';
 import { WorkStore, StoreError } from './store.js';
@@ -172,7 +174,7 @@ export function apply(result, { render = false } = {}) {
   const s = ctl.state;
   if (!result || result.doc === s.doc) return;
   if (s.readonly || s.fatal) { toast(t('err.readonly')); return; }
-  s.doc = result.doc;
+  s.doc = withProgress(result.doc, todayLocal());
   queueEvents(result.events || []);
   s.dirty = true;
   scheduleSave();
@@ -273,7 +275,7 @@ export async function withRestorePoint(reason, fn, { allowShrink = false } = {})
   let r;
   try { r = await fn(s.doc); } catch (e) { toast(t('err.' + (e.code || 'generic'))); return null; }
   if (!r || r.doc === s.doc) return r;
-  s.doc = r.doc; queueEvents(r.events || []); s.dirty = true;
+  s.doc = withProgress(r.doc, todayLocal()); queueEvents(r.events || []); s.dirty = true;
   await flush({ allowShrink });
   renderWorkspace(ctl);
   return r;

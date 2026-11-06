@@ -5,6 +5,8 @@ import { getItemSet } from './itemsets.js';
 import { isAnswered, assignedTo, contentOf, itemOverride, hasItemsIn } from './model.js';
 import { parseAssigneePaste, planFromPaste } from './assign.js';
 import { parseHintPaste } from './hints.js';
+import { emptySchedule } from './schedule.js';
+import { stageLabel } from './ui-work.js';
 import * as wf from './workflow.js';
 import * as F from './files.js';
 import { previewSubmissions, applySubmissions, applyReview, applyAssignment } from './merge.js';
@@ -51,6 +53,7 @@ export function renderAssign(ctl) {
       h('div', { class: 'acts' },
         h('button', { class: 'btn btn-g', disabled: !doc.assignment.version, why: t('why.noAssignment'), text: t('assign.exportAll'), onclick: () => exportFile('') }),
         doc.assignment.members.map((m) => h('button', { class: 'btn btn-l', text: t('assign.exportFor', { name: m }), onclick: () => exportFile(m) })))),
+    scheduleCard(ctl),
     hintCard(ctl),
     card(t('prior.cardTitle'),
       h('p', { class: 'wsmeta', text: doc.prior ? t('prior.cardLinked', { y: doc.prior.year, file: doc.prior.file, n: Object.keys(doc.prior.items).length, no: Object.values(doc.prior.items).filter((v) => v.result === 'no').length, at: fmtTime(doc.prior.importedAt) }) : t('prior.cardNone') }),
@@ -99,6 +102,28 @@ function itemAssignCard(ctl, set) {
     h('div', { class: 'fl', text: t('assign.pasteTitle') }), h('p', { class: 'wsmeta', text: t('assign.pasteHelp') }), ta,
     h('label', { class: 'wsmeta pastestrip' }, strip, ' ' + t('assign.pasteStrip')),
     h('div', { class: 'acts' }, h('button', { class: 'btn btn-l', disabled: ro, why: t('err.readonly'), text: t('assign.pastePreview'), onclick: preview })), out);
+}
+
+// Stage schedule: due date (and done date) per stage; labels can be renamed.
+function scheduleCard(ctl) {
+  const doc = ctl.state.doc, ro = ctl.state.readonly;
+  const base = emptySchedule().stages;
+  const cur = doc.schedule ? doc.schedule.stages : [];
+  const stages = [...base.map((b) => cur.find((c) => c.key === b.key) || b), ...cur.filter((c) => !base.some((b) => b.key === c.key))];
+  const inputs = stages.map((st) => ({
+    key: st.key,
+    label: h('input', { type: 'text', maxlength: '80', value: st.label || '', placeholder: stageLabel({ key: st.key }), disabled: ro }),
+    due: h('input', { type: 'date', value: st.due || '', disabled: ro }),
+    done: h('input', { type: 'date', value: st.done || '', disabled: ro }),
+  }));
+  const save = async () => {
+    const r = await run((d) => wf.setSchedule(d, inputs.map((x) => ({ key: x.key, label: x.label.value, due: x.due.value || null, done: x.done.value || null }))), { render: true });
+    if (r) toast(t('assign.saved'));
+  };
+  return card(t('sch.title'), h('p', { class: 'wsmeta', text: t('sch.help') }),
+    h('table', { class: 'tbl schtbl' }, h('thead', null, h('tr', null, [t('sch.stage'), t('sch.due'), t('sch.done')].map((x) => h('th', { text: x })))),
+      h('tbody', null, inputs.map((x) => h('tr', null, h('td', null, x.label), h('td', null, x.due), h('td', null, x.done))))),
+    h('div', { class: 'acts' }, h('button', { class: 'btn btn-p', disabled: ro, why: t('err.readonly'), text: t('sch.save'), onclick: save })));
 }
 
 // Item guidance notes: count + paste from Excel (# and note columns) + clear.
