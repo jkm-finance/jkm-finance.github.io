@@ -7,6 +7,7 @@ import { itemSetIdFor, getItemSet } from './itemsets.js';
 import { readAndVerify } from './files.js';
 import { workspaceFromAssignment, applyAssignment } from './merge.js';
 import { openWorkspace, setUserName, langRow, openDof } from './main.js';
+import { FinalStore } from './store.js';
 
 export async function renderStart(ctl) {
   const root = clear(document.getElementById('root'));
@@ -45,6 +46,9 @@ export async function renderStart(ctl) {
     h('button', { class: 'gbtn alt', text: t('start.loadAssignment'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'assignment', me); } }),
     h('button', { class: 'gbtn alt', text: t('start.openFinal'), onclick: () => fileDialog(ctl, 'final') }),
     h('button', { class: 'gbtn alt', text: t('start.restoreBackup'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'backup', me); } })));
+  // Hotel DOF: results opened before stay in this browser (read-only store) and can be reopened without the file.
+  const savedFinals = await new FinalStore('view').open().then((fs) => fs.all()).catch(() => []);
+  if (savedFinals.length) box.appendChild(h('div', { class: 'gacts', style: { marginTop: '8px' } }, h('button', { class: 'gbtn alt', text: t('start.viewSaved') + ` (${new Set(savedFinals.map((r) => r.wsId)).size})`, onclick: () => openDof(null) })));
   box.appendChild(langRow(() => renderStart(ctl)));
 }
 

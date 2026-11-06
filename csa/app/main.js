@@ -77,7 +77,13 @@ function renderPassword() {
 
 export function langRow(rerender) {
   return h('div', { class: 'lang-row' }, ['ko', 'en', 'ja'].map((l) =>
-    h('button', { class: 'btn btn-l' + (getLang() === l ? ' btn-p' : ''), text: l.toUpperCase(), onclick: () => { setLang(l); document.documentElement.lang = l; rerender(); } })));
+    h('button', { class: 'btn btn-l' + (getLang() === l ? ' btn-p' : ''), text: l.toUpperCase(), onclick: () => { setLang(l); document.documentElement.lang = l; rerender(); } })),
+    guideLink('btn btn-l'));
+}
+
+// Opens the user guide in the current UI language (static pages under guide/).
+export function guideLink(cls = 'btn btn-o') {
+  return h('a', { class: cls + ' guide-link', href: 'guide/' + getLang() + '.html', target: '_blank', rel: 'noopener', text: '? ' + t('guide.open') });
 }
 
 async function afterAuth() {
@@ -92,7 +98,7 @@ export function goStart() {
   closeWorkspace().then(() => renderStart(ctl));
 }
 
-export async function openDof(file) { renderDofViewer(ctl, file); }
+export async function openDof(file) { return renderDofViewer(ctl, file); }
 
 // ---- workspace lifecycle ----------------------------------------------------
 

@@ -4,7 +4,7 @@ import { t, getLang, setLang, itemText } from './i18n.js';
 import { getItemSet } from './itemsets.js';
 import { summarize } from './summary.js';
 import { FinalStore } from './store.js';
-import { goStart, langRow } from './main.js';
+import { goStart, langRow, guideLink } from './main.js';
 
 const RES = { yes: 'Yes', no: 'No', na: 'N/A', hold: 'Hold' };
 
@@ -97,6 +97,7 @@ export async function renderDofViewer(ctl, file) {
     hdr.appendChild(h('div', { class: 'hacts' },
       ['report', 'items'].map((k) => h('button', { class: 'btn btn-o' + (state.tab === k ? ' act' : ''), text: t('dof.tab.' + k), onclick: () => { state.tab = k; draw(); } })),
       ['ko', 'en', 'ja'].map((l) => h('button', { class: 'btn btn-o' + (getLang() === l ? ' act' : ''), text: l.toUpperCase(), onclick: () => { setLang(l); draw(); } })),
+      guideLink(),
       h('button', { class: 'btn btn-o', text: '↩ ' + t('dof.back'), onclick: () => goStart() })));
     const rec = recOf();
     if (!rec) { body.appendChild(h('div', { class: 'pane' }, h('p', { class: 'empty', text: t('dof.none') }))); return; }

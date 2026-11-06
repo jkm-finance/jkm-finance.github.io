@@ -8,6 +8,7 @@ import { FinalStore } from './store.js';
 import { reportView, finalReportData } from './ui-report.js';
 import { exportSheets } from './excel.js';
 import { todayLocal } from './util.js';
+import { guideLink } from './main.js';
 
 const SECTIONS = [...new Set(allItemSets().flatMap((s) => s.sections))];
 
@@ -41,6 +42,7 @@ export async function renderRegional(ctl) {
     hdr.appendChild(h('div', { class: 'hacts' },
       ['hotels', 'heat', 'findings'].map((k) => h('button', { class: 'btn btn-o' + (state.tab === k ? ' act' : ''), text: t('reg.tab.' + k), onclick: () => { state.tab = k; state.open = null; draw(); } })),
       ['ko', 'en', 'ja'].map((l) => h('button', { class: 'btn btn-o' + (getLang() === l ? ' act' : ''), text: l.toUpperCase(), onclick: () => { setLang(l); draw(); } })),
+      guideLink(),
       h('button', { class: 'btn btn-o', text: t('reg.logout'), onclick: () => { sessionStorage.removeItem('jkmcsa.auth'); location.reload(); } })));
 
     const pane = h('div', { class: 'pane' });

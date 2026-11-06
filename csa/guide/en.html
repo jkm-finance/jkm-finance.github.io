@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>CSA 2026 User Guide</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173B3F'/%3E%3Ctext x='16' y='21' font-size='12' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23c9ad72'%3ECSA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<header><div class="in">
+  <h1><span class="badge">CSA</span>CSA 2026 Self Assessment — User Guide</h1>
+  <p>JKM hotel controls self assessment dashboard · Preparer · Reviewer (Manager) · Hotel DOF · Area / Regional DOF</p>
+  <div class="langs"><a href="ko.html">한국어</a><a href="en.html">English</a><a href="ja.html">日本語</a><a href="../">← Back to dashboard</a></div>
+</div></header>
+
+<nav class="toc"><strong>Contents</strong>
+<ol>
+  <li><a href="#start">Before you start</a></li>
+  <li><a href="#flow">The whole process at a glance</a></li>
+  <li><a href="#reviewer">Reviewer (Manager)</a></li>
+  <li><a href="#preparer">Preparer</a></li>
+  <li><a href="#dof">Hotel DOF</a></li>
+  <li><a href="#regional">Area / Regional DOF</a></li>
+  <li><a href="#safety">Keeping data safe — backup and restore</a></li>
+  <li><a href="#faq">FAQ and error messages</a></li>
+  <li><a href="#terms">Statuses and terms</a></li>
+</ol></nav>
+
+<main>
+
+<section id="start">
+<h2>1. Before you start</h2>
+<ul>
+  <li><strong>Address</strong>: <code>https://jkm-finance.github.io/csa/</code></li>
+  <li><strong>Browser</strong>: use <strong>Edge</strong> (or Chrome) on your work PC, in a <strong>normal window</strong>. Do not use InPrivate / Incognito: data may be lost when the window closes.</li>
+  <li><strong>Password</strong>: <code>jkm</code> for hotel work (preparer, reviewer, Hotel DOF); <code>apac</code> for Area / Regional DOF consolidation. Enter it once per browser tab.</li>
+  <li><strong>Name</strong>: type your name in <span class="ui">Your name</span> on the start screen. It is recorded in the change history. Preparers must type the name <strong>exactly</strong> as the reviewer wrote it in the assignment (e.g. <code>Irene Kim</code>).</li>
+  <li><strong>Language</strong>: switch with <span class="ui">KO</span> <span class="ui">EN</span> <span class="ui">JA</span>. Items are shown translated; click <span class="ui">Show English original</span> to see the original. Enter into AuditBoard based on the English original.</li>
+</ul>
+<div class="note"><strong>Where is my data stored?</strong> Everything you enter is stored <strong>only in the browser on your PC</strong>; nothing is sent to a server. Work moves between people as <strong>files</strong> (by email, Teams or OneDrive). That is why you should set an <a href="#safety">automatic backup folder</a>.</div>
+<div class="note"><strong>Can hotels get mixed up?</strong> No. Every workspace has a unique ID. Two hotels with the same name are still separate workspaces, and a file from another hotel, another year or another service type (Full/Focus) is refused automatically.</div>
+</section>
+
+<section id="flow">
+<h2>2. The whole process at a glance</h2>
+<div class="flow">
+  <span>① Reviewer: New CSA</span><i>→</i><span>② Send assignment file</span><i>→</i><span>③ Preparers: enter &amp; submit sections</span><i>→</i>
+  <span>④ Reviewer: merge &amp; review</span><i>→</i><span>⑤ Send review results (fix returns)</span><i>→</i><span>⑥ Enter in AuditBoard &amp; lock</span><i>→</i>
+  <span>⑦ Finalize &amp; final file</span><i>→</i><span>⑧ Hotel DOF view · Area/Regional consolidation</span>
+</div>
+<table>
+  <tr><th>File</th><th>Made by</th><th>Sent to</th><th>Example name</th></tr>
+  <tr><td>Assignment file</td><td>Reviewer</td><td>Preparers</td><td><code>CSA2026_Conrad_Seoul_Full_ASSIGN_v1_….json</code></td></tr>
+  <tr><td>Submission file</td><td>Preparer</td><td>Reviewer</td><td><code>…_SUBMIT_AP_Irene_Kim_….json</code></td></tr>
+  <tr><td>Review file</td><td>Reviewer</td><td>Preparers</td><td><code>…_REVIEW_….json</code></td></tr>
+  <tr><td>Final result file</td><td>Reviewer</td><td>Hotel DOF, Area / Regional DOF</td><td><code>…_FINAL_v1_….json</code></td></tr>
+  <tr><td>Full backup file</td><td>You</td><td>You (when changing PC)</td><td><code>…_BACKUP_….json</code>, <code>…_LATEST.json</code></td></tr>
+</table>
+<p>Never open and edit these files. Each file carries a check value; if even one character changes, the file is refused.</p>
+<p>A reviewer may also answer every item alone: skip ②–⑤, enter and approve items directly on the reviewer screen, then continue with ⑥–⑧.</p>
+</section>
+
+<section id="reviewer">
+<h2>3. Reviewer (Manager)</h2>
+<h3>3-1. Create the workspace</h3>
+<ol class="steps">
+  <li>Password <code>jkm</code> → type <span class="ui">Your name</span> → <span class="ui">New CSA (reviewer)</span>.</li>
+  <li>Enter the hotel name, choose service type <strong>Full</strong> (240 items) or <strong>Focus</strong> (145 items), then <span class="ui">Create</span>.</li>
+  <li>When the yellow notice appears, click <span class="ui">Choose backup folder</span> and pick a folder <strong>inside OneDrive</strong> (e.g. <code>OneDrive › Finance › CSA 2026 Backup</code>). See <a href="#safety">section 7</a>.</li>
+</ol>
+<h3>3-2. Assign sections and send the assignment file</h3>
+<ol class="steps">
+  <li>On the <span class="ui">Assign</span> tab, enter preparer names for each section, separated by commas (e.g. <code>Irene Kim, Brad Jeong</code>). Hotels without an FSSC can assign FSSC-marked items to hotel staff.</li>
+  <li><span class="ui">Save assignment</span>.</li>
+  <li>Under <span class="ui">Send assignment file</span>, click <span class="ui">Download assignment file</span> (one file for everyone) or <span class="ui">For {name}</span>, and send the file by email, Teams or OneDrive.</li>
+  <li>Changing the assignment raises its version. Sending a new assignment file updates only the assignment; preparers keep what they entered.</li>
+</ol>
+<h3>3-3. Merge submissions</h3>
+<ol class="steps">
+  <li><span class="ui">Merge &amp; finalize</span> tab → drop all received submission files into <span class="ui">Merge submissions</span> at once.</li>
+  <li>The <span class="ui">Merge preview</span> shows, per file, New · Changed · Same · Conflict · Refused (locked) · Outside assignment. A file from another hotel or a damaged file is refused on its own; the others are still processed.</li>
+  <li>For <strong>conflicts</strong> (two people answered the same item differently, or a submission arrived after you changed the item), click <span class="ui">Resolve conflicts</span> and pick the version to keep for each item, or <span class="ui">Keep master for all</span>. Versions not chosen are kept in the history.</li>
+  <li>Items <strong>outside the assignment</strong> are applied only if you tick them.</li>
+  <li><span class="ui">Apply</span>. A restore point is created automatically just before.</li>
+</ol>
+<h3>3-4. Review — approve and return</h3>
+<ul>
+  <li>Submitted items appear on the <span class="ui">Review queue</span> tab. Open an item and click <span class="ui">Approve</span> or <span class="ui">Return</span>. A reason is required to return.</li>
+  <li>Use <span class="ui">Approve all n with a result</span> to approve many at once.</li>
+  <li>Add notes under <span class="ui">Review comments</span> (comments can be added, not deleted).</li>
+  <li>The reviewer can edit an approved item directly. It stays Approved; if the CSA was already finalized, finalization is cleared. Entered (locked) items must be unlocked first.</li>
+</ul>
+<h3>3-5. Send review results</h3>
+<p><span class="ui">Merge &amp; finalize</span> tab → <span class="ui">Download review file</span> → send it to preparers. Approvals, returns and comments go back to them; edits they made in the meantime are not overwritten.</p>
+<h3>3-6. Enter in AuditBoard and lock</h3>
+<ol class="steps">
+  <li>Enter approved items into Hilton AuditBoard. <span class="ui">Copy for AuditBoard</span> on the item screen copies the result, Response and evidence location to the clipboard (the format will be adjusted once the AuditBoard screen is confirmed).</li>
+  <li>When an item is entered, click <span class="ui">Mark entered in AuditBoard</span>. The item is <strong>locked</strong>: nobody can edit it and later submissions for it are refused.</li>
+  <li>To correct a locked item, use <span class="ui">Unlock</span> (reason required). A restore point is made first.</li>
+</ol>
+<h3>3-7. Finalize and issue the final result file</h3>
+<ol class="steps">
+  <li>When every item has a result and is Approved (or Entered), <span class="ui">Finalize and issue final file</span> on the <span class="ui">Merge &amp; finalize</span> tab becomes available. If it is greyed out, the remaining items are listed below it.</li>
+  <li>Send the <code>…_FINAL_v1_….json</code> file to the Hotel DOF and the Area / Regional DOF.</li>
+  <li>Changing content after finalizing clears the finalization (a notice appears at the top). Finalizing again issues <strong>v2</strong>; recipients see the highest version by default. Marking items entered or unlocking alone does not clear finalization.</li>
+</ol>
+<h3>3-8. Report and Excel</h3>
+<ul>
+  <li><span class="ui">DOF report</span> tab: score, results by section, findings and remediation, items on hold. <span class="ui">Print / Save as PDF</span> → choose “Save as PDF” (A4 portrait). Before finalizing the report carries a “DRAFT — not final” mark.</li>
+  <li><span class="ui">Export all to Excel</span> on the <span class="ui">Merge &amp; finalize</span> tab: every item with result, text, preparer and latest comment.</li>
+  <li><span class="ui">Overview</span>: progress ((Yes+No+N/A) ÷ all), score (Yes ÷ (Yes+No); N/A and Hold excluded), by section, by preparer and by status.</li>
+</ul>
+</section>
+
+<section id="preparer">
+<h2>4. Preparer</h2>
+<h3>4-1. First start</h3>
+<ol class="steps">
+  <li>Save the assignment file from your reviewer (<code>…_ASSIGN_….json</code>) on your PC.</li>
+  <li>Open the address, password <code>jkm</code> → type <span class="ui">Your name</span> exactly as in the assignment.</li>
+  <li><span class="ui">Open assignment file (preparer)</span> → choose the file. If your name is not in the list, a window lets you pick it.</li>
+  <li>Next time, click the hotel under <span class="ui">My workspaces</span> to continue.</li>
+</ol>
+<h3>4-2. Answering items</h3>
+<ul>
+  <li>Open your section from the tabs at the top and pick an item on the left. Filters (risk, status, unanswered only …) narrow the list.</li>
+  <li><strong>Result</strong>: <span class="r-y">Yes</span> (control operating) · <span class="r-n">No</span> (gap) · <span class="r-a">N/A</span> (not applicable) · <span class="r-h">Hold</span> (pending — still checking).</li>
+  <li><span class="ui">Response</span>: what you checked and how. <span class="ui">Evidence location</span>: file path or where it is kept. <span class="ui">Samples tested</span>: samples checked (period, count …). Up to 5,000 characters each.</li>
+  <li>If the result is <span class="r-n">No</span>, always fill in the <span class="ui">Remediation plan</span> (action, owner, due date).</li>
+  <li>Input is saved automatically (the save time shows at the top right). There is no save button.</li>
+  <li>Hover over a greyed-out button or field to see why it is disabled (e.g. “Item is locked”, “Not your assigned section”).</li>
+</ul>
+<h3>4-3. Submit sections</h3>
+<ol class="steps">
+  <li><span class="ui">Submit &amp; receive</span> tab → under <span class="ui">Submit sections</span>, tick the sections to submit (● = yours).</li>
+  <li><span class="ui">Download submission file</span>. Items without a result are left out; you are warned about No without a remediation plan and sections not assigned to you.</li>
+  <li>The submission is complete only when you <strong>send the <code>…_SUBMIT_….json</code> file to your reviewer</strong>.</li>
+  <li>You may submit sections separately, and resubmit items after changing them.</li>
+</ol>
+<h3>4-4. Receive review results and fix returned items</h3>
+<ol class="steps">
+  <li>Drop the review file (<code>…_REVIEW_….json</code>) or a new assignment file into <span class="ui">Receive reviewer files</span> on the <span class="ui">Submit &amp; receive</span> tab.</li>
+  <li>The <span class="ui">Returned</span> tab lists returned items with the reason. Fix and submit again.</li>
+  <li>Your unsent entries are never overwritten. Such items show “Differs from the reviewer's copy”; submit them again when you are done.</li>
+  <li>Approved items cannot be edited by preparers. Ask the reviewer to return the item if a change is needed.</li>
+</ol>
+<div class="note">Preparers can also set <span class="ui">Choose backup folder</span> on the <span class="ui">Backup</span> tab to be safe if the PC fails.</div>
+</section>
+
+<section id="dof">
+<h2>5. Hotel DOF</h2>
+<ol class="steps">
+  <li>Receive the final result file (<code>…_FINAL_v1_….json</code>) from the reviewer.</li>
+  <li>Password <code>jkm</code> → <span class="ui">Open final result (Hotel DOF)</span> → choose the file.</li>
+  <li><span class="ui">Report</span> tab: score, results by section, findings and remediation, items on hold. <span class="ui">Item details</span> tab: result and Response for every item (read-only).</li>
+  <li><span class="ui">Print / Save as PDF</span> → “Save as PDF” makes an A4 PDF. Turn on <span class="ui">Show English original too</span> to print the original under the translation.</li>
+  <li>Results you opened stay in this browser. Next time use <span class="ui">View saved final results</span> on the start screen. Open a v2 the same way; older versions remain selectable at the top.</li>
+</ol>
+<p>Nothing can be changed here. Ask the reviewer if a correction is needed.</p>
+</section>
+
+<section id="regional">
+<h2>6. Area / Regional DOF</h2>
+<ol class="steps">
+  <li>Receive final result files from each hotel's reviewer.</li>
+  <li>Sign in with password <code>apac</code> (consolidation mode).</li>
+  <li>Drop several hotels' files into <span class="ui">Load final result files</span>. For each hotel only the highest version is counted; older versions are kept as history.</li>
+  <li><span class="ui">Hotels</span>: score, Key/HR/MR, No, Hold and AuditBoard entry rate per hotel. Click a hotel name to open its DOF report.</li>
+  <li><span class="ui">Section heatmap</span>: hotel × section scores (with Full and Focus mixed, sections Focus does not have are blank).</li>
+  <li><span class="ui">All findings</span>: every No item with its remediation across hotels; overdue due dates are marked ⚠.</li>
+  <li><span class="ui">Export consolidated Excel</span>: three sheets — hotel summary, heatmap, findings.</li>
+</ol>
+<p>A file with the same version number but different content is flagged ⚠ — please check with that hotel's reviewer. <span class="ui">Remove</span> only removes a hotel from this consolidation view; the hotel's own data is not affected.</p>
+</section>
+
+<section id="safety">
+<h2>7. Keeping data safe — backup and restore</h2>
+<table>
+  <tr><th>Safeguard</th><th>What it does</th><th>Where</th></tr>
+  <tr><td>Autosave</td><td>Saves to the browser as you type, reads it back to verify, and keeps the previous saved copy.</td><td>Automatic</td></tr>
+  <tr><td>Automatic folder backup</td><td>Every 15 seconds, saves changes to <code>_LATEST.json</code> and a dated file in your folder (kept 30 days). Other files are never touched.</td><td><span class="ui">Backup</span> → <span class="ui">Choose backup folder</span></td></tr>
+  <tr><td>Restore points</td><td>Every 5 minutes when there are changes, and just before merge, restore or unlock (kept 30 days).</td><td><span class="ui">Backup</span> → <span class="ui">Restore</span></td></tr>
+  <tr><td>Full backup file</td><td>The whole workspace (with history and comments) in one file.</td><td><span class="ui">Backup</span> → <span class="ui">Download full backup</span></td></tr>
+  <tr><td>Large-loss guard</td><td>If a lot of input disappears at once, saving pauses: <span class="ui">Undo (keep last saved copy)</span> or <span class="ui">This was intended — save</span>.</td><td>Automatic</td></tr>
+  <tr><td>One editing tab</td><td>The same workspace opened in a second tab is read-only there. Close the first tab, then <span class="ui">Switch to editing</span>.</td><td>Automatic</td></tr>
+</table>
+<h3>Changing PC / handing over to a new reviewer</h3>
+<ol class="steps">
+  <li>On the old PC, <span class="ui">Download full backup</span> (or use <code>…_LATEST.json</code> from the backup folder).</li>
+  <li>On the new PC: password → name → <span class="ui">Restore from full backup</span> → choose the file. The same workspace (same ID) is restored, so existing preparers' submission files still merge.</li>
+</ol>
+<h3>Hide or delete a workspace</h3>
+<ul>
+  <li><span class="ui">Hide from list (data kept)</span>: hides it from the start screen list only. You can show it again any time.</li>
+  <li><span class="ui">Delete workspace permanently</span>: only after ① downloading a full backup and ② typing the hotel name exactly. Restore points on this PC are deleted too, so the downloaded backup is the only way back.</li>
+</ul>
+<div class="warn">Clearing browsing data (cookies and site data) deletes the work stored on this PC. If a backup folder was set, use <span class="ui">Restore from full backup</span> to bring it back.</div>
+<div class="warn">If the red notice “An unexpected error occurred, so autosave has stopped” appears, first click <span class="ui">Download full backup</span> in it, then reload. Saving is stopped on purpose so that a broken state is never written.</div>
+</section>
+
+<section id="faq">
+<h2>8. FAQ and error messages</h2>
+<table>
+  <tr><th>Message / situation</th><th>Meaning and action</th></tr>
+  <tr><td>This file belongs to another hotel (or workspace)</td><td>The file was made in another hotel's or another workspace. Check the sender and hotel. If the reviewer created a new workspace for the same hotel, ask for a new assignment file.</td></tr>
+  <tr><td>Full/Focus or year does not match</td><td>The service type or year of the file is different.</td></tr>
+  <tr><td>File content was changed or damaged</td><td>The file was edited or damaged in transit. Get the original file again.</td></tr>
+  <tr><td>Not a CSA file (e.g. a CPA file)</td><td>A CPA dashboard file or some other JSON.</td></tr>
+  <tr><td>This file type cannot be opened here</td><td>e.g. a review file on the reviewer screen, or a submission in consolidation mode. See the file table in section 2.</td></tr>
+  <tr><td>Made by a newer version. Reload the page.</td><td>Reload to get the latest app, then load the file again.</td></tr>
+  <tr><td>This PC already has this workspace as reviewer</td><td>The assignment file was opened on the reviewer's PC. Open it on the preparer's PC.</td></tr>
+  <tr><td>This tab is read-only</td><td>The workspace is open in another tab or window. Close it and click <span class="ui">Switch to editing</span>.</td></tr>
+  <tr><td>A large amount of input disappeared — saving paused</td><td>If it was a mistake: <span class="ui">Undo (keep last saved copy)</span>. If intended: <span class="ui">This was intended — save</span> (a restore point is made first).</td></tr>
+  <tr><td>A new version (vX) is available</td><td>Check that your work is saved, then reload. Your data stays.</td></tr>
+  <tr><td>An item translation reads oddly</td><td>Tell the dashboard owner the item number (e.g. F057, S135) and language; only that item will be corrected.</td></tr>
+</table>
+</section>
+
+<section id="terms">
+<h2>9. Statuses and terms</h2>
+<table>
+  <tr><th>Status</th><th>Meaning</th></tr>
+  <tr><td>Not started</td><td>Nothing entered yet</td></tr>
+  <tr><td>Draft</td><td>Entered but not submitted (includes items the reviewer entered directly)</td></tr>
+  <tr><td>Submitted</td><td>A preparer's submission has been merged by the reviewer</td></tr>
+  <tr><td>Returned</td><td>Sent back by the reviewer with a reason — fix and resubmit</td></tr>
+  <tr><td>Approved</td><td>Approved by the reviewer — preparers can no longer edit</td></tr>
+  <tr><td>Entered</td><td>Entered in AuditBoard and locked — nobody can edit (the reviewer can unlock with a reason)</td></tr>
+</table>
+<table>
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td>Key / HR / MR</td><td>Risk level (Key Risk / High Risk / Medium Risk). Scores are also shown per level.</td></tr>
+  <tr><td>HTL / FSSC-xxx</td><td>Owner of a Focus item (hotel / shared service centre tower). Hotels without an FSSC answer these themselves.</td></tr>
+  <tr><td>CSA · CPA</td><td>Badge on Focus items that overlap with the CPA review</td></tr>
+  <tr><td>Master</td><td>The current content in the reviewer's workspace</td></tr>
+  <tr><td>Workspace</td><td>One hotel's CSA for one year and one service type, identified by a unique ID</td></tr>
+</table>
+</section>
+
+<footer>CSA 2026 Self Assessment · JKM Finance · This guide lives next to the dashboard and prints on A4.</footer>
+</main>
+</body>
+</html>

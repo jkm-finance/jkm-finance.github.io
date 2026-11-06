@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>CSA 2026 사용 안내</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173B3F'/%3E%3Ctext x='16' y='21' font-size='12' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23c9ad72'%3ECSA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<header><div class="in">
+  <h1><span class="badge">CSA</span>CSA 2026 자가점검 — 사용 안내</h1>
+  <p>JKM 호텔 내부통제 자가점검 대시보드 · 작성자 · 리뷰어(Manager) · Hotel DOF · Area / Regional DOF</p>
+  <div class="langs"><a href="ko.html">한국어</a><a href="en.html">English</a><a href="ja.html">日本語</a><a href="../">← 대시보드로</a></div>
+</div></header>
+
+<nav class="toc"><strong>목차</strong>
+<ol>
+  <li><a href="#start">시작하기 전에</a></li>
+  <li><a href="#flow">전체 흐름 한눈에 보기</a></li>
+  <li><a href="#reviewer">리뷰어(Manager)</a></li>
+  <li><a href="#preparer">작성자</a></li>
+  <li><a href="#dof">Hotel DOF</a></li>
+  <li><a href="#regional">Area / Regional DOF</a></li>
+  <li><a href="#safety">데이터 안전 — 백업과 복원</a></li>
+  <li><a href="#faq">자주 묻는 질문 · 오류 메시지</a></li>
+  <li><a href="#terms">상태와 용어</a></li>
+</ol></nav>
+
+<main>
+
+<section id="start">
+<h2>1. 시작하기 전에</h2>
+<ul>
+  <li><strong>주소</strong>: <code>https://jkm-finance.github.io/csa/</code></li>
+  <li><strong>브라우저</strong>: 회사 PC의 <strong>Edge</strong>(또는 Chrome) <strong>일반 창</strong>에서 여세요. InPrivate·시크릿 창은 창을 닫으면 데이터가 사라질 수 있어 쓰지 않습니다.</li>
+  <li><strong>비밀번호</strong>: 호텔 작업(작성자·리뷰어·Hotel DOF)은 <code>jkm</code>, Area / Regional DOF 취합은 <code>apac</code>. 비밀번호는 탭마다 한 번 입력합니다.</li>
+  <li><strong>이름</strong>: 시작 화면의 <span class="ui">내 이름</span>에 본인 이름을 입력합니다. 변경 이력에 이 이름이 남습니다. 작성자는 리뷰어가 배정에 쓴 이름과 <strong>똑같이</strong> 입력하세요(예: <code>Irene Kim</code>).</li>
+  <li><strong>언어</strong>: 화면 아래 또는 상단의 <span class="ui">KO</span> <span class="ui">EN</span> <span class="ui">JA</span>로 바꿉니다. 문항은 번역문으로 보이고, <span class="ui">영어 원문 보기</span>를 누르면 원문이 펼쳐집니다. AuditBoard에는 영어 원문 기준으로 입력합니다.</li>
+</ul>
+<div class="note"><strong>데이터는 어디에 저장되나요?</strong> 입력한 내용은 <strong>내 PC의 브라우저 안</strong>에만 저장되고 인터넷 서버로 보내지 않습니다. 사람 사이의 전달은 모두 <strong>파일</strong>(메일·Teams·OneDrive로 주고받음)로 합니다. 그래서 <a href="#safety">자동 백업 폴더</a>를 꼭 지정해 두세요.</div>
+<div class="note"><strong>호텔끼리 섞이지 않나요?</strong> 작업공간마다 고유 ID가 붙습니다. 이름이 같은 호텔이라도 서로 다른 작업공간이며, 다른 호텔·다른 연도·Full/Focus가 다른 파일은 불러올 때 자동으로 거부됩니다.</div>
+</section>
+
+<section id="flow">
+<h2>2. 전체 흐름 한눈에 보기</h2>
+<div class="flow">
+  <span>① 리뷰어: 새 CSA 시작</span><i>→</i><span>② 배정 파일 보내기</span><i>→</i><span>③ 작성자: 입력·섹션 제출</span><i>→</i>
+  <span>④ 리뷰어: 병합·검토</span><i>→</i><span>⑤ 검토 결과 회신(반려 수정)</span><i>→</i><span>⑥ AuditBoard 입력·잠금</span><i>→</i>
+  <span>⑦ 확정·최종 결과 파일</span><i>→</i><span>⑧ Hotel DOF 열람 · Area/Regional 취합</span>
+</div>
+<table>
+  <tr><th>파일</th><th>누가 만들고</th><th>누구에게</th><th>파일 이름 예</th></tr>
+  <tr><td>배정 파일</td><td>리뷰어</td><td>작성자</td><td><code>CSA2026_Conrad_Seoul_Full_ASSIGN_v1_….json</code></td></tr>
+  <tr><td>제출 파일</td><td>작성자</td><td>리뷰어</td><td><code>…_SUBMIT_AP_Irene_Kim_….json</code></td></tr>
+  <tr><td>검토 결과 파일</td><td>리뷰어</td><td>작성자</td><td><code>…_REVIEW_….json</code></td></tr>
+  <tr><td>최종 결과 파일</td><td>리뷰어</td><td>Hotel DOF, Area / Regional DOF</td><td><code>…_FINAL_v1_….json</code></td></tr>
+  <tr><td>전체 백업 파일</td><td>본인</td><td>본인(PC 교체 시)</td><td><code>…_BACKUP_….json</code>, <code>…_LATEST.json</code></td></tr>
+</table>
+<p>파일은 열어서 고치지 마세요. 파일마다 검증값이 들어 있어서 내용이 한 글자라도 바뀌면 불러올 때 거부됩니다.</p>
+<p>리뷰어 혼자 모든 문항을 입력해도 됩니다. 이때는 ②~⑤를 건너뛰고 리뷰어 화면에서 바로 입력·승인한 뒤 ⑥~⑧로 갑니다.</p>
+</section>
+
+<section id="reviewer">
+<h2>3. 리뷰어(Manager)</h2>
+<h3>3-1. 작업공간 만들기</h3>
+<ol class="steps">
+  <li>비밀번호 <code>jkm</code> → <span class="ui">내 이름</span> 입력 → <span class="ui">새 CSA 시작 (리뷰어)</span>.</li>
+  <li>호텔명을 입력하고 서비스 유형 <strong>Full</strong>(240문항) 또는 <strong>Focus</strong>(145문항)를 고른 뒤 <span class="ui">만들기</span>.</li>
+  <li>상단에 노란 안내가 보이면 <span class="ui">백업 폴더 지정</span>을 눌러 <strong>OneDrive 안의 폴더</strong>(예: <code>OneDrive › Finance › CSA 2026 Backup</code>)를 고릅니다. <a href="#safety">7장</a> 참고.</li>
+</ol>
+<h3>3-2. 섹션 배정과 배정 파일</h3>
+<ol class="steps">
+  <li><span class="ui">배정</span> 탭에서 섹션마다 담당자 이름을 입력합니다. 여러 명은 쉼표로 구분합니다(예: <code>Irene Kim, Brad Jeong</code>). FSSC가 없는 호텔은 FSSC 표시 문항도 호텔 직원에게 배정하면 됩니다.</li>
+  <li><span class="ui">배정 저장</span>.</li>
+  <li><span class="ui">배정 파일 보내기</span>에서 <span class="ui">공통 배정 파일 내려받기</span>(모두에게 같은 파일) 또는 <span class="ui">{이름}용</span>을 눌러 파일을 받은 뒤, 메일·Teams·OneDrive로 작성자에게 보냅니다.</li>
+  <li>배정을 바꾸면 버전이 올라갑니다. 새 배정 파일을 다시 보내면 작성자가 입력한 내용은 그대로 두고 배정만 바뀝니다.</li>
+</ol>
+<h3>3-3. 제출 파일 병합</h3>
+<ol class="steps">
+  <li><span class="ui">병합·확정</span> 탭 → <span class="ui">제출 파일 병합</span> 상자에 받은 제출 파일을 한꺼번에 끌어다 놓습니다.</li>
+  <li><span class="ui">병합 미리보기</span>에서 파일별로 신규·변경·동일·충돌·거부(잠금)·배정 외 건수를 확인합니다. 다른 호텔의 파일이나 손상된 파일은 그 파일만 거부되고 나머지는 처리됩니다.</li>
+  <li><strong>충돌</strong>(두 사람이 같은 문항을 다르게 썼거나, 내가 고친 뒤에 들어온 제출)이 있으면 <span class="ui">충돌 해결로</span> → 문항마다 쓸 내용을 고릅니다. 모두 지금 내용을 유지하려면 <span class="ui">모두 정본 유지</span>. 채택하지 않은 내용도 이력에 남습니다.</li>
+  <li><strong>배정 외</strong> 문항은 체크한 것만 반영됩니다.</li>
+  <li><span class="ui">적용</span>. 적용 직전에 복원 지점이 자동으로 만들어집니다.</li>
+</ol>
+<h3>3-4. 검토 — 승인과 반려</h3>
+<ul>
+  <li><span class="ui">검토함</span> 탭에 제출된 문항이 모입니다. 문항을 열어 내용을 보고 <span class="ui">승인</span> 또는 <span class="ui">반려</span>를 누릅니다. 반려는 사유를 꼭 입력해야 합니다.</li>
+  <li>여러 건은 <span class="ui">결과가 있는 n건 일괄 승인</span>으로 한 번에 승인할 수 있습니다.</li>
+  <li>문항 아래 <span class="ui">리뷰 코멘트</span>에 의견을 남길 수 있습니다(추가만 가능, 지울 수 없음).</li>
+  <li>리뷰어는 검토완료 문항도 직접 고칠 수 있습니다. 상태는 검토완료 그대로이며, 이미 확정한 뒤라면 확정이 해제됩니다. 입력완료(잠김) 문항은 먼저 잠금을 해제해야 합니다.</li>
+</ul>
+<h3>3-5. 검토 결과 보내기</h3>
+<p><span class="ui">병합·확정</span> 탭 → <span class="ui">검토 결과 파일 내려받기</span> → 작성자에게 보냅니다. 승인·반려 상태와 코멘트가 전달되며, 작성자가 그사이 고친 내용은 덮어쓰지 않습니다.</p>
+<h3>3-6. AuditBoard 입력과 잠금</h3>
+<ol class="steps">
+  <li>승인된 문항을 Hilton AuditBoard에 입력합니다. 문항 화면의 <span class="ui">AuditBoard용 복사</span>를 누르면 결과·Response·증빙 위치가 클립보드에 복사됩니다(복사 형식은 AuditBoard 화면 확인 후 조정 예정).</li>
+  <li>입력이 끝난 문항은 <span class="ui">AuditBoard 입력 완료</span>를 누릅니다. 문항이 <strong>잠겨</strong> 누구도 고칠 수 없고, 이후 들어오는 제출도 거부됩니다.</li>
+  <li>잘못 잠갔거나 고쳐야 하면 <span class="ui">잠금 해제</span>(사유 필수). 해제 직전에 복원 지점이 만들어집니다.</li>
+</ol>
+<h3>3-7. 확정과 최종 결과 파일</h3>
+<ol class="steps">
+  <li>모든 문항에 결과가 있고 검토완료(또는 입력완료)이면 <span class="ui">병합·확정</span> 탭의 <span class="ui">확정하고 최종 결과 파일 발행</span>이 켜집니다. 꺼져 있으면 아래 목록에 남은 문항이 표시됩니다.</li>
+  <li>발행된 <code>…_FINAL_v1_….json</code> 파일을 Hotel DOF와 Area / Regional DOF에게 보냅니다.</li>
+  <li>확정 뒤에 내용을 고치면 확정이 자동으로 해제됩니다(상단 안내 표시). 다시 확정하면 <strong>v2</strong>가 발행되고, 받는 쪽에서는 가장 높은 버전이 기본으로 보입니다. AuditBoard 입력 완료 표시나 잠금 해제만으로는 확정이 풀리지 않습니다.</li>
+</ol>
+<h3>3-8. 보고서와 Excel</h3>
+<ul>
+  <li><span class="ui">DOF 보고</span> 탭: 점수·섹션별 결과·Findings와 개선계획·Hold 목록. <span class="ui">인쇄 / PDF 저장</span> → 인쇄 창에서 “PDF로 저장”(A4 세로). 확정 전에는 “초안 — 미확정” 표시가 붙습니다.</li>
+  <li><span class="ui">병합·확정</span> 탭의 <span class="ui">전체 Excel 내보내기</span>: 문항별 결과·내용·담당자·최근 코멘트 전체.</li>
+  <li><span class="ui">Overview</span>: 진행률(Yes+No+N/A ÷ 전체), 점수(Yes ÷ (Yes+No), N/A·Hold 제외), 섹션별·담당자별·상태별 현황.</li>
+</ul>
+</section>
+
+<section id="preparer">
+<h2>4. 작성자</h2>
+<h3>4-1. 처음 시작</h3>
+<ol class="steps">
+  <li>리뷰어에게 받은 배정 파일(<code>…_ASSIGN_….json</code>)을 PC에 저장합니다.</li>
+  <li>주소를 열고 비밀번호 <code>jkm</code> → <span class="ui">내 이름</span>을 배정에 적힌 이름 그대로 입력.</li>
+  <li><span class="ui">배정 파일 불러오기 (작성자)</span> → 파일 선택. 이름이 목록에 없으면 목록에서 내 이름을 고르는 창이 뜹니다.</li>
+  <li>다음부터는 시작 화면의 <span class="ui">내 작업공간</span>에서 호텔을 눌러 이어서 작업합니다.</li>
+</ol>
+<h3>4-2. 문항 입력</h3>
+<ul>
+  <li>상단 섹션 탭에서 내 담당 섹션을 열고, 왼쪽 목록에서 문항을 고릅니다. 필터(위험 등급·상태·미응답만 등)로 좁힐 수 있습니다.</li>
+  <li><strong>결과</strong>: <span class="r-y">Yes</span>(통제가 잘 운영됨) · <span class="r-n">No</span>(미흡) · <span class="r-a">N/A</span>(해당 없음) · <span class="r-h">Hold</span>(판정 보류 — 확인 중).</li>
+  <li><span class="ui">설명·근거 (Response)</span>: 무엇을 어떻게 확인했는지. <span class="ui">증빙 자료 위치</span>: 파일 경로나 보관 위치. <span class="ui">샘플 테스트 내역</span>: 확인한 샘플(기간·건수 등). 각 5,000자까지.</li>
+  <li>결과가 <span class="r-n">No</span>이면 <span class="ui">개선계획</span>(조치 내용·담당자·완료 예정일)을 꼭 입력합니다.</li>
+  <li>입력은 자동 저장됩니다(상단 오른쪽에 저장 시각 표시). 따로 저장 버튼은 없습니다.</li>
+  <li>회색으로 꺼진 버튼이나 입력란에 마우스를 올리면 이유가 나옵니다(예: “잠긴 문항입니다”, “내 담당 섹션이 아닙니다”).</li>
+</ul>
+<h3>4-3. 섹션 제출</h3>
+<ol class="steps">
+  <li><span class="ui">제출·받기</span> 탭 → <span class="ui">섹션 제출</span>에서 제출할 섹션을 체크합니다(● = 내 담당).</li>
+  <li><span class="ui">제출 파일 내려받기</span>. 결과가 없는 문항은 빠지고, No인데 개선계획이 없거나 내 담당이 아닌 섹션이 있으면 경고가 나옵니다.</li>
+  <li>내려받은 <code>…_SUBMIT_….json</code> 파일을 <strong>리뷰어에게 보내야</strong> 제출이 끝납니다.</li>
+  <li>섹션을 나눠서 여러 번 제출해도 됩니다. 이미 제출한 문항을 고친 뒤 다시 제출해도 됩니다.</li>
+</ol>
+<h3>4-4. 검토 결과 받기와 반려 수정</h3>
+<ol class="steps">
+  <li>리뷰어가 보낸 검토 결과 파일(<code>…_REVIEW_….json</code>) 또는 새 배정 파일을 <span class="ui">제출·받기</span> 탭 → <span class="ui">리뷰어 파일 받기</span>에 넣습니다.</li>
+  <li><span class="ui">반려</span> 탭에 반려된 문항과 사유가 보입니다. 고친 뒤 다시 제출합니다.</li>
+  <li>아직 보내지 않은 내 입력은 덮어쓰지 않습니다. 이런 문항에는 “리뷰어 정본과 내용이 다릅니다” 표시가 붙으니, 수정이 끝나면 다시 제출하세요.</li>
+  <li>검토완료된 문항은 작성자가 고칠 수 없습니다. 고쳐야 하면 리뷰어에게 반려를 요청하세요.</li>
+</ol>
+<div class="note">작성자도 <span class="ui">백업·복원</span> 탭에서 <span class="ui">백업 폴더 지정</span>을 해 두면 PC 문제에 대비할 수 있습니다.</div>
+</section>
+
+<section id="dof">
+<h2>5. Hotel DOF</h2>
+<ol class="steps">
+  <li>리뷰어에게 최종 결과 파일(<code>…_FINAL_v1_….json</code>)을 받습니다.</li>
+  <li>비밀번호 <code>jkm</code> → <span class="ui">최종 결과 파일 열기 (Hotel DOF)</span> → 파일 선택.</li>
+  <li><span class="ui">보고서</span> 탭: 점수·섹션별 결과·Findings와 개선계획·Hold. <span class="ui">문항 상세</span> 탭: 문항별 결과와 Response(읽기 전용).</li>
+  <li><span class="ui">인쇄 / PDF 저장</span> → “PDF로 저장”으로 보고용 PDF(A4)를 만듭니다. <span class="ui">영어 원문 함께 표시</span>를 켜면 번역문 아래 원문도 인쇄됩니다.</li>
+  <li>한 번 연 결과는 이 브라우저에 남습니다. 다음에는 시작 화면의 <span class="ui">열람한 최종 결과 다시 보기</span>로 엽니다. v2가 오면 같은 방법으로 열고, 상단 목록에서 이전 버전도 고를 수 있습니다.</li>
+</ol>
+<p>이 화면에서는 아무것도 고칠 수 없습니다. 수정이 필요하면 리뷰어에게 요청하세요.</p>
+</section>
+
+<section id="regional">
+<h2>6. Area / Regional DOF</h2>
+<ol class="steps">
+  <li>각 호텔 리뷰어에게 최종 결과 파일을 받습니다.</li>
+  <li>비밀번호 <code>apac</code>로 들어갑니다(취합 모드).</li>
+  <li><span class="ui">최종 결과 파일 불러오기</span> 상자에 여러 호텔의 파일을 한꺼번에 끌어다 놓습니다. 같은 호텔은 가장 높은 버전만 집계하고, 이전 버전은 이력으로 남습니다.</li>
+  <li><span class="ui">호텔별</span>: 호텔마다 점수·Key/HR/MR·No·Hold·AuditBoard 입력률. 호텔명을 누르면 그 호텔의 DOF 보고서가 열립니다.</li>
+  <li><span class="ui">섹션 히트맵</span>: 호텔×섹션 점수(Full·Focus 혼합 시 Focus에 없는 섹션은 빈칸).</li>
+  <li><span class="ui">전체 Findings</span>: 모든 호텔의 No 문항과 개선계획. 완료 예정일이 지난 것은 ⚠로 강조됩니다.</li>
+  <li><span class="ui">취합 Excel 내보내기</span>: 호텔 요약·히트맵·Findings 3개 시트.</li>
+</ol>
+<p>같은 버전 번호인데 내용이 다른 파일이 들어오면 ⚠ 경고가 붙습니다. 해당 호텔 리뷰어에게 확인하세요. <span class="ui">목록에서 제거</span>는 이 취합 화면에서만 빼는 것이며 호텔 데이터에는 영향이 없습니다.</p>
+</section>
+
+<section id="safety">
+<h2>7. 데이터 안전 — 백업과 복원</h2>
+<table>
+  <tr><th>장치</th><th>하는 일</th><th>어디서</th></tr>
+  <tr><td>자동 저장</td><td>입력할 때마다 브라우저에 저장. 저장 직후 다시 읽어 확인하고, 직전 저장본도 함께 보관.</td><td>자동</td></tr>
+  <tr><td>자동 파일 백업</td><td>15초마다 변경을 확인해 지정 폴더에 <code>_LATEST.json</code>과 날짜별 파일 저장(30일 보관). 다른 파일은 건드리지 않음.</td><td><span class="ui">백업·복원</span> → <span class="ui">백업 폴더 지정</span></td></tr>
+  <tr><td>복원 지점</td><td>변경이 있으면 5분마다, 그리고 병합·복원·잠금 해제 직전에 자동 생성(30일 보관).</td><td><span class="ui">백업·복원</span> → <span class="ui">이 시점으로 복원</span></td></tr>
+  <tr><td>전체 백업 파일</td><td>작업공간 전체(이력·코멘트 포함)를 파일 하나로.</td><td><span class="ui">백업·복원</span> → <span class="ui">전체 백업 내려받기</span></td></tr>
+  <tr><td>급감 차단</td><td>한 번에 많은 입력이 사라지면 저장을 멈추고 확인을 요청. <span class="ui">되돌리기 (마지막 저장본 유지)</span> 또는 <span class="ui">의도한 삭제입니다 — 저장</span>.</td><td>자동</td></tr>
+  <tr><td>탭 중복 편집 차단</td><td>같은 작업공간을 두 탭에서 열면 두 번째 탭은 읽기 전용. 첫 탭을 닫으면 <span class="ui">편집 모드로 전환</span>.</td><td>자동</td></tr>
+</table>
+<h3>PC를 바꿀 때 / 리뷰어가 바뀔 때</h3>
+<ol class="steps">
+  <li>기존 PC에서 <span class="ui">전체 백업 내려받기</span>(또는 백업 폴더의 <code>…_LATEST.json</code> 사용).</li>
+  <li>새 PC에서 비밀번호 → 이름 → <span class="ui">전체 백업 파일로 복원</span> → 파일 선택. 같은 작업공간(같은 ID)으로 복원되어 기존 작성자의 제출 파일도 그대로 병합할 수 있습니다.</li>
+</ol>
+<h3>작업공간 숨기기 · 삭제</h3>
+<ul>
+  <li><span class="ui">목록에서 숨기기 (데이터 유지)</span>: 시작 화면 목록에서만 숨깁니다. 언제든 다시 표시할 수 있습니다.</li>
+  <li><span class="ui">작업공간 완전 삭제</span>: ① 전체 백업을 먼저 내려받고 ② 호텔명을 정확히 입력해야만 삭제됩니다. 이 PC의 복원 지점까지 지워지므로 내려받은 백업 파일이 유일한 복구 수단입니다.</li>
+</ul>
+<div class="warn">브라우저의 “인터넷 사용 기록 삭제(쿠키 및 사이트 데이터)”를 하면 이 PC의 작업 데이터가 지워집니다. 자동 백업 폴더를 지정해 두었다면 <span class="ui">전체 백업 파일로 복원</span>으로 되살릴 수 있습니다.</div>
+<div class="warn">빨간 안내 “예상하지 못한 오류가 발생해 자동 저장을 멈췄습니다”가 보이면 그 안의 <span class="ui">전체 백업 내려받기</span>를 먼저 누른 뒤 새로고침하세요. 잘못된 상태가 저장되지 않도록 일부러 멈춘 것입니다.</div>
+</section>
+
+<section id="faq">
+<h2>8. 자주 묻는 질문 · 오류 메시지</h2>
+<table>
+  <tr><th>메시지 / 상황</th><th>뜻과 조치</th></tr>
+  <tr><td>다른 호텔(또는 다른 작업공간)의 파일입니다</td><td>다른 호텔이나 다른 작업공간에서 만든 파일입니다. 보낸 사람과 호텔을 확인하세요. 같은 호텔이라도 리뷰어가 작업공간을 새로 만들었다면 새 배정 파일을 받아야 합니다.</td></tr>
+  <tr><td>Full/Focus 또는 연도가 다릅니다</td><td>서비스 유형이나 연도가 맞지 않는 파일입니다.</td></tr>
+  <tr><td>파일 내용이 변경되었거나 손상되었습니다</td><td>파일을 열어 고쳤거나 전달 중 손상되었습니다. 원래 파일을 다시 받으세요.</td></tr>
+  <tr><td>CSA 파일이 아닙니다 (CPA 파일 등)</td><td>CPA 대시보드 파일이나 다른 JSON입니다.</td></tr>
+  <tr><td>이 화면에서 불러올 수 없는 파일 종류입니다</td><td>예: 리뷰어 화면에 검토 결과 파일, 취합 화면에 제출 파일. 2장의 파일 표를 확인하세요.</td></tr>
+  <tr><td>더 새로운 버전에서 만든 파일입니다</td><td>페이지를 새로고침해 최신 앱으로 연 뒤 다시 불러오세요.</td></tr>
+  <tr><td>이 PC에 같은 작업공간이 리뷰어로 이미 있습니다</td><td>리뷰어 PC에서 배정 파일을 열었습니다. 배정 파일은 작성자 PC에서 엽니다.</td></tr>
+  <tr><td>이 탭은 읽기 전용입니다</td><td>같은 작업공간이 다른 탭(창)에서 열려 있습니다. 다른 탭을 닫고 <span class="ui">편집 모드로 전환</span>.</td></tr>
+  <tr><td>입력 내용이 크게 줄었습니다 — 저장을 멈췄습니다</td><td>실수라면 <span class="ui">되돌리기 (마지막 저장본 유지)</span>. 정말 지운 것이라면 <span class="ui">의도한 삭제입니다 — 저장</span>을 누르면 복원 지점을 먼저 만든 뒤 저장합니다.</td></tr>
+  <tr><td>새 버전(vX)이 있습니다</td><td>저장 시각을 확인한 뒤 새로고침하세요. 데이터는 그대로입니다.</td></tr>
+  <tr><td>문항 번역이 어색해요</td><td>문항 번호(예: F057, S135)와 언어를 담당자에게 알려 주세요. 해당 문항만 고쳐 반영합니다.</td></tr>
+</table>
+</section>
+
+<section id="terms">
+<h2>9. 상태와 용어</h2>
+<table>
+  <tr><th>상태</th><th>뜻</th></tr>
+  <tr><td>미작성</td><td>아직 아무것도 입력하지 않음</td></tr>
+  <tr><td>작성중</td><td>입력했지만 제출 전(리뷰어가 직접 입력한 문항 포함)</td></tr>
+  <tr><td>제출</td><td>작성자의 제출 파일이 리뷰어에게 병합됨</td></tr>
+  <tr><td>반려</td><td>리뷰어가 사유와 함께 돌려보냄 — 수정 후 재제출</td></tr>
+  <tr><td>검토완료</td><td>리뷰어가 승인함 — 작성자는 수정 불가</td></tr>
+  <tr><td>입력완료</td><td>AuditBoard에 입력하고 잠금 — 아무도 수정 불가(리뷰어가 사유를 남기고 해제 가능)</td></tr>
+</table>
+<table>
+  <tr><th>용어</th><th>뜻</th></tr>
+  <tr><td>Key / HR / MR</td><td>위험 등급(Key Risk / High Risk / Medium Risk). 점수가 등급별로도 계산됩니다.</td></tr>
+  <tr><td>HTL / FSSC-xxx</td><td>Focus 문항의 담당 구분(호텔 / 공유서비스센터 각 타워). FSSC가 없는 호텔은 호텔이 직접 입력합니다.</td></tr>
+  <tr><td>CSA · CPA</td><td>Focus 문항 중 CPA 점검과 겹치는 문항 표시(배지)</td></tr>
+  <tr><td>정본</td><td>리뷰어 작업공간에 있는 현재 내용</td></tr>
+  <tr><td>작업공간</td><td>한 호텔·한 연도·한 서비스 유형의 CSA 작업 단위. 고유 ID로 구분</td></tr>
+</table>
+</section>
+
+<footer>CSA 2026 Self Assessment · JKM Finance · 이 안내서는 대시보드와 같은 주소에 있으며 인쇄하면 A4로 출력됩니다.</footer>
+</main>
+</body>
+</html>

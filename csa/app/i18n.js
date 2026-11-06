@@ -357,6 +357,8 @@ const D = {
   'hist.hide': ['숨김', 'hidden', '非表示'],
   'hist.delete': ['삭제', 'deleted', '削除'],
 
+  'guide.open': ['사용 안내', 'User guide', '利用ガイド'],
+  'start.viewSaved': ['열람한 최종 결과 다시 보기', 'View saved final results', '閲覧した最終結果を再表示'],
   'why.noAssignment': ['먼저 배정을 저장하세요', 'Save an assignment first', '先に担当割当を保存してください'],
   'why.finalizeBlocked': ['아래에 남은 문항을 먼저 처리하세요', 'Resolve the remaining items listed below first', '下記の残り項目を先に処理してください'],
   'why.nothingReady': ['제출할 응답이 없습니다', 'No answered items to submit', '提出できる回答がありません'],

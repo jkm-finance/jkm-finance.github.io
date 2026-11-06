@@ -5,7 +5,7 @@ import { getItemSet } from './itemsets.js';
 import { summarize, perAssignee } from './summary.js';
 import { MAX_TEXT, MAX_SHORT, isAnswered, assignedTo } from './model.js';
 import * as wf from './workflow.js';
-import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush } from './main.js';
+import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush, guideLink } from './main.js';
 import { renderAssign, renderFiles, renderBackupPane } from './ui-flow.js';
 import { renderReportPane } from './ui-report.js';
 
@@ -61,6 +61,7 @@ function header(ctl) {
       h('span', { class: 'save-ind', id: 'saveInd' }),
       h('span', { class: 'save-ind', id: 'backupInd' }),
       ['ko', 'en', 'ja'].map((l) => h('button', { class: 'btn btn-o' + (getLang() === l ? ' act' : ''), text: l.toUpperCase(), onclick: () => { setLang(l); document.documentElement.lang = l; renderWorkspace(ctl); } })),
+      guideLink(),
       h('button', { class: 'btn btn-o', text: '🏨 ' + t('hdr.switch'), onclick: () => goStart() })));
 }
 

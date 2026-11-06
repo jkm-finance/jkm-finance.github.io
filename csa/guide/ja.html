@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>CSA 2026 利用ガイド</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173B3F'/%3E%3Ctext x='16' y='21' font-size='12' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23c9ad72'%3ECSA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<header><div class="in">
+  <h1><span class="badge">CSA</span>CSA 2026 セルフアセスメント — 利用ガイド</h1>
+  <p>JKMホテル 内部統制セルフアセスメント · 作成者 · レビュアー（Manager） · Hotel DOF · Area / Regional DOF</p>
+  <div class="langs"><a href="ko.html">한국어</a><a href="en.html">English</a><a href="ja.html">日本語</a><a href="../">← ダッシュボードへ</a></div>
+</div></header>
+
+<nav class="toc"><strong>目次</strong>
+<ol>
+  <li><a href="#start">はじめに</a></li>
+  <li><a href="#flow">全体の流れ</a></li>
+  <li><a href="#reviewer">レビュアー（Manager）</a></li>
+  <li><a href="#preparer">作成者</a></li>
+  <li><a href="#dof">Hotel DOF</a></li>
+  <li><a href="#regional">Area / Regional DOF</a></li>
+  <li><a href="#safety">データの安全 — バックアップと復元</a></li>
+  <li><a href="#faq">よくある質問・エラーメッセージ</a></li>
+  <li><a href="#terms">ステータスと用語</a></li>
+</ol></nav>
+
+<main>
+
+<section id="start">
+<h2>1. はじめに</h2>
+<ul>
+  <li><strong>アドレス</strong>: <code>https://jkm-finance.github.io/csa/</code></li>
+  <li><strong>ブラウザ</strong>: 会社PCの<strong>Edge</strong>（またはChrome）の<strong>通常ウィンドウ</strong>で開いてください。InPrivate/シークレットウィンドウは閉じるとデータが消える恐れがあるため使用しません。</li>
+  <li><strong>パスワード</strong>: ホテル作業（作成者・レビュアー・Hotel DOF）は <code>jkm</code>、Area / Regional DOF の集計は <code>apac</code>。タブごとに1回入力します。</li>
+  <li><strong>氏名</strong>: 最初の画面の <span class="ui">お名前</span> に入力します。変更履歴にこの名前が残ります。作成者は、レビュアーが割当に書いた名前と<strong>まったく同じ</strong>に入力してください（例: <code>Irene Kim</code>）。</li>
+  <li><strong>言語</strong>: <span class="ui">KO</span> <span class="ui">EN</span> <span class="ui">JA</span> で切り替えます。項目は翻訳文で表示され、<span class="ui">英語原文を表示</span> で原文を確認できます。AuditBoardへは英語原文に基づいて入力します。</li>
+</ul>
+<div class="note"><strong>データはどこに保存されますか？</strong> 入力内容は<strong>自分のPCのブラウザ内</strong>だけに保存され、サーバーには送られません。人と人のやり取りはすべて<strong>ファイル</strong>（メール・Teams・OneDrive）で行います。そのため<a href="#safety">自動バックアップ先</a>を必ず指定してください。</div>
+<div class="note"><strong>ホテル同士のデータが混ざりませんか？</strong> ワークスペースごとに固有IDが付きます。同じ名前のホテルでも別のワークスペースとして扱われ、他ホテル・他年度・Full/Focusが異なるファイルは読み込み時に自動で拒否されます。</div>
+</section>
+
+<section id="flow">
+<h2>2. 全体の流れ</h2>
+<div class="flow">
+  <span>① レビュアー: 新規CSA</span><i>→</i><span>② 割当ファイルを送る</span><i>→</i><span>③ 作成者: 入力・セクション提出</span><i>→</i>
+  <span>④ レビュアー: マージ・レビュー</span><i>→</i><span>⑤ レビュー結果を返す（差戻し修正）</span><i>→</i><span>⑥ AuditBoard入力・ロック</span><i>→</i>
+  <span>⑦ 確定・最終結果ファイル</span><i>→</i><span>⑧ Hotel DOF閲覧・Area/Regional集計</span>
+</div>
+<table>
+  <tr><th>ファイル</th><th>作成者</th><th>送付先</th><th>ファイル名の例</th></tr>
+  <tr><td>割当ファイル</td><td>レビュアー</td><td>作成者</td><td><code>CSA2026_Hilton_Fukuoka_Sea_Hawk_Focus_ASSIGN_v1_….json</code></td></tr>
+  <tr><td>提出ファイル</td><td>作成者</td><td>レビュアー</td><td><code>…_SUBMIT_AP_Irene_Kim_….json</code></td></tr>
+  <tr><td>レビュー結果ファイル</td><td>レビュアー</td><td>作成者</td><td><code>…_REVIEW_….json</code></td></tr>
+  <tr><td>最終結果ファイル</td><td>レビュアー</td><td>Hotel DOF、Area / Regional DOF</td><td><code>…_FINAL_v1_….json</code></td></tr>
+  <tr><td>フルバックアップ</td><td>本人</td><td>本人（PC変更時）</td><td><code>…_BACKUP_….json</code>、<code>…_LATEST.json</code></td></tr>
+</table>
+<p>ファイルを開いて編集しないでください。各ファイルには検証値が入っており、1文字でも変わると読み込み時に拒否されます。</p>
+<p>レビュアーが一人で全項目を入力することもできます。その場合は②〜⑤を省き、レビュアー画面で直接入力・承認してから⑥〜⑧に進みます。</p>
+</section>
+
+<section id="reviewer">
+<h2>3. レビュアー（Manager）</h2>
+<h3>3-1. ワークスペースの作成</h3>
+<ol class="steps">
+  <li>パスワード <code>jkm</code> → <span class="ui">お名前</span> を入力 → <span class="ui">新規CSA（レビュアー）</span>。</li>
+  <li>ホテル名を入力し、サービス区分 <strong>Full</strong>（240項目）または <strong>Focus</strong>（145項目）を選んで <span class="ui">作成</span>。</li>
+  <li>上部に黄色の案内が出たら <span class="ui">バックアップ先を指定</span> を押し、<strong>OneDrive内のフォルダ</strong>（例: <code>OneDrive › Finance › CSA 2026 Backup</code>）を選びます。<a href="#safety">7章</a>参照。</li>
+</ol>
+<h3>3-2. セクション割当と割当ファイル</h3>
+<ol class="steps">
+  <li><span class="ui">割当</span> タブでセクションごとに担当者名を入力します（複数はカンマ区切り、例: <code>Irene Kim, Brad Jeong</code>）。FSSCのないホテルは、FSSC表示の項目もホテルの担当者に割り当てます。</li>
+  <li><span class="ui">割当を保存</span>。</li>
+  <li><span class="ui">割当ファイルを送る</span> で <span class="ui">割当ファイルをダウンロード</span>（全員共通）または <span class="ui">{名前}用</span> を押してファイルを取得し、メール・Teams・OneDriveで作成者に送ります。</li>
+  <li>割当を変更するとバージョンが上がります。新しい割当ファイルを送っても、作成者の入力内容はそのままで割当だけが更新されます。</li>
+</ol>
+<h3>3-3. 提出ファイルのマージ</h3>
+<ol class="steps">
+  <li><span class="ui">マージ・確定</span> タブ → <span class="ui">提出ファイルのマージ</span> に受け取った提出ファイルをまとめてドロップします。</li>
+  <li><span class="ui">マージのプレビュー</span> でファイルごとに 新規・変更・同一・競合・拒否（ロック）・割当外 の件数を確認します。他ホテルのファイルや破損したファイルはそのファイルだけ拒否され、残りは処理されます。</li>
+  <li><strong>競合</strong>（2人が同じ項目を違う内容で回答、またはレビュアーが修正した後に届いた提出）がある場合は <span class="ui">競合の解決へ</span> → 項目ごとに採用する内容を選びます。すべて現在の内容を残すなら <span class="ui">すべて現行内容を維持</span>。採用しなかった内容も履歴に残ります。</li>
+  <li><strong>割当外</strong>の項目はチェックしたものだけ反映されます。</li>
+  <li><span class="ui">適用</span>。適用直前に復元ポイントが自動作成されます。</li>
+</ol>
+<h3>3-4. レビュー — 承認と差戻し</h3>
+<ul>
+  <li><span class="ui">レビュー待ち</span> タブに提出された項目が集まります。項目を開いて <span class="ui">承認</span> または <span class="ui">差戻し</span> を押します。差戻しには理由の入力が必要です。</li>
+  <li><span class="ui">結果のあるn件を一括承認</span> でまとめて承認できます。</li>
+  <li>項目下の <span class="ui">レビューコメント</span> に意見を残せます（追加のみ、削除不可）。</li>
+  <li>レビュアーはレビュー完了の項目も直接修正できます。ステータスはレビュー完了のままで、確定後であれば確定が解除されます。入力完了（ロック）の項目は先にロックを解除します。</li>
+</ul>
+<h3>3-5. レビュー結果を送る</h3>
+<p><span class="ui">マージ・確定</span> タブ → <span class="ui">レビュー結果ファイルをダウンロード</span> → 作成者に送ります。承認・差戻しとコメントが伝わり、作成者がその間に修正した内容は上書きされません。</p>
+<h3>3-6. AuditBoard入力とロック</h3>
+<ol class="steps">
+  <li>承認済みの項目をHilton AuditBoardに入力します。項目画面の <span class="ui">AuditBoard用にコピー</span> で結果・Response・証憑の保管場所がクリップボードにコピーされます（形式はAuditBoard画面の確認後に調整予定）。</li>
+  <li>入力が終わった項目は <span class="ui">AuditBoard入力完了</span> を押します。項目が<strong>ロック</strong>され誰も修正できず、以後の提出も拒否されます。</li>
+  <li>修正が必要な場合は <span class="ui">ロック解除</span>（理由必須）。解除直前に復元ポイントが作成されます。</li>
+</ol>
+<h3>3-7. 確定と最終結果ファイル</h3>
+<ol class="steps">
+  <li>全項目に結果があり、レビュー完了（または入力完了）になると、<span class="ui">マージ・確定</span> タブの <span class="ui">確定して最終結果を発行</span> が押せるようになります。押せない場合は残りの項目が下に表示されます。</li>
+  <li>発行された <code>…_FINAL_v1_….json</code> をHotel DOFとArea / Regional DOFに送ります。</li>
+  <li>確定後に内容を修正すると確定は自動で解除されます（上部に案内表示）。再確定すると <strong>v2</strong> が発行され、受け取った側では最新版が標準で表示されます。入力完了の表示やロック解除だけでは確定は解除されません。</li>
+</ol>
+<h3>3-8. レポートとExcel</h3>
+<ul>
+  <li><span class="ui">DOFレポート</span> タブ: スコア・セクション別結果・Findingsと改善計画・Hold一覧。<span class="ui">印刷 / PDF保存</span> → 印刷画面で「PDFに保存」（A4縦）。確定前は「ドラフト — 未確定」と表示されます。</li>
+  <li><span class="ui">マージ・確定</span> タブの <span class="ui">全体をExcel出力</span>: 項目ごとの結果・内容・担当者・最新コメント。</li>
+  <li><span class="ui">Overview</span>: 進捗（(Yes+No+N/A) ÷ 全体）、スコア（Yes ÷ (Yes+No)、N/A・Hold除外）、セクション別・担当者別・ステータス別の状況。</li>
+</ul>
+</section>
+
+<section id="preparer">
+<h2>4. 作成者</h2>
+<h3>4-1. 最初の開始</h3>
+<ol class="steps">
+  <li>レビュアーから受け取った割当ファイル（<code>…_ASSIGN_….json</code>）をPCに保存します。</li>
+  <li>アドレスを開き、パスワード <code>jkm</code> → <span class="ui">お名前</span> を割当に書かれた名前のとおりに入力。</li>
+  <li><span class="ui">割当ファイルを開く（作成者）</span> → ファイルを選択。名前がリストにない場合は、リストから自分の名前を選ぶ画面が出ます。</li>
+  <li>次回からは最初の画面の <span class="ui">マイワークスペース</span> でホテルを押して続けます。</li>
+</ol>
+<h3>4-2. 項目の入力</h3>
+<ul>
+  <li>上部のセクションタブから担当セクションを開き、左の一覧で項目を選びます。フィルター（リスク・ステータス・未回答のみ など）で絞り込めます。</li>
+  <li><strong>結果</strong>: <span class="r-y">Yes</span>（統制が運用されている）· <span class="r-n">No</span>（不備）· <span class="r-a">N/A</span>（該当なし）· <span class="r-h">Hold</span>（判定保留 — 確認中）。</li>
+  <li><span class="ui">説明・根拠（Response）</span>: 何をどう確認したか。<span class="ui">証憑の保管場所</span>: ファイルのパスや保管場所。<span class="ui">サンプルテスト内容</span>: 確認したサンプル（期間・件数など）。各5,000文字まで。</li>
+  <li>結果が <span class="r-n">No</span> の場合は必ず <span class="ui">改善計画</span>（対応内容・担当者・完了予定日）を入力します。</li>
+  <li>入力は自動保存されます（右上に保存時刻を表示）。保存ボタンはありません。</li>
+  <li>グレーで押せないボタンや入力欄にマウスを置くと理由が表示されます（例:「ロックされた項目です」「担当セクションではありません」）。</li>
+</ul>
+<h3>4-3. セクション提出</h3>
+<ol class="steps">
+  <li><span class="ui">提出・受取</span> タブ → <span class="ui">セクション提出</span> で提出するセクションにチェックします（● = 担当）。</li>
+  <li><span class="ui">提出ファイルをダウンロード</span>。結果のない項目は含まれず、Noで改善計画がない項目や担当外のセクションがあれば警告が出ます。</li>
+  <li>ダウンロードした <code>…_SUBMIT_….json</code> を<strong>レビュアーに送って</strong>提出完了です。</li>
+  <li>セクションを分けて何回提出してもかまいません。提出済みの項目を修正して再提出することもできます。</li>
+</ol>
+<h3>4-4. レビュー結果の受け取りと差戻しの修正</h3>
+<ol class="steps">
+  <li>レビュアーから届いたレビュー結果ファイル（<code>…_REVIEW_….json</code>）または新しい割当ファイルを、<span class="ui">提出・受取</span> タブの <span class="ui">レビュアーのファイルを受け取る</span> に入れます。</li>
+  <li><span class="ui">差戻し</span> タブに差し戻された項目と理由が表示されます。修正して再提出します。</li>
+  <li>まだ送っていない自分の入力は上書きされません。その項目には「レビュアーの内容と異なります」と表示されるので、修正が終わったら再提出してください。</li>
+  <li>レビュー完了の項目は作成者は修正できません。修正が必要ならレビュアーに差戻しを依頼してください。</li>
+</ol>
+<div class="note">作成者も <span class="ui">バックアップ</span> タブで <span class="ui">バックアップ先を指定</span> しておくと、PCの故障に備えられます。</div>
+</section>
+
+<section id="dof">
+<h2>5. Hotel DOF</h2>
+<ol class="steps">
+  <li>レビュアーから最終結果ファイル（<code>…_FINAL_v1_….json</code>）を受け取ります。</li>
+  <li>パスワード <code>jkm</code> → <span class="ui">最終結果を開く（Hotel DOF）</span> → ファイルを選択。</li>
+  <li><span class="ui">レポート</span> タブ: スコア・セクション別結果・Findingsと改善計画・Hold。<span class="ui">項目詳細</span> タブ: 項目ごとの結果とResponse（閲覧のみ）。</li>
+  <li><span class="ui">印刷 / PDF保存</span> →「PDFに保存」で報告用PDF（A4）を作成します。<span class="ui">英語原文も表示</span> をオンにすると翻訳文の下に原文も印刷されます。</li>
+  <li>一度開いた結果はこのブラウザに残ります。次回は最初の画面の <span class="ui">閲覧した最終結果を再表示</span> で開きます。v2が届いたら同じ方法で開き、上部の一覧から旧版も選べます。</li>
+</ol>
+<p>この画面では何も変更できません。修正が必要な場合はレビュアーに依頼してください。</p>
+</section>
+
+<section id="regional">
+<h2>6. Area / Regional DOF</h2>
+<ol class="steps">
+  <li>各ホテルのレビュアーから最終結果ファイルを受け取ります。</li>
+  <li>パスワード <code>apac</code> で入ります（集計モード）。</li>
+  <li><span class="ui">最終結果ファイルの読み込み</span> に複数ホテルのファイルをまとめてドロップします。同じホテルは最新版のみ集計し、旧版は履歴として残ります。</li>
+  <li><span class="ui">ホテル別</span>: ホテルごとのスコア・Key/HR/MR・No・Hold・AuditBoard入力率。ホテル名を押すとそのホテルのDOFレポートが開きます。</li>
+  <li><span class="ui">セクション・ヒートマップ</span>: ホテル×セクションのスコア（Full・Focus混在時、Focusにないセクションは空欄）。</li>
+  <li><span class="ui">全Findings</span>: 全ホテルのNo項目と改善計画。完了予定日を過ぎたものは⚠で強調されます。</li>
+  <li><span class="ui">集計をExcel出力</span>: ホテル概要・ヒートマップ・Findingsの3シート。</li>
+</ol>
+<p>同じバージョン番号で内容の異なるファイルが届くと⚠が付きます。該当ホテルのレビュアーに確認してください。<span class="ui">一覧から削除</span> はこの集計画面から外すだけで、ホテルのデータには影響しません。</p>
+</section>
+
+<section id="safety">
+<h2>7. データの安全 — バックアップと復元</h2>
+<table>
+  <tr><th>仕組み</th><th>内容</th><th>場所</th></tr>
+  <tr><td>自動保存</td><td>入力するたびにブラウザに保存し、保存直後に読み直して確認。直前の保存データも保管。</td><td>自動</td></tr>
+  <tr><td>自動フォルダバックアップ</td><td>15秒ごとに変更を確認し、指定フォルダに <code>_LATEST.json</code> と日付別ファイルを保存（30日保管）。他のファイルには触れません。</td><td><span class="ui">バックアップ</span> → <span class="ui">バックアップ先を指定</span></td></tr>
+  <tr><td>復元ポイント</td><td>変更があると5分ごと、またマージ・復元・ロック解除の直前に自動作成（30日保管）。</td><td><span class="ui">バックアップ</span> → <span class="ui">この時点に復元</span></td></tr>
+  <tr><td>フルバックアップ</td><td>ワークスペース全体（履歴・コメント含む）を1ファイルに。</td><td><span class="ui">バックアップ</span> → <span class="ui">フルバックアップをダウンロード</span></td></tr>
+  <tr><td>急減の防止</td><td>一度に多くの入力が消えると保存を停止して確認を求めます。<span class="ui">元に戻す（最後の保存を維持）</span> または <span class="ui">意図した削除です — 保存</span>。</td><td>自動</td></tr>
+  <tr><td>同時編集の防止</td><td>同じワークスペースを2つ目のタブで開くと、そのタブは閲覧のみ。最初のタブを閉じたら <span class="ui">編集モードに切替</span>。</td><td>自動</td></tr>
+</table>
+<h3>PCを変えるとき / レビュアーが交代するとき</h3>
+<ol class="steps">
+  <li>元のPCで <span class="ui">フルバックアップをダウンロード</span>（またはバックアップ先の <code>…_LATEST.json</code> を使用）。</li>
+  <li>新しいPCでパスワード → 氏名 → <span class="ui">フルバックアップから復元</span> → ファイルを選択。同じワークスペース（同じID）として復元され、既存の作成者の提出ファイルもそのままマージできます。</li>
+</ol>
+<h3>ワークスペースの非表示・削除</h3>
+<ul>
+  <li><span class="ui">一覧から非表示（データは保持）</span>: 最初の画面の一覧から隠すだけです。いつでも再表示できます。</li>
+  <li><span class="ui">ワークスペースを完全削除</span>: ①先にフルバックアップをダウンロードし、②ホテル名を正確に入力した場合のみ削除されます。このPCの復元ポイントも消えるため、ダウンロードしたバックアップが唯一の復旧手段です。</li>
+</ul>
+<div class="warn">ブラウザの「閲覧データの削除（Cookieとサイトデータ）」を行うと、このPCの作業データが消えます。バックアップ先を指定していれば <span class="ui">フルバックアップから復元</span> で戻せます。</div>
+<div class="warn">赤い案内「予期しないエラーのため自動保存を停止しました」が出たら、まずその中の <span class="ui">フルバックアップをダウンロード</span> を押してから再読み込みしてください。不正な状態が保存されないよう意図的に停止しています。</div>
+</section>
+
+<section id="faq">
+<h2>8. よくある質問・エラーメッセージ</h2>
+<table>
+  <tr><th>メッセージ / 状況</th><th>意味と対応</th></tr>
+  <tr><td>別のホテル（または別のワークスペース）のファイルです</td><td>他ホテルまたは別のワークスペースで作られたファイルです。送信者とホテルを確認してください。同じホテルでもレビュアーがワークスペースを作り直した場合は、新しい割当ファイルが必要です。</td></tr>
+  <tr><td>Full/Focusまたは年度が異なります</td><td>サービス区分または年度が合わないファイルです。</td></tr>
+  <tr><td>ファイル内容が変更または破損しています</td><td>ファイルを開いて編集したか、送付中に破損しました。元のファイルを再度受け取ってください。</td></tr>
+  <tr><td>CSAファイルではありません（CPAファイル等）</td><td>CPAダッシュボードのファイルや別のJSONです。</td></tr>
+  <tr><td>この画面では開けないファイル種類です</td><td>例: レビュアー画面にレビュー結果ファイル、集計画面に提出ファイル。2章のファイル表を確認してください。</td></tr>
+  <tr><td>新しいバージョンで作成されたファイルです</td><td>ページを再読み込みして最新のアプリで開き直し、再度読み込んでください。</td></tr>
+  <tr><td>このPCに同じワークスペースがレビュアーとして既にあります</td><td>レビュアーのPCで割当ファイルを開きました。割当ファイルは作成者のPCで開きます。</td></tr>
+  <tr><td>このタブは閲覧のみです</td><td>同じワークスペースが別のタブ（ウィンドウ）で開いています。そちらを閉じて <span class="ui">編集モードに切替</span>。</td></tr>
+  <tr><td>入力内容が大きく減りました — 保存を停止しました</td><td>誤操作なら <span class="ui">元に戻す（最後の保存を維持）</span>。意図した削除なら <span class="ui">意図した削除です — 保存</span>（先に復元ポイントを作成）。</td></tr>
+  <tr><td>新しいバージョン（vX）があります</td><td>保存を確認してから再読み込みしてください。データはそのままです。</td></tr>
+  <tr><td>項目の翻訳が不自然</td><td>項目番号（例: F057、S135）と言語を担当者に知らせてください。その項目だけ修正して反映します。</td></tr>
+</table>
+</section>
+
+<section id="terms">
+<h2>9. ステータスと用語</h2>
+<table>
+  <tr><th>ステータス</th><th>意味</th></tr>
+  <tr><td>未作成</td><td>まだ何も入力していない</td></tr>
+  <tr><td>作成中</td><td>入力済みで提出前（レビュアーが直接入力した項目を含む）</td></tr>
+  <tr><td>提出済</td><td>作成者の提出ファイルがレビュアーにマージされた</td></tr>
+  <tr><td>差戻し</td><td>レビュアーが理由を付けて差し戻した — 修正して再提出</td></tr>
+  <tr><td>レビュー完了</td><td>レビュアーが承認した — 作成者は修正不可</td></tr>
+  <tr><td>入力完了</td><td>AuditBoardに入力してロック — 誰も修正不可（レビュアーが理由を残して解除可能）</td></tr>
+</table>
+<table>
+  <tr><th>用語</th><th>意味</th></tr>
+  <tr><td>Key / HR / MR</td><td>リスク区分（Key Risk / High Risk / Medium Risk）。スコアは区分別にも計算されます。</td></tr>
+  <tr><td>HTL / FSSC-xxx</td><td>Focus項目の担当区分（ホテル / シェアードサービスセンターの各タワー）。FSSCのないホテルはホテルが直接入力します。</td></tr>
+  <tr><td>CSA · CPA</td><td>Focus項目のうちCPA点検と重なる項目の表示（バッジ）</td></tr>
+  <tr><td>現行内容</td><td>レビュアーのワークスペースにある現在の内容</td></tr>
+  <tr><td>ワークスペース</td><td>1ホテル・1年度・1サービス区分のCSA作業単位。固有IDで区別</td></tr>
+</table>
+</section>
+
+<footer>CSA 2026 Self Assessment · JKM Finance · このガイドはダッシュボードと同じ場所にあり、印刷するとA4で出力されます。</footer>
+</main>
+</body>
+</html>
