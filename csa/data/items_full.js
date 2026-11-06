@@ -8,429 +8,24 @@ export default {
   "sha256": "3cfdacd26eed373faa94f6e26e9e7a3332a086060026aea620d3938430322655"
  },
  "sections": [
-  "AP",
   "AR",
   "Balance Sheet",
-  "Cash",
-  "Financial Close",
   "Fixed Assets",
+  "Financial Close",
   "Fraud & Theft",
   "ITGC",
-  "MA Compliance",
   "Management",
   "Payroll",
   "Procurement",
-  "Revenue"
+  "Revenue",
+  "AP",
+  "Cash",
+  "MA Compliance"
  ],
  "items": [
   {
-   "id": "F001",
-   "no": 1,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Prior to payment processing, the following checks i) to vii) are done for the invoice -evidenced by tick marks, comments, etc.",
-   "ts": "i) Hotel name & vendor details \nii) Correct quantities as per the purchase order / contract and delivery documents \niii) Correct price, tax & discounts (if applicable) \niv) Delivery documents signed by receiving Team Member is attached for properties with no electronic procurement system. For hotels with electronic procurement system, invoice must be matched to the received goods in the system. \nv) Purchase order was approved appropriately. \nvi) Purchase orders are marked closed in the procurement system once all items are received. \nvii) Invoices for services rendered must be accompanied by  documentation that the service was performed and completed in a satisfactory manner by a Supervisor or above from the applicable Department.",
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F002",
-   "no": 2,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Confirm that all purchase orders are approved appropriately per the policy approval matrix. An up-to-date list of team members (names and titles) authorized to approve purchase orders is to be maintained by the Hotel and may be kept within the procurement system if applicable.",
-   "ts": "The following matrix demonstrates the minimum required approvals for purchase orders: \ni) All Food & Beverage purchase orders are approved appropriately as per below. \nUp to $1,000 USD, No approval required \nUp to $10,000 USD, F&B Management \nUp to $50,000 USD, F&B Management & Finance Leader \nii) All other purchase orders are approved by Operations Leader & Finance Leader. \niii) Any PO over $50,000 USD should refer to FP-OPSFIN-146 Hotel Contract Execution and Spending.",
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F003",
-   "no": 3,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Confirm that the credit amount is only reduced from a supplier's account after the credit note has been received from the supplier.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F004",
-   "no": 4,
-   "section": "AP",
-   "risk": "Key",
-   "ws": "Obtain the most recent section of the lease agreement or management agreement for the determination of payments and the support for the calculation of lease rent expense (for leased hotels) or management fees (for managed hotels) for latest two (2) months. Verify the accuracy of the calculation of JV and payment and it reviewed and approved by the Finance Leader (or equivalent).",
-   "ts": null,
-   "policy": "Key Controls"
-  },
-  {
-   "id": "F005",
-   "no": 5,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Prior to month-end, the Finance Leader communicates with all Department Heads and obtain supporting documentation for any expense items, goods received, and services rendered in the month.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F006",
-   "no": 6,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "The Master Vendor Change Report is printed monthly and reviewed by the Finance Leader (or designee/ independent to receiving and AP function) to confirm that all updates (including bank details) are accurate and approved.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F007",
-   "no": 7,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "There is a standard naming convention for suppliers set-up to ensure that same supplier is not set up twice in the system. If any generic account being used, verify that there is monitoring of the use of the account by Finance.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F008",
-   "no": 8,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Validate that items recorded under the Prepaid Expenses account are for a benefit to be consumed within 12 months; and prepayments for benefits over 12 months are accounted for as Other Assets & Deferred Charges.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F009",
-   "no": 9,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Verify that the purchase order number is used as the reference number on the supplier invoice.  If supplier invoice does not have a reference to the PO number, verify hotel has noted the corresponding PO number and has a copy of the PO attached or appropriate supporting documentation.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F010",
-   "no": 10,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "If a perpetual stock system is in place, receipt of the items must be recorded before the end of the day in which they were delivered.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F011",
-   "no": 11,
-   "section": "AP",
-   "risk": "Key",
-   "ws": "Obtain the payment run report with a listing of all invoice payments for one (1) vendor payment run from two (2) different months. Verify that the Finance Leader has reviewed and approved the payment run report prior to releasing the amounts for payment. Review and approval is evidenced by the Finance Leader's comments (if any), signature and date on the report.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F012",
-   "no": 12,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "The delivery note / packing slip, or alternatively “Goods Received Note” must be matched to the PO prior to finalizing the receipt of items either by updating the procurement system or attaching to the paper PO. All complete documentation must be sent to the Finance Team on a daily basis.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F013",
-   "no": 13,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "There is a standard monthly accrual checklist that contains the common accruals which are made each month.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F014",
-   "no": 14,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Confirm that barter agreements are accounted for as following: \ni) Upon execution of the barter agreement, the fair market value of the transaction as defined in the contract is booked to the Balance Sheet prior to month-end close. \nii) Upon utilization of goods or services by the Hotel/other party, the expense/revenue is recorded against the Barter Agreement Assets/Liabilities.",
-   "ts": null,
-   "policy": "FP-OPSFIN-145 Barter Agreements"
-  },
-  {
-   "id": "F015",
-   "no": 15,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "For agreements that include other than fixed rent, confirm that an annual sales report is received and it is audited by the Finance Leader or General Manager or by an external audit firm hired by the hotel.",
-   "ts": null,
-   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
-  },
-  {
-   "id": "F016",
-   "no": 16,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Confirm that a summary of all tenant leases and concessionaire agreements is maintained on the Critical Contracts, License, Permit, & Tenant Listing. This listing is updated as soon as any changes to critical terms of the agreements occur and is reviewed at least annually.",
-   "ts": null,
-   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
-  },
-  {
-   "id": "F017",
-   "no": 17,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "All Vendors are set-up only with approved Supplier Set Up Form and supported by supplier documentation (set-up at the hotel to be approved by either the Finance Leader or Operations Leader; and set-up above property to be approved as per procedure established by Shared Service Center.)",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F018",
-   "no": 18,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "A system generated accounts payable aging report is produced and approved by the Finance Leader or Operations Leader on a monthly basis.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F019",
-   "no": 19,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Fixed rents and percentage/performance rent are accounted for on an accruals basis each month.",
-   "ts": null,
-   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
-  },
-  {
-   "id": "F020",
-   "no": 20,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "For purchases above $5,000 USD from a vendor not approved via HSM or corporate program (i.e., a local supplier or supplier without a national contract), three competitive quotes/bids are obtained and be included for reference prior to approval.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F021",
-   "no": 21,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "There is a written internal policy indicating a tolerance threshold on what can be received over and above the purchase order and this written policy was clearly communicated to all Team Members involved.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F022",
-   "no": 22,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "For Hotel that is Owned, Leased, or Joint Venture property, the Hotel must consider an accrual for capital invoices for which work is complete and the invoice is not yet received.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F023",
-   "no": 23,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Suppliers set-up in the procurement system is done by Team Member who does not receive goods; and the suppliers set-up in the account payable system is done by Team Member who does not have access to process account payable payments (i.e., check runs, electronic transfer, etc.)",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F024",
-   "no": 24,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "The team member completes a normal expense report which includes the travel advance amount when they return from the trip which the advance was acquired. Confirm that any surplus is returned within a week of return from the trip.",
-   "ts": null,
-   "policy": "FP-OPSFIN-143 Manual Expense Reports and Travel Advance Guidance"
-  },
-  {
-   "id": "F025",
-   "no": 25,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Utility meters are read on a monthly basis and the readings are used for the accrual calculation. If meter readings are not available, the alternative method is a per day average cost based on the historical bill.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F026",
-   "no": 26,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "All changes to supplier bank details must be accompanied by confirmation from the supplier on their company letterhead or their bank’s letterhead. Changes to supplier bank details must be confirmed with the supplier directly by calling / contacting them using details already on file.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F027",
-   "no": 27,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "If an invoice is not received electronically, all hard copy invoices are stamped / marked with date received. Confirm that there is an internal written procedure to ensure the paid invoices cannot be paid again.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F028",
-   "no": 28,
-   "section": "AP",
-   "risk": "Key",
-   "ws": "Obtain the month-end AP accrual listing for two (2) months. Verify that the Finance Leader (or designee) reviewed and approved the month end AP accrual JV which includes supporting documentation for the accrual amount. The review should include comments and tick marks as evidence of review, verifying that all goods and services received during the month are accurately accrued.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F029",
-   "no": 29,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "There is a standard Manual Expense Report Form that complies with the specific country requirements and contain the following item A to G. Note: This question is not applicable to hotels using Concur.",
-   "ts": "a) Name & position of Team Member claiming reimbursement\nb) Department Head and Finance Leader Approval (Regional / Area VP Operations for GM’s expense report) \nc) Date, description/ reason, amount net of tax (if tax is not reclaimable) and relevant tax amount (if tax is reclaimable) of each expense incurred \nd) Foreign currency exchange rate and relevant documentation (if applicable)\ne) Entertainment/Business meals to include names of people present, their company name, and purpose of meal \nf) Sequential reference number for each expense item to the receipt/supporting documentation \ng) Backed up with the original receipts or invoices (Travel back-up can be website print-outs from travel planner or charge log print out for travel cards)",
-   "policy": "FP-OPSFIN-143 Manual Expense Reports and Travel Advance Guidance"
-  },
-  {
-   "id": "F030",
-   "no": 30,
-   "section": "AP",
-   "risk": "Key",
-   "ws": "Confirm that any month-end AP accrual were properly accrued as a liability in the General Ledger (G/L).  Validate that all accruals posted at month end are reversed at the beginning of the next month (auto-reversing is preferred). Each month’s accrual must start over and invoices received should not be coded against the accrual liability.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F031",
-   "no": 31,
-   "section": "AP",
-   "risk": "Key",
-   "ws": "Validate the review by the Finance Leader (or designee) at month end included a review of all open purchase orders (whether or not they were received) and investigation of any significant aged open PO (i.e. 6 months)  with documented resolution. Ensure that the accrual is only recognized if goods or service have been received/ provided but haven't been invoiced.\nThe “Goods Received Without Invoice” report (or equivalent) was reviewed by the Finance Leader (or designee) and retained as support for the monthly accrual journal entry. \nNote:Open PO report should be run without date filters- i.e. should be run to include all prior months and not just for the current month.",
-   "ts": null,
-   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
-  },
-  {
-   "id": "F032",
-   "no": 32,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "If the quantities received is below the purchase order, the shorted amount is clearly indicated on the receiving documentation prior to signature by the representative of the supplier delivering the order. The shorted amount is recorded on the purchase order to ensure no payment to be made for the shorted items.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F033",
-   "no": 33,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Returns made to the suppliers are recorded either in the procurement system or on a returns log; and credit memo is obtained from the supplier confirming the quantity of returns.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F034",
-   "no": 34,
-   "section": "AP",
-   "risk": "Key",
-   "ws": "Confirm the details of the payment run report (i.e. vendor name, amount, bank account, etc.) were reconciled to the vendor invoices.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F035",
-   "no": 35,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Confirm that the following for goods receiving are in place: \ni) All goods are received in a designated receiving area and where possible, this should be a restricted area accessible to authorized Team Members and not directly accessible to guests.\nii) There is a written internal procedure for after hour deliveries.\niii) Verify that the Team Member who places the order is not the one doing the physical goods receiving nor the receiving in the procurement system.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F036",
-   "no": 36,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Please confirm that the ordering and custody of payment checks are properly managed as follows: \ni) Payment checks are not physically handled by Accounts Payable.\nii) Check register is signed and dated by Finance Leader (or designee).\niii) Pre-printed checks are in numbering sequence and being kept in a locked and secured location at the hotel.\niv)Payment checks are only ordered by the Finance Leader (or designee). Upon receipt of the pre-printed check order, the boxes are checked and confirmed that the first and last check sequence in each box is intact and verified against the order.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F037",
-   "no": 37,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Confirmed that expense claims are approved by the Department Head and the Finance Leader (GM Expense forms - Finance Leader and VP Ops in Regional Office) and submitted within one month of the expense being incurred; and the payment of expense claims are processed through the standard account payable process.\nAlso review the travel advance forms to ensure that the forms are signed by the Team Member receiving the travel advance and are approved by either the Finance Leader or Operations Leader and any advance in excess of USD $2,500 are approved by the Regional Finance Director.",
-   "ts": "Note: This question is not applicable to hotels using Concur.",
-   "policy": "FP-OPSFIN-143 Manual Expense Reports and Travel Advance Guidance"
-  },
-  {
-   "id": "F038",
-   "no": 38,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Confirm that only the following items are categorized as Operating Equipment on the Balance Sheet: a) China b) Glassware c) Silverware/Cutlery d) Linen. \nOperating Equipment are accounted as Direct Expense (preferred method)  i.e., expense as received. If amortized to Operating Expense – The purchase is spread not to exceed 12 months from point of receipt. Although Uniforms are not categorized as Operating Equipment, the same accounting treatment applies.",
-   "ts": "Note: Uniforms are not categorized as Operating Equipment but the same accounting treatment applies.",
-   "policy": "SOP-OPSFIN-240 Accounting for Operating Equipment & Uniforms"
-  },
-  {
-   "id": "F039",
-   "no": 39,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Confirm that proper issued procedures as follow are in place for pre-printed checks:\ni) The pre-printed checks issued for printing are recorded in a log which is signed by the Finance Leader and the Team Member who receives the pre-printed check.\nii) The Finance Leader confirms that all the checks issued for printing are returned for signing and that they agree to the final payment run report.\niii)On demand / manual check requests are approved on a “Check Request Form” and the checks are prepared by a Team Member who does not have check signing authority.The manual checks are processed through the accounts payable system timely.\niv) The void checks are properly mutilated and logged.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F040",
-   "no": 40,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "A review of unused vendors is performed. If a supplier has not been used for 18 months, and once all outstanding payments have been made to the supplier, this supplier must be locked / inactivated in the procurement and accounts payable systems.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F041",
-   "no": 41,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Confirm that: i) There is a market list/order completed by the kitchen for fresh items purchased daily and the list is used as the basis for placing order. ii) Dry food is ordered based on the par stock system adjusted for banquet requirements.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F042",
-   "no": 42,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "The item, quantity and weight (where applicable) is checked to the delivery note / packing slip and approved purchase order when the goods are received. In the case of fresh food, quality of the receiving item is also checked by a member of the kitchen team or designated member. Once the delivery has been checked, either delivery note, packing slip or invoice is signed and dated by the Team Member receiving and by the supplier’s representative delivering the goods.",
-   "ts": null,
-   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
-  },
-  {
-   "id": "F043",
-   "no": 43,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "Review the tenant or concessionaire contract(s) and ensure following terms included:\ni) Deposit requirement.\nii) Billing terms for additional services (such as meals in employee cafeteria, housekeeping services, security, etc.)\niii) Utilities are charged separately.\niv) Internet access can only be provided if it is on a separate network other than the Hotel’s network.\nv) Insurance requirements.",
-   "ts": "Note: If any of these conditions are not included and legal approval is not obtained - mark \"No\"",
-   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
-  },
-  {
-   "id": "F044",
-   "no": 44,
-   "section": "AP",
-   "risk": "MR",
-   "ws": "There is a threshold approved by both the Finance Leader and Operations Leader for allowable discrepancy between the invoice amount and purchase order amount. For any discrepancy that falls outside the threshold, the correct documentation is obtained, and/or an additional purchase order is raised for the difference, and/or the invoice is approved by both the Finance Leader and the Operations Leader.",
-   "ts": null,
-   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
-  },
-  {
-   "id": "F045",
-   "no": 45,
-   "section": "AP",
-   "risk": "HR",
-   "ws": "Obtain the Barter Agreements and confirm that:\ni) all Barter Agreements are only relating to exchanging sleeping rooms for Media, Advertising Production, Direct Marketing, or Travel Related Services. Any other barter benefits given or received must be approved by the AVP of Operations (or equivalent) and the Regional Finance Director (or equivalent).\nii) all Barter Agreements only be entered after the necessary approvals in accordance with the Hotel Operations Approval Matrix in FP-OPSFIN-146 are obtained and the Hilton Standard Barter Agreement is used.",
-   "ts": null,
-   "policy": "FP-OPSFIN-145 Barter Agreements"
-  },
-  {
    "id": "F046",
-   "no": 46,
+   "no": 1,
    "section": "AR",
    "risk": "Key",
    "ws": "Is the bad debt provision calculation reviewed, approved and dated by the Finance Leader monthly? Any deviations or exceptions from policy are noted on the calculation worksheet and appropriate backup and additional exception approvals are attached. \nNote: 1) Items for consideration should include chargebacks, returned checks, aged house and group accounts (older than current month) where applicable\n2) Confirm that credits were added back to the totals (by aged categories) prior to calculating the reserve amount",
@@ -439,7 +34,7 @@ export default {
   },
   {
    "id": "F047",
-   "no": 47,
+   "no": 2,
    "section": "AR",
    "risk": "MR",
    "ws": "Long-term guests should be settled on a weekly basis (unless otherwise agreed contractually with the client) and should have sufficient pre-authorization.",
@@ -448,7 +43,7 @@ export default {
   },
   {
    "id": "F048",
-   "no": 48,
+   "no": 3,
    "section": "AR",
    "risk": "HR",
    "ws": "Check that guest and group deposits are maintained in the Property Management System (PMS).",
@@ -457,7 +52,7 @@ export default {
   },
   {
    "id": "F049",
-   "no": 49,
+   "no": 4,
    "section": "AR",
    "risk": "MR",
    "ws": "Credit card chargebacks and inquiries are researched and responded to within the timeline indicated by the merchant. Finance Leader is involved if merchant declines chargeback response.",
@@ -466,7 +61,7 @@ export default {
   },
   {
    "id": "F050",
-   "no": 50,
+   "no": 5,
    "section": "AR",
    "risk": "HR",
    "ws": "Annual credit review: Hotel Management is to review the listing of all direct bill clients and confirm if credit should be granted for another annual period. This listing is to be signed by the Finance Leader, Commercial Leader, and General Manager, and kept on file.",
@@ -475,7 +70,7 @@ export default {
   },
   {
    "id": "F051",
-   "no": 51,
+   "no": 6,
    "section": "AR",
    "risk": "MR",
    "ws": "All credit limits are monitored by the Accounts Receivable team member and are reflected in the PMS system. If a client/group exceeds their approved spending limit, documented approval from Finance and Operations Leaders is maintained.",
@@ -484,7 +79,7 @@ export default {
   },
   {
    "id": "F052",
-   "no": 52,
+   "no": 7,
    "section": "AR",
    "risk": "HR",
    "ws": "Reconciliation is performed daily between the credit card system settlement totals and revenue stream totals per the PMS/POS systems. Variances are highlighted to Finance Leader and resolved.",
@@ -493,7 +88,7 @@ export default {
   },
   {
    "id": "F053",
-   "no": 53,
+   "no": 8,
    "section": "AR",
    "risk": "HR",
    "ws": "A independent Finance Team Members( cannot have system access to post refunds to credit cards) is maintaining and auditing a record of all credit card refund.",
@@ -502,7 +97,7 @@ export default {
   },
   {
    "id": "F054",
-   "no": 54,
+   "no": 9,
    "section": "AR",
    "risk": "HR",
    "ws": "Bad Debt Write Offs have been authorized by GM and DOF through the approval form and as per Approval Matrix and contains appropriate back up.",
@@ -511,7 +106,7 @@ export default {
   },
   {
    "id": "F055",
-   "no": 55,
+   "no": 10,
    "section": "AR",
    "risk": "HR",
    "ws": "All bookings should use the standard Hilton sales contract signed by the authorized customer representative and authorized Hilton Team Member. The form of payment (advance or direct bill) is agreed in the contract.",
@@ -520,7 +115,7 @@ export default {
   },
   {
    "id": "F056",
-   "no": 56,
+   "no": 11,
    "section": "AR",
    "risk": "MR",
    "ws": "Credit facilities are not permitted for private & social functions, Wedding receptions, Seminars, Re-Unions as well as political functions. No account in the Accounts Receivable system must fall under this category.",
@@ -529,7 +124,7 @@ export default {
   },
   {
    "id": "F057",
-   "no": 57,
+   "no": 12,
    "section": "AR",
    "risk": "HR",
    "ws": "A Monthly Credit Meeting is undertaken and the Operations Leader and Finance Leader are present at each meeting to discuss the credit meeting topics per policy which covers review of AR aging, house accounts, group masters, review of previous meeting minutes, etc.  Minutes are taken, showing the team members present.",
@@ -538,7 +133,7 @@ export default {
   },
   {
    "id": "F058",
-   "no": 58,
+   "no": 13,
    "section": "AR",
    "risk": "HR",
    "ws": "The High Balance Report must be checked at least daily with appropriate action taken and be signed / dated by either the Front Office Manager or designee.",
@@ -547,7 +142,7 @@ export default {
   },
   {
    "id": "F059",
-   "no": 59,
+   "no": 14,
    "section": "AR",
    "risk": "HR",
    "ws": "All payments received are posted at least weekly. All payments received in the month are posted by the last day of the month.",
@@ -556,7 +151,7 @@ export default {
   },
   {
    "id": "F060",
-   "no": 60,
+   "no": 15,
    "section": "AR",
    "risk": "HR",
    "ws": "For balances over 90 days on the AR Aging report, follow up communication with the Client was documented and occurred at least every 14 days since invoice due date (typically after 30 days) - evidence is available.",
@@ -565,7 +160,7 @@ export default {
   },
   {
    "id": "F061",
-   "no": 61,
+   "no": 16,
    "section": "AR",
    "risk": "HR",
    "ws": "If the refunds are initiated through a credit card terminal, then ensure that Team Members allowed to process refunds in the credit card terminal are sufficiently restricted (i.e. Supervisor or Manager at a minimum).",
@@ -574,7 +169,7 @@ export default {
   },
   {
    "id": "F062",
-   "no": 62,
+   "no": 17,
    "section": "AR",
    "risk": "HR",
    "ws": "All Client Accounts with credit facilities are set up in the Accounts Receivable system. If any generic account being used, verify that there is monitoring of the use of the account by Finance.",
@@ -583,7 +178,7 @@ export default {
   },
   {
    "id": "F063",
-   "no": 63,
+   "no": 18,
    "section": "AR",
    "risk": "MR",
    "ws": "All accounts (group and guest) must be checked out immediately upon final departure or end of event. Under no circumstances should the aging of a receivable account be impacted by delaying the check-out of a guest or group. The billing process must be complete and the invoice issued to the client dispatch by mail or electronic mail within five business days of completion of event or last check-out, unless otherwise agreed contractually with the client. Test and analyze 2 sample accounts to ensure compliance.",
@@ -592,7 +187,7 @@ export default {
   },
   {
    "id": "F064",
-   "no": 64,
+   "no": 19,
    "section": "AR",
    "risk": "HR",
    "ws": "Full credit card details are not maintained on paper or electronically at the hotel. (The only secure place to store full credit card details is in designated fields within PMS which are designed to store full credit card details securely. All credit card authorization forms or other document in DocMX/Email /other location containing full credit card details currently in use must be removed and cannot be used going forward).",
@@ -601,7 +196,7 @@ export default {
   },
   {
    "id": "F065",
-   "no": 65,
+   "no": 20,
    "section": "AR",
    "risk": "HR",
    "ws": "Deposits are maintained as per policy and agreed contractual terms. Any variations to the policies are approved and documented. Check that political events are fully paid in advance and social events/ promotional conferences have 50% deposit prior to the event.",
@@ -610,7 +205,7 @@ export default {
   },
   {
    "id": "F066",
-   "no": 66,
+   "no": 21,
    "section": "AR",
    "risk": "HR",
    "ws": "All Credit application forms have a proper credit worthiness evaluation (from the sources defined in the policy) and has been approved as per Credit Approval Matrix prior to the commencement of the stay/ event . One-off credits or exceptions are approved as per policy. All credit application form (authorized by Hotel Management) are on-file.",
@@ -619,7 +214,7 @@ export default {
   },
   {
    "id": "F067",
-   "no": 67,
+   "no": 22,
    "section": "AR",
    "risk": "MR",
    "ws": "Checks are received by a team member who does not have access to the Accounts Receivable System, and immediately listed on a Check Log upon arrival. Checks & Check Log are dropped in the Drop Safe by the person who received the checks on the date received. All Checks are routed for immediate banking (within the next business day).",
@@ -628,7 +223,7 @@ export default {
   },
   {
    "id": "F068",
-   "no": 68,
+   "no": 23,
    "section": "Balance Sheet",
    "risk": "Key",
    "ws": "Obtain all of the latest Balance Sheet (BS) account reconciliations available. \ni) Validate that the reconciliations includes a lead sheet with identified variances, appropriate back up and comments\nii) Verify that all reconciliations were reviewed/ approved by an independent person timely with the authority levels provided in FP-OPSFIN-100 (i.e. by Business Day 20 of the subsequent month).",
@@ -637,7 +232,7 @@ export default {
   },
   {
    "id": "F069",
-   "no": 69,
+   "no": 24,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Validate the tax work papers are appropriate for proper completion of the returns: \ni) If a monthly return, analyze that the beginning balance is cleared on the GL by payments made in the month being reviewed. Validate tax returns are included in the BS account reconciliation as support when the obligation has been paid already. \nii) Verify payment terms and methods for tax authorities to ensure all applicable early payment discounts are recognized. Additionally, review any fines or penalties incurred in the past six months.",
@@ -646,7 +241,7 @@ export default {
   },
   {
    "id": "F070",
-   "no": 70,
+   "no": 25,
    "section": "Balance Sheet",
    "risk": "Key",
    "ws": "Verify that reconciling items are identified, aged, and cleared timely (within 60 days). If the reconciling variance is USD $250k or greater, a resolution plan is documented within 5 days.",
@@ -655,7 +250,7 @@ export default {
   },
   {
    "id": "F071",
-   "no": 71,
+   "no": 26,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Review all Other Receivable Accounts and its reconciliation support to confirm outstanding balances are appropriate and properly documented. Validate that any delinquent other receivable amounts are properly supported and collection protocol is in place.",
@@ -664,7 +259,7 @@ export default {
   },
   {
    "id": "F072",
-   "no": 72,
+   "no": 27,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "If Finance Leader regularly prepares Balance Sheet account reconciliations due to size of the hotel or resource limitations, check that: i) policy waiver is obtained, and  ii) RFD reviewed and subsequently approved a sample of the property’s Balance Sheet account reconciliations on a quarterly basis.",
@@ -673,7 +268,7 @@ export default {
   },
   {
    "id": "F073",
-   "no": 73,
+   "no": 28,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Validate that all Deferred Income Accounts (Memberships, Annual Fees, Attrition and Cancellation, etc.) are properly supported. Review how revenues are recognized to verify appropriateness.",
@@ -682,7 +277,7 @@ export default {
   },
   {
    "id": "F074",
-   "no": 74,
+   "no": 29,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Confirm that Owner Distributions and Contributions are properly supported, communicated and tracked. Verify the basis for distributions and contributions made in the last 30 days. Verify whether the distributions were in accordance with the Management Contract.",
@@ -691,7 +286,7 @@ export default {
   },
   {
    "id": "F075",
-   "no": 75,
+   "no": 30,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Review all Accrual accounts and the supporting documentation to validate that the accrual expense are reasonable, and the accrual is only recorded for goods and services received during the month.",
@@ -700,7 +295,7 @@ export default {
   },
   {
    "id": "F076",
-   "no": 76,
+   "no": 31,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Review all the Clearing Accounts and the ZERO balance accounts with activitie:\ni) Validate all clearing accounts are being used for the purpose they were created, and balances clear the following month. \nii) Confirm movements have been reviewed and proper support and details have been included in the BS account reconciliations for each account.",
@@ -709,7 +304,7 @@ export default {
   },
   {
    "id": "F077",
-   "no": 77,
+   "no": 32,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Validate that all Prepaid/ Depreciation/ Amortization schedules are sufficient in detail to track useful life and deduct applicable consumption of Goods and Services, and cover all the hotel's prepayments. Ensure that that schedule contain the following and be reconciled to the General Ledger monthly.\ni) Description of expense and applicable general ledger code\nii) Supplier\niii) Period which the expense is to be charged over\niv) Total amount, monthly amount charged to the P&L, and remaining prepaid balance",
@@ -718,7 +313,7 @@ export default {
   },
   {
    "id": "F078",
-   "no": 78,
+   "no": 33,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Confirm that there are no owner related accounts with aged balances or any other amounts which requires a follow-up. If any, is that be properly supported and reported to regional management?",
@@ -727,7 +322,7 @@ export default {
   },
   {
    "id": "F079",
-   "no": 79,
+   "no": 34,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Review all the Other Liability Accounts. Validate that the appropriate rationale and support is attached to the reconciliation.",
@@ -736,7 +331,7 @@ export default {
   },
   {
    "id": "F080",
-   "no": 80,
+   "no": 35,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Validate that a detailed schedule exists for tracking Gift Card/ Certificates and is used as support for completion of the applicable balance sheet reconciliations and agrees to the BS account reconciliation lead sheet.",
@@ -745,7 +340,7 @@ export default {
   },
   {
    "id": "F081",
-   "no": 81,
+   "no": 36,
    "section": "Balance Sheet",
    "risk": "HR",
    "ws": "Confirm that a detailed schedule exists for tracking Incentive Plan Calculations and review the basis of accruing for future pay-outs. Validate the supporting schedules have been reviewed/approved and included with the BS account reconciliation.",
@@ -754,7 +349,7 @@ export default {
   },
   {
    "id": "F082",
-   "no": 82,
+   "no": 37,
    "section": "Balance Sheet",
    "risk": "MR",
    "ws": "Analyze that AP Trade, PTO, Vacation, Sick Leave type liability schedules have no debits contained in the supporting schedules. Validate the supporting schedules have been reviewed/approved, included in the BS account reconciliation and agree to the lead sheet.",
@@ -763,7 +358,7 @@ export default {
   },
   {
    "id": "F083",
-   "no": 83,
+   "no": 38,
    "section": "Balance Sheet",
    "risk": "Key",
    "ws": "Confirm that the supporting documentation is attached / cross-referenced, sufficient to explain activity / changes and the ending balance agrees to the GL for any BS accounts not specifically reviewed within other Balance Sheet questions. In addition, confirm that the account balances are properly classified as assets and liabilities.",
@@ -771,242 +366,17 @@ export default {
    "policy": "Balance Sheet Guide"
   },
   {
-   "id": "F084",
-   "no": 84,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "The required safety box forms (as per FP-RM-015) are completed and retained by the hotel. At least monthly, Front Office performs key audits on all guest Safety Deposit Boxes and documents their counts.",
-   "ts": null,
-   "policy": "FP-OPSFIN-116 Safety Deposit Box Audits"
-  },
-  {
-   "id": "F085",
-   "no": 85,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Is the General Cashier Report prepared for each day? Also confirm that a separate deposit slip is completed for each day’s total monies and a separate container/tamper proof bag is made for each day’s deposits.",
-   "ts": null,
-   "policy": "FP-OPSFIN-111 General Cashiering"
-  },
-  {
-   "id": "F086",
-   "no": 86,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "All Refunds are done in the same method as the original payment (e.g. cash to cash / credit card to credit card, Wechat/Alipay to Wechat/Alipay, etc.)\nAll credit card refunds are posted to the same credit card number as originally charged and recorded in the PMS.",
-   "ts": null,
-   "policy": "FP-OPSFIN-113 Guest Refunds & Paid Outs"
-  },
-  {
-   "id": "F087",
-   "no": 87,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Is the main vault audited by either Operations Leader or Finance Leader every month?",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F088",
-   "no": 88,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "A Safety Deposit Box Audit of all Team Member and Guest Safety Deposit Boxes is completed quarterly by a Finance Team Member (or a designee appointed by the Operations Leader if no Finance team member). The completed audit form must be approved by Finance Leader or Operations Leader and filed.",
-   "ts": null,
-   "policy": "FP-OPSFIN-116 Safety Deposit Box Audits"
-  },
-  {
-   "id": "F089",
-   "no": 89,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Are all House Funds secured and accessible for one (1) team member only at any time? Are house funds maintained at appropriate levels as verified by the Finance Leader?",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F090",
-   "no": 90,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "All overages and shortages identified as part of the GCR, must be investigated and resolved. Any appropriate back-up/explanation is to be included with the cash journal documentation",
-   "ts": null,
-   "policy": "FP-OPSFIN-111 General Cashiering"
-  },
-  {
-   "id": "F091",
-   "no": 91,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Is each House Fund totaling USD 2k or greater being audited every month? Are at least 50% of House Funds Audited each month? Is each House Fund audited at least once every 3 months (or banked into cash machines and reviewed daily)?",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F092",
-   "no": 92,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Is background check completed prior to the issuance of house funds (unless restricted by local law or legislation)? Is there a signed and authorized House Fund Contract and cash handling procedure for each TM holding a House Fund? Are house funds stored securely (in safety deposit box or alternative procedures approved by Regional Finance Director, Operations Leader and Finance Leader)?",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F093",
-   "no": 93,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Is there a Revolving House Fund handover log - proof that the house fund is counted by two (2) team members each time it is passed on to the next shift - document be signed by both TM with date, time and amount.",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F094",
-   "no": 94,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Are surprise House Fund Counts performed by the TM designed by Finance Leader and witnessed by Funds Custodian, and evidenced with signatures from both and documented? The General Cashier must never audit house funds or be part of the surprise count process in any way.",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F095",
-   "no": 95,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Does the General Cashier perform a daily self count audit of the main vault? At least weekly, is the count witnessed by a designated TM?",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F096",
-   "no": 96,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Confirm General Cashier Office control is performed properly: \ni) a panic alarm is equiped or the GC should be provided with an alternative means to call for help in case of emergency (i.e., a pager, etc.) \nii) Access to the General Cashier’s office must be restricted to the General Cashier only. Back-up access (key, code, or key card) to the GC office must be stored in a secure location either by the Finance Leader, Operations Leader, or Security.",
-   "ts": null,
-   "policy": "FP-OPSFIN-112 General Cashier's Office, Main Vault, & Drop Safe Security"
-  },
-  {
-   "id": "F097",
-   "no": 97,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Payment for the cash paid out is taken immediately by charging the guest credit card and commission is applied accordingly.",
-   "ts": null,
-   "policy": "FP-OPSFIN-113 Guest Refunds & Paid Outs"
-  },
-  {
-   "id": "F098",
-   "no": 98,
-   "section": "Cash",
+   "id": "F138",
+   "no": 39,
+   "section": "Fixed Assets",
    "risk": "Key",
-   "ws": "Obtain the bank mandate for Electronic Funds Transfer (EFTs) and verify that the individuals authorized to initiate and approve EFTs is appropriate based on the Team Members' role and responsibilities.",
+   "ws": "Obtain the hotel's Fixed Asset Register and depreciation to validate that : \ni) The Finance Leader reviews the Fixed Assets Register for appropriate classification, existence and accuracy, and disposed of assets have been written off.  \nii) Validate that the review includes all fixed asset purchases to conclude whether it should be capitalized on the Balance Sheet or directly expensed to the P&L, evidenced by a signature/date of Finance Leader on the invoice and GL coding. \niii)After fixed assets are put into service, depreciation is calculated and recorded per Company policy or in accordance with the terms of the MA. \nNote: Answer N/A if fixed assets are not maintained by the hotel.",
    "ts": null,
-   "policy": "Key Controls"
-  },
-  {
-   "id": "F099",
-   "no": 99,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Paid outs are only issued from the Front Desk and are processed through the PMS system. All paid outs are compiled, routed, and approved by the Finance Leader or Operations Leader on a daily basis.",
-   "ts": null,
-   "policy": "FP-OPSFIN-113 Guest Refunds & Paid Outs"
-  },
-  {
-   "id": "F100",
-   "no": 100,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Is there a copy of the Revolving House Fund procedure that is approved by the Finance Leader and the Regional Finance Director? Are the House Bank Contract and Cash Handling Instructions completed by each TM with access to revolving funds?",
-   "ts": null,
-   "policy": "FP-OPSFIN-110 House Funds"
-  },
-  {
-   "id": "F101",
-   "no": 101,
-   "section": "Cash",
-   "risk": "Key",
-   "ws": "Select a sample of 1 EFT for a vendor payment run from two (2) months. Confirm that for each EFT selected, two separate parties initiated and approved the EFT and validate the supporting documentation for the release of the EFT.",
-   "ts": null,
-   "policy": "Key Controls"
-  },
-  {
-   "id": "F102",
-   "no": 102,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "As a part of the drop process, confirm that: \ni) TMs reconcile their own daily takings/ deposits, in a safe location, to the Property Management System (PMS) or Point of Sale System (POS) at the end their shift\nii) After separating TMs house funds, all remaining funds (including foreign currency) are dropped\niii) If there is a shortage to the house fund amount, a due back is processed\niv) System close-out report is not dropped\nv) Confirm that all shift drops (cash, checks, due backs, etc.) are documented on the drop log and witnessed in writing by an independent Team Member and placed in the drop safe.",
-   "ts": null,
-   "policy": "FP-OPSFIN-111 General Cashiering"
-  },
-  {
-   "id": "F103",
-   "no": 103,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Is the cash pick up performed by a professional security firm and/or the bank directly and is this performed at least once per week. Each deposit per day container/tamper proof bag is logged and signed for separately by the armored car service/professional security firm.",
-   "ts": null,
-   "policy": "FP-OPSFIN-111 General Cashiering"
-  },
-  {
-   "id": "F104",
-   "no": 104,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Foreign Currency Exchange gain (or loss) when realized is posted as revenue to Guest-Related Foreign Currency Transaction Gains (Losses), in Miscellaneous Income (11500-438230), unless the Management Agreement or the local legislation require different treatment.",
-   "ts": null,
-   "policy": "FP-OPSFIN-115 Foreign Currency Exchange"
-  },
-  {
-   "id": "F105",
-   "no": 105,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Access to the drop safe is controlled to ensure that two individuals (General Cashier and witness) are present to open the safe. GC and witness reconcile the number of envelopes collected and sign and date the drop log. The same would apply if there is a cash machine in place which is controlled by the hotel.",
-   "ts": null,
-   "policy": "FP-OPSFIN-111 General Cashiering"
-  },
-  {
-   "id": "F106",
-   "no": 106,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Confirm Main Vault and Drop Safe control is performed properly:\ni) Main Vault and Drop safeare located in a secure area (fireproof).\nii) Under no circumstances can anyone other than the General Cashier have access to the main vault. Back-up access must be segregated between Finance Leader and Operations Leader.",
-   "ts": null,
-   "policy": "FP-OPSFIN-112 General Cashier's Office, Main Vault, & Drop Safe Security"
-  },
-  {
-   "id": "F107",
-   "no": 107,
-   "section": "Cash",
-   "risk": "MR",
-   "ws": "Foreign currency transactions (excluding those completed at the Front Desk) are recorded at the spot rate closest to the date of the transaction. \nForeign currency transactions with any amounts outstanding on the Balance Sheet are remeasured using end of month exchange rates, with any difference recorded as Unrealized Foreign Exchange Gains or Losses in Other, Non-Operating Income and Expenses (11750-831020), below GOP.",
-   "ts": null,
-   "policy": "FP-OPSFIN-115 Foreign Currency Exchange"
-  },
-  {
-   "id": "F108",
-   "no": 108,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Confirm that Petty Cash controls are performed properly as below:\ni) Petty Cash Vouchers are approved and the original receipt is attached for ALL expenses as supporting document. Petty cash transactions greater than $100 (or the limit established by the Finance Leader) are approved prior to the purchase by the Team Member’s HOD or MOD and the Finance Leader. \nii) Petty Cash is NOT used for salary, tips, benefits or business travel & expense reimbursements/ payments. \niii) Petty Cash re-imbursement (for payout) summary is completed at least monthly and approved by the Finance Leader. All Petty Cash Vouchers and receipts are stamped or marked with \"Paid\" when pay out was performed.",
-   "ts": null,
-   "policy": "FP-OPSFIN-114 Petty Cash"
-  },
-  {
-   "id": "F109",
-   "no": 109,
-   "section": "Cash",
-   "risk": "HR",
-   "ws": "Confirm that Foreign Currency exchange services of front desk is preformed properly as following:\ni) Foreign Currency exchange services is only provided to registered in-house guest (excluding Foreign Currency Exchange machines that are not under the control of the hotel).\nii) Foreign Currency Exchange Rates are clearly displayed at the reception/front desk (excluding Foreign Currency Exchange machines that are not under the control of the hotel).\niii) Foreign Currency Exchange rates are updated in the PMS as a part of the night audit process at least weekly (or daily as determined by the Finance Leader) and commission/ mark-up applied.\niv) Guest is not refunded any unused deposit in any other currency than the local currency of the country in which the Hotel operates.",
-   "ts": null,
-   "policy": "FP-OPSFIN-115 Foreign Currency Exchange"
+   "policy": "FP-FIN-001 Fixed Asset Accounting Policy"
   },
   {
    "id": "F110",
-   "no": 110,
+   "no": 40,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Confirm that month-end reconciliations are performed per the following minimum guidelines and ensure that evidence of review and approval by the Finance Leader (or equivalent) at month-end is retained:\ni) Bank reconciliations cannot be completed by an individual who is a signatory on the account.\nii) The reconciliation format must be “Bank to Book”, i.e., reconciling the general ledger balance to the bank balance.\niii) Include the bank statement or a printout from the electronic banking program as supporting documentation to the reconciliation.\niv) Include a list of outstanding checks. All outstanding checks will be voided after 6 months unless restricted per local banking laws. The Finance Leader is responsible for verifying that the hotel is compliant with all local unclaimed property mandates.\nv) Amounts which have been posted to the general ledger, but are not reflected in the bank account at month-end, must have supporting documentation attached to the reconciliation.\nvi) Amounts on the bank statement which have not been posted to the general ledger before month-end must have supporting documentation attached to the reconciliation.",
@@ -1015,7 +385,7 @@ export default {
   },
   {
    "id": "F111",
-   "no": 111,
+   "no": 41,
    "section": "Financial Close",
    "risk": "Key",
    "ws": "Obtain the two most recent samples of the 012 MPR report and verify that:\ni) Meaningful commentary is indicated for all performance metrics and variances identiĥed in the report, and any material or unusual variances were investigated.\nii) The report is approved by the Finance Leader (or Operations Leader as designee) and retained along with any supporting documentation",
@@ -1024,7 +394,7 @@ export default {
   },
   {
    "id": "F112",
-   "no": 112,
+   "no": 42,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "A Slow Moving Item Report (typically for items with no movements in 90 days) is prepared and reviewed monthly. Any inventory item which has not moved in six months have been assessed for written off or other alternatives.",
@@ -1033,7 +403,7 @@ export default {
   },
   {
    "id": "F113",
-   "no": 113,
+   "no": 43,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Stock is only issued or transferred with a signed requisition form.  As a best practice, the stock system is updated with the requisition on the same day and all requisitions must be recorded prior to month-end close.",
@@ -1042,7 +412,7 @@ export default {
   },
   {
    "id": "F114",
-   "no": 114,
+   "no": 44,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Monthly the Finance Leader confirms all FF&E reserve purchases are accounted for, all relevant entries are booked to the GL, and a register or listing of all FF&E reserve purchases is maintained.",
@@ -1051,7 +421,7 @@ export default {
   },
   {
    "id": "F115",
-   "no": 115,
+   "no": 45,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Confirm that all inventory write offs are properly reviewed and approved. If inventory write-offs have been significant, inquire and discuss the reasons and action plan for the hotel. Inventory items that are written off must be destroyed in an appropriate manner. (i.e., should not be used in the kitchen, given to a Team Member, etc.).",
@@ -1060,7 +430,7 @@ export default {
   },
   {
    "id": "F116",
-   "no": 116,
+   "no": 46,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "A monthly checklist of recurring and standard journals indicating the description/title of the journal entry and the Team Member preparing the Journal Entry is maintained and used to ensure that all recurring and standard Journal Entries are recorded. Confirm that the checklist is signed and dated by the Finance Leader prior to the completion of month-end close.",
@@ -1069,7 +439,7 @@ export default {
   },
   {
    "id": "F117",
-   "no": 117,
+   "no": 47,
    "section": "Financial Close",
    "risk": "Key",
    "ws": "For the selected month, verify that journals include a Lead Sheet/ Header Sheet with Amounts, GL Codes, Description of each entry and date prepared.",
@@ -1078,7 +448,7 @@ export default {
   },
   {
    "id": "F118",
-   "no": 118,
+   "no": 48,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "Confirm that if the inventory count did not happen at month-end, the hotel has adjusted for the deliveries received and requisitions taken during the stub period (i.e., from the date of the inventory count to the month-end) as a percentage of sales/ revenue.",
@@ -1087,7 +457,7 @@ export default {
   },
   {
    "id": "F119",
-   "no": 119,
+   "no": 49,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "Without approval from Regional Finance Director and/or VP of Operations Finance, Operations Area Vice President, Hilton Asset Management, and Owner Relations in writing:\ni) FF&E reserve is only used for funding FF&E purchase \nii) No loans or distributions to any party incurred",
@@ -1096,7 +466,7 @@ export default {
   },
   {
    "id": "F120",
-   "no": 120,
+   "no": 50,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "If In-House Laundry is used, confirm that the cost of the In-House Laundry department is allocated to all other departments with laundry costs on an equitable basis, (e.g., cost per pound, per kilo, per piece or an estimated basis).",
@@ -1105,7 +475,7 @@ export default {
   },
   {
    "id": "F121",
-   "no": 121,
+   "no": 51,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Each Outlet & Banquet with beverage stock has a Par-Stock Level in place; and requisitions are only to replenish the par stock level.",
@@ -1114,7 +484,7 @@ export default {
   },
   {
    "id": "F122",
-   "no": 122,
+   "no": 52,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Confirm that there is no Cash In-Transit accounts or any other intermediate account for cash/bank being used.",
@@ -1123,7 +493,7 @@ export default {
   },
   {
    "id": "F123",
-   "no": 123,
+   "no": 53,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "If Team Member Cafeteria is used, confirm that the cost of the cafeteria is allocated to all other departments with personnel costs on an equitable basis (i.e. FTE, hours worked, payroll cost, etc.).",
@@ -1132,7 +502,7 @@ export default {
   },
   {
    "id": "F124",
-   "no": 124,
+   "no": 54,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "All allowable inventory types are costed using either First in First Out (FIFO) or Weighted Average method.",
@@ -1141,7 +511,7 @@ export default {
   },
   {
    "id": "F125",
-   "no": 125,
+   "no": 55,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "Cash reconciliations are completed and reviewed by the Finance Leader (or equivalent) on a weekly basis. Confirm that all reconciling items are investigated, resolved and recorded.",
@@ -1150,7 +520,7 @@ export default {
   },
   {
    "id": "F126",
-   "no": 126,
+   "no": 56,
    "section": "Financial Close",
    "risk": "Key",
    "ws": "Obtain the Trial Balance Reconcilation report between local G/L system to Peoplesoft for two (2) months. Verify that the Finance Leader reviewed the Reconciliation with dated signature and ensure all discrepancies are investigated, documented and resolved before month end close. The final reconciliation file must be submitted to File Exchange by Working Day 4.",
@@ -1159,7 +529,7 @@ export default {
   },
   {
    "id": "F127",
-   "no": 127,
+   "no": 57,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "Prior to month-end closing and after uploading the last Journal Voucher, a system generated listing of all manually prepared Journals for that period is produced, matched with the physical Journal Voucher by Finance Leader (or designee).\nNote : Check the date and time of the listing being generated.",
@@ -1168,7 +538,7 @@ export default {
   },
   {
    "id": "F128",
-   "no": 128,
+   "no": 58,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "The inventory count is performed properly as following:\ni) All counts are to be carried out in pairs (Counter 1 & Counter 2 at minimum): Counter 1 being Storekeeping TM or F&B TM, and Counter 2 being Finance Team Member or independent Team Member as approved by Finance Leader.\nii) the count sheet should list the items to be counted without the quantities pre-populated.\niii) Upon completion of the count, all members of the count team must approve the count sheets to confirm that they agree with the quantities counted and recorded, as evidenced by signature and date. \niv) inventory count result is entered by an independent team member not involved in the physical count.",
@@ -1177,7 +547,7 @@ export default {
   },
   {
    "id": "F129",
-   "no": 129,
+   "no": 59,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "Confirm that the variance analysis between the actual count and system balances have been performed by the Finance team and all differences have been investigated and followed up appropriately.  Confirm that the inventory adjustments resulted from inventory count were approved by Finance Leader and adjusted in the applicable month.",
@@ -1186,7 +556,7 @@ export default {
   },
   {
    "id": "F130",
-   "no": 130,
+   "no": 60,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "After hour requisition process is in place and include the following: \na) A requirement that one authorized Team Member and one witness open the storeroom together.\nb) A requisition form must be completed and include signatures of the authorized Team Member and the witness.\nc) These occurrences should be tracked to ensure that appropriate action can be taken if they become too regular.",
@@ -1195,7 +565,7 @@ export default {
   },
   {
    "id": "F131",
-   "no": 131,
+   "no": 61,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Confirm that any inventory maintained other than Food, Beverage and Retail Inventories have been approved by the RFD per FP-OPSFIN-160 Policy Waivers. \nIn addition, confirm that any Food and Retail inventory (if applicable) are in accordance with policy:\ni) All Food Inventory is direct expensed (no inventory stock on Balance Sheet),except for dry goods in excess of USD 25,000.\nii)Hotel Owned Retail inventory with value below USD 10,000 is direct expensed.",
@@ -1204,7 +574,7 @@ export default {
   },
   {
    "id": "F132",
-   "no": 132,
+   "no": 62,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "Confirm that pre-opening expense are properly accounted as following:\ni) All pre-opening costs are expensed off but not capitalized on the balance sheet.\nii) only expenses associated with the opening of the Hotel were recorded to pre-opening expense. (Some common costs not considered pre-opening costs include, but are not limited to, inventory, supplies, operating equipment, construction and fixed asset costs, licensing costs, financing costs, and interest expenses.) \niii) no costs are recorded to pre-opening expense after 90 days from hotel opening. \nNote: this is only applicable if the hotel opened within the last 24 months of review.",
@@ -1213,7 +583,7 @@ export default {
   },
   {
    "id": "F133",
-   "no": 133,
+   "no": 63,
    "section": "Financial Close",
    "risk": "MR",
    "ws": "All Stock is secured at all times or areas with stock on display are manned at all times.\nIf there is a storeroom in the hotel, a local written policy about storeroom access should be defined and approved by the GM, including at a minimum: a) List of Team Members who are authorized to access the storeroom(s) b) Storeroom hours  c) After hours requisition process d) Explanation of how authorized Team Members will access the storeroom(s) (i.e., key or card security process).\nAll keys or cards to the storeroom(s) must be kept securely tracked through a key log. Authorized Team Members are not allowed to take a key or card off premises and must return it at the end of their shift.",
@@ -1222,7 +592,7 @@ export default {
   },
   {
    "id": "F134",
-   "no": 134,
+   "no": 64,
    "section": "Financial Close",
    "risk": "HR",
    "ws": "All counts for each inventory category are to be carried out and adhere to the frequencies outlined below:\ni) The inventory count for Dry Food (in excess of $25k only) is performed  minimum two times per year.\nii) The inventory count for Beverage is performed monthly (should include all items in the storeroom and outlets).\niii) The inventory count for Retail (in excess of $10k only) is performed quarterly if value of inventory is less than US25k, otherwise should be monthly.",
@@ -1231,7 +601,7 @@ export default {
   },
   {
    "id": "F135",
-   "no": 135,
+   "no": 65,
    "section": "Financial Close",
    "risk": "Key",
    "ws": "Hotel Management should conduct P&L Meetings monthly to review the prior month’s results and discuss the topics per policy required. Minutes summarizing the attendees (with mandatory attendance of the Finance Leader and Operation Leader), discussions, decisions, and action items should be recorded during the meeting and documented by month-end. These records, including any supporting documentation, should be retained.",
@@ -1240,7 +610,7 @@ export default {
   },
   {
    "id": "F136",
-   "no": 136,
+   "no": 66,
    "section": "Financial Close",
    "risk": "Key",
    "ws": "Obtain the file of all the journal entries (JVs) posted for one (1) month and system generated report of all journals. Verify that the journal entries are prepared and approved by appropriate and independent personnel, as evidenced by a signature/ date. The Journal Entry preparer and approver cannot be the same person. If the journal entry is prepared by the Finance Leader, verify that the JV is approved by both the ADOF (or appropriate Finance designee) and GM.\nNote: If the Finance Leader regularly prepares / posts Journals, confirm that waiver has been requested and approved by the RFD and the RFD reviews a sample of journals quarterly, as required by policy.",
@@ -1249,7 +619,7 @@ export default {
   },
   {
    "id": "F137",
-   "no": 137,
+   "no": 67,
    "section": "Financial Close",
    "risk": "Key",
    "ws": "For the selected month, confirm that the journal entry is reviewed / approved prior to month-end close. Validate that the supporting documentation is attached / cross-referenced, provides a sufficient basis for the journal entry, and agrees to the journal entry amount.\nNote: Check that CheckSCM journals are approved by appropriate and independent personnel.",
@@ -1257,17 +627,8 @@ export default {
    "policy": "FP-OPSFIN-101\tJournal Entries"
   },
   {
-   "id": "F138",
-   "no": 138,
-   "section": "Fixed Assets",
-   "risk": "Key",
-   "ws": "Obtain the hotel's Fixed Asset Register and depreciation to validate that : \ni) The Finance Leader reviews the Fixed Assets Register for appropriate classification, existence and accuracy, and disposed of assets have been written off.  \nii) Validate that the review includes all fixed asset purchases to conclude whether it should be capitalized on the Balance Sheet or directly expensed to the P&L, evidenced by a signature/date of Finance Leader on the invoice and GL coding. \niii)After fixed assets are put into service, depreciation is calculated and recorded per Company policy or in accordance with the terms of the MA. \nNote: Answer N/A if fixed assets are not maintained by the hotel.",
-   "ts": null,
-   "policy": "FP-FIN-001 Fixed Asset Accounting Policy"
-  },
-  {
    "id": "F139",
-   "no": 139,
+   "no": 68,
    "section": "Fraud & Theft",
    "risk": "HR",
    "ws": "Confirm there is no fraud/theft case not reported to hotline or local and/or regional Safety & Security team. If there is any unreported case, contact the Finance Compliance Team immediately.",
@@ -1276,7 +637,7 @@ export default {
   },
   {
    "id": "F140",
-   "no": 140,
+   "no": 69,
    "section": "ITGC",
    "risk": "Key",
    "ws": "Validate that the system generated reports are used for User Access Review, validate that access to the systems, including user profile group assigned, are correct and has been reviewed and approved by the application owner for all following applicable systems: GL System, OnQ OA, Payroll System, PROPPLAN, POS, PMS, Procurement System, DocMX and Bank Portal. Note: Please refer to the UAR Guide for the applicable system generated reports.",
@@ -1285,7 +646,7 @@ export default {
   },
   {
    "id": "F141",
-   "no": 141,
+   "no": 70,
    "section": "ITGC",
    "risk": "HR",
    "ws": "Review the Operator Security report (OnQ) or the Application User Set-up report (Opera) to verify that the Rate Override access is as per OnQ/ Opera standards. Confirm that Finance TMs do not have access to Rate Override functionality.",
@@ -1294,7 +655,7 @@ export default {
   },
   {
    "id": "F142",
-   "no": 142,
+   "no": 71,
    "section": "ITGC",
    "risk": "Key",
    "ws": "Review the generic users accounts for all following applicable systems: GL System, OnQ OA, Payroll System, PROPPLAN, POS, PMS, Procurement System, DocMX and Bank Portal.\nIf there is any generic user, validate that business justification and proper approvals are in place. Generic user should only be for Vendor Support/ troubleshoot and not accessible by the property.",
@@ -1303,7 +664,7 @@ export default {
   },
   {
    "id": "F143",
-   "no": 143,
+   "no": 72,
    "section": "ITGC",
    "risk": "Key",
    "ws": "Validate the latest Quarterly User Access Review (UAR) is completed. Confirm the review was completed timely (within the first 15 days days of subsequent month to the quarter end) for all following applicable systems: GL System, OnQ OA, Payroll System, PROPPLAN, POS, PMS, Procurement System, DocMX and Bank Portal.",
@@ -1312,7 +673,7 @@ export default {
   },
   {
    "id": "F144",
-   "no": 144,
+   "no": 73,
    "section": "ITGC",
    "risk": "Key",
    "ws": "Validate that the UAR reviewer(s) are not also system administrators for all following applicable systems: GL System, OnQ OA, Payroll System, PROPPLAN, POS, PMS, Procurement System,  DocMX and Bank Portal. Note: Please validate that the UARs for OA and PROPPLAN are reviewed by either AFC or GM.",
@@ -1321,7 +682,7 @@ export default {
   },
   {
    "id": "F145",
-   "no": 145,
+   "no": 74,
    "section": "ITGC",
    "risk": "HR",
    "ws": "Application administrator access rights are limited to authorized personnel based on functional responsibilities.",
@@ -1330,7 +691,7 @@ export default {
   },
   {
    "id": "F146",
-   "no": 146,
+   "no": 75,
    "section": "ITGC",
    "risk": "Key",
    "ws": "Access rights are removed within 48 hours when no longer required by a user due to a position change or separation from the Company.",
@@ -1339,7 +700,7 @@ export default {
   },
   {
    "id": "F147",
-   "no": 147,
+   "no": 76,
    "section": "ITGC",
    "risk": "HR",
    "ws": "Physical access to production servers is restricted to authorized personnel based on functional responsibilities. This access must be limited to IT TMs only and not part of the master key group. An exemption is for emergency purposes or for back up tapes access, however such access is to be restricted and controlled via sign in/sign out logs.",
@@ -1348,7 +709,7 @@ export default {
   },
   {
    "id": "F148",
-   "no": 148,
+   "no": 77,
    "section": "ITGC",
    "risk": "HR",
    "ws": "New user access and changes to existing user access are approved by authorized personnel prior to being granted. Also check that the General Cashier has not been giving a login for the POS and/or PMS. \nNote: However, due to staffing restrictions in some properties (i.e., Centralized, Focused Service, etc.) or if the Hotel uses a cash machine, the blind drop requirement for the General Cashier may not be required (assess and score accordingly).",
@@ -1356,125 +717,8 @@ export default {
    "policy": "IT General Controls"
   },
   {
-   "id": "F149",
-   "no": 149,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Is FF&E provision/treatment made as per MA/BAMA FF&E concept and recorded in the books per regional FF&E accounting treatment guideline?",
-   "ts": "Obtain the latest MA/BAMA FF&E terms to confirm the applicable FF&E concept. Select 2 months to verify FF&E provision has been calculated correctly, and all GL entries & BS related accounts were recorded correctly per regional guideline.",
-   "policy": "Management Agreement"
-  },
-  {
-   "id": "F150",
-   "no": 150,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Insurance maintained by Hotel - All required insurances are in place with current certificate on file and in accordance with the Management Agreement. Check that there is a comprehensive schedule of required insurances and it is reviewed quarterly.",
-   "ts": null,
-   "policy": "Management Agreement"
-  },
-  {
-   "id": "F151",
-   "no": 151,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Review the current list of authorized bank signatories and confirm the members of each Group are appropriate and there are no employees who should not be an authorized signatory. Also, confirm that payments approval is in accordance with the Management Agreement, e.g. Owner approval is not required or practice unless guided by the MA.",
-   "ts": null,
-   "policy": "Management Agreement"
-  },
-  {
-   "id": "F152",
-   "no": 152,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Is hotel's FF&E bank account and funding in full compliance with MA/BAMA? \ni) a dedicated bank account has been established as per MA,\nii) the applicable FF&E reserve accounts are funded per the Management or Lease Agreement,\niii) the balance of the FF&E bank account is regularly reconciled with the corresponding BS account andand promptly investigate any variances.",
-   "ts": null,
-   "policy": "Management Agreement"
-  },
-  {
-   "id": "F153",
-   "no": 153,
-   "section": "MA Compliance",
-   "risk": "MR",
-   "ws": "Has an Owner review or audit of the books and records been completed, as guided by the MA? Confirm whether anomalies discovered upon the Owner review/audit are resolved? (select \"N/A\" if this is not a requirement as per MA;  input \"Yes\" if compliant)",
-   "ts": null,
-   "policy": "Red Flag Report"
-  },
-  {
-   "id": "F154",
-   "no": 154,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Confirm that the fee and any other payments (e.g. Group Services and Benefits, affiliated, etc.) to Hilton are up to date and accounted for correctly. Have the above fees been paid within accepted terms?",
-   "ts": null,
-   "policy": "Red Flag Report"
-  },
-  {
-   "id": "F155",
-   "no": 155,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Is the Owner currently meeting (and expected to continue meeting) their Working Capital obligations?",
-   "ts": null,
-   "policy": "Red Flag Report"
-  },
-  {
-   "id": "F156",
-   "no": 156,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Does the MA have any performance test defined? If yes, is it being met YTD? (input \"N/A\" if performance test is not defined; input \"Yes\" if compliant)",
-   "ts": null,
-   "policy": "Red Flag Report"
-  },
-  {
-   "id": "F157",
-   "no": 157,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Insurance maintained by Owners - All required insurances are in place with current certificate on file and in accordance with the Management Agreement. Check that there is a comprehensive schedule of required insurances and it is reviewed quarterly.",
-   "ts": null,
-   "policy": "Management Agreement"
-  },
-  {
-   "id": "F158",
-   "no": 158,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Confirm that no direct payments outside the scope of the MA have been made by the owner from the Bank account in the last 12 months?",
-   "ts": null,
-   "policy": "Red Flag Report"
-  },
-  {
-   "id": "F159",
-   "no": 159,
-   "section": "MA Compliance",
-   "risk": "MR",
-   "ws": "Confirm that pre-opening expenses are paid as per the Management Agreement. Note: this is only applicable if the hotel opened within the last 24 months of review",
-   "ts": null,
-   "policy": "Management Agreement"
-  },
-  {
-   "id": "F160",
-   "no": 160,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "The Finance Leader has performed a review/survey of the MA within the last 12 months. Any non-compliance areas have been reported and actioned. Any potential risk areas have been reported (e.g. likelihood of failing performance test, early termination risk, etc.)",
-   "ts": null,
-   "policy": "Management Agreement"
-  },
-  {
-   "id": "F161",
-   "no": 161,
-   "section": "MA Compliance",
-   "risk": "HR",
-   "ws": "Are there currently any issues being disputed between Hilton and Owner? If yes, is regional management aware of such issues? Does the hotel have an action plan to resolve these issues?",
-   "ts": null,
-   "policy": "Red Flag Report"
-  },
-  {
    "id": "F162",
-   "no": 162,
+   "no": 78,
    "section": "Management",
    "risk": "MR",
    "ws": "Confirm that the hotel maintains a summary tracking sheet listing the details (expiration, etc.) for each required insurance and licenses.",
@@ -1483,7 +727,7 @@ export default {
   },
   {
    "id": "F163",
-   "no": 163,
+   "no": 79,
    "section": "Management",
    "risk": "HR",
    "ws": "Review that the hotel has obtained adequate licenses required for hotel operations (e.g. liquor license, hazardous waste management, e-waste management, air/ water license, Fire NOC, etc.",
@@ -1492,7 +736,7 @@ export default {
   },
   {
    "id": "F164",
-   "no": 164,
+   "no": 80,
    "section": "Management",
    "risk": "Key",
    "ws": "i) Check that the SOD matrix is completed by the Finance Leader or ADOF semi-annually (Q2 and Q4), or when a change in role / duty occurs, to ensure proper segregation of duties throughout the fiscal year.\nii) Review the latest SOD matrix and check that the activities are divided / segregated to reduce the risk of error or inappropriate actions. For conflicting duties, review that the compensating plan has been approved by the RFD.",
@@ -1501,7 +745,7 @@ export default {
   },
   {
    "id": "F165",
-   "no": 165,
+   "no": 81,
    "section": "Payroll",
    "risk": "Key",
    "ws": "Review the Payroll Register(or equivant report) for each pay period from two (2) months and confirm that payroll Register was reviewed and approved by the Finance Leader (or designee) prior to authorizing the release for payment.",
@@ -1510,7 +754,7 @@ export default {
   },
   {
    "id": "F166",
-   "no": 166,
+   "no": 82,
    "section": "Payroll",
    "risk": "Key",
    "ws": "Review the Payroll Change Report for one (1) pay period from two (2) months and confirm that the Payroll Change Report was reviewed and approved by the Finance Leader. All payroll records must be kept in a secured and locked location, with access restricted to authorized Team Members (i.e., Finance, Human Resources, etc.).",
@@ -1519,7 +763,7 @@ export default {
   },
   {
    "id": "F167",
-   "no": 167,
+   "no": 83,
    "section": "Payroll",
    "risk": "Key",
    "ws": "All edits to hours/timesheets are approved in writing or within Time & Attendance (T&A) by the Department Head (or designee) and Team Member prior to submission for payroll processing.",
@@ -1528,7 +772,7 @@ export default {
   },
   {
    "id": "F168",
-   "no": 168,
+   "no": 84,
    "section": "Payroll",
    "risk": "MR",
    "ws": "Upon expiration of a Union Agreement, contingent wages (including employers’ associated taxes and benefits) are accrued based on the estimated terms of the new contract.",
@@ -1537,7 +781,7 @@ export default {
   },
   {
    "id": "F169",
-   "no": 169,
+   "no": 85,
    "section": "Payroll",
    "risk": "MR",
    "ws": "Confirm that \ni) All voluntary payroll deductions are supported by written approval by the Team Member and involuntary payroll deductions are made in accordance with local legislation, collective bargaining agreement(s), court order, etc.\nii) All severance payments or packages are approved by the Finance Leader and Operations Leader and are reviewed in consultation with the Regional Finance Director and Operations AVP, as deemed necessary.",
@@ -1546,7 +790,7 @@ export default {
   },
   {
    "id": "F170",
-   "no": 170,
+   "no": 86,
    "section": "Payroll",
    "risk": "Key",
    "ws": "Review the Payroll Register(or equivant report) for each pay period from two (2) months and confirm that the total hours per the payroll register was reconciled to the Time and Attendance System file submitted for processing. Any variances between payroll register and the Time and Attendance System were documented, resolved timely and retained as evidence.",
@@ -1555,7 +799,7 @@ export default {
   },
   {
    "id": "F171",
-   "no": 171,
+   "no": 87,
    "section": "Payroll",
    "risk": "HR",
    "ws": "The Finance Payroll TM has no access to enter, edit or delete employee data. Such access is restricted to HR authorized TM.",
@@ -1564,7 +808,7 @@ export default {
   },
   {
    "id": "F172",
-   "no": 172,
+   "no": 88,
    "section": "Payroll",
    "risk": "MR",
    "ws": "All Team Members must be on the payroll software (incl Part Timer, Expatriates & Regional whose payroll is processed by the hotel) regardless of payment method.",
@@ -1573,7 +817,7 @@ export default {
   },
   {
    "id": "F173",
-   "no": 173,
+   "no": 89,
    "section": "Payroll",
    "risk": "Key",
    "ws": "All payroll changes (starters, leavers, pay / salary increases, bank detail changes, etc.) on the Payroll Change Report agree to the approved change forms / Personnel Action Forms (PAFs), etc. Any discrepancies between the Payroll Change Report and supporting documentation are documented and resolved before the subsequent pay period end.",
@@ -1582,7 +826,7 @@ export default {
   },
   {
    "id": "F174",
-   "no": 174,
+   "no": 90,
    "section": "Payroll",
    "risk": "HR",
    "ws": "Search for duplicate bank accounts is done as part of the Payroll Change Report review and any instances noted are investigated.",
@@ -1591,7 +835,7 @@ export default {
   },
   {
    "id": "F175",
-   "no": 175,
+   "no": 91,
    "section": "Payroll",
    "risk": "HR",
    "ws": "Confirm that payroll accruals for vacation, Paid Time Off, and sick leave are calculated individually based on earned leave in accordance with the hotel's approved policy, and are charged to the relevant expense and payroll liability accounts at month-end.",
@@ -1600,7 +844,7 @@ export default {
   },
   {
    "id": "F176",
-   "no": 176,
+   "no": 92,
    "section": "Payroll",
    "risk": "HR",
    "ws": "For overtime hours, confirm that:\ni) All overtime hours are approved by the Operations Leader (or designee) and Finance leader (or designee) - evidence must be maintained.\nii) Overtime are scheduled and approved in advance.\niii) Unscheduled or unapproved overtime are approved prior to the end of the subsequent pay period.\niv) Overtime process/ entitlement/ maximum hours/ payment are in accordance with local legislations.",
@@ -1609,7 +853,7 @@ export default {
   },
   {
    "id": "F177",
-   "no": 177,
+   "no": 93,
    "section": "Payroll",
    "risk": "Key",
    "ws": "The final post-edit reports from the T&A system (or equivalent) which should include at a minimum regular hours, overtime hours and other hours per Team Member is reviewed by the Finance Team Member who is responsible for the payroll and approved by the Finance Leader (or designee).",
@@ -1618,7 +862,7 @@ export default {
   },
   {
    "id": "F178",
-   "no": 178,
+   "no": 94,
    "section": "Payroll",
    "risk": "MR",
    "ws": "Payroll Identification Audits are completed at a minimum twice per year (except for properties with a biometric T&A system) by Team Member(s) independent of the Payroll and HR functions; and the audit documentation are retained.\nDuring the Payroll Identification Audit, all Team Members are required to i) Present valid identification, ii) Sign the audit document encompassing all Team Members listed on the payroll register. Investigation has been done by the Finance Leader and/or Operations Leader for any remaining Team Members who have not signed the audit document after 30 days from the initial audit date.",
@@ -1627,7 +871,7 @@ export default {
   },
   {
    "id": "F179",
-   "no": 179,
+   "no": 95,
    "section": "Payroll",
    "risk": "MR",
    "ws": "All salary & wage payment are made by fund transfer into the Team Member's bank account or by check. If cash payment is only possible method, the cash must not be paid from the daily deposit but must be withdrawn from the bank account. \nIf there was manual payment being made, confirm that there is documentation detailing the reason for error and the payment was approved by the Department Head (or designee), Human Resources Leader, and Finance Leader.",
@@ -1636,7 +880,7 @@ export default {
   },
   {
    "id": "F180",
-   "no": 180,
+   "no": 96,
    "section": "Payroll",
    "risk": "HR",
    "ws": "Payroll advances are given only in the event of non-recurring and extraordinary circumstance; and with the approval of the Operations Leader.\ni) Confirm that the payroll advance is not more than the Team Member's net take home pay at the time of the payroll advance disbursement.\nii) Confirm that all payroll advances are paid back by the subsequent pay period after the disbursement.\niii) All payroll advance documentation include the Team Member’s signature and date; and the documentation are retained.",
@@ -1645,7 +889,7 @@ export default {
   },
   {
    "id": "F181",
-   "no": 181,
+   "no": 97,
    "section": "Procurement",
    "risk": "HR",
    "ws": "Confirm that all original executed contracts are kept by the Finance Leader or Operations Leader in a secure location.",
@@ -1654,7 +898,7 @@ export default {
   },
   {
    "id": "F182",
-   "no": 182,
+   "no": 98,
    "section": "Procurement",
    "risk": "HR",
    "ws": "All 'rolling contracts' are reviewed annually; and renewal without change is only done at the maximum of three times.",
@@ -1663,7 +907,7 @@ export default {
   },
   {
    "id": "F183",
-   "no": 183,
+   "no": 99,
    "section": "Procurement",
    "risk": "MR",
    "ws": "All terminations of contracts are in writing and a copy of the termination notice kept on file.",
@@ -1672,7 +916,7 @@ export default {
   },
   {
    "id": "F184",
-   "no": 184,
+   "no": 100,
    "section": "Procurement",
    "risk": "HR",
    "ws": "Confirm that all contracts are executed in the name of the Hotel owner and are approved in accordance with the Hotel Operations Approval Matrix (Note exclusions and exceptions). Standard Contract Approval Form should be used as per regional guidelines, where possible.",
@@ -1681,7 +925,7 @@ export default {
   },
   {
    "id": "F185",
-   "no": 185,
+   "no": 101,
    "section": "Procurement",
    "risk": "MR",
    "ws": "If there are expenditures negotiated above property as a Master Services Agreement and incorporate multiple Hotels, confirm that the individual Hotels have signed the Hotel Participation Agreement (HPA) which then follow the approval guideline in policy FP-OPSFIN-146.",
@@ -1690,7 +934,7 @@ export default {
   },
   {
    "id": "F186",
-   "no": 186,
+   "no": 102,
    "section": "Procurement",
    "risk": "HR",
    "ws": "Where a sole source supplier is used for the purchase of goods/services with a potential total value of US$5,000 or higher (outside of HSM's program), the party responsible for the purchase must notify HSM about why competitive bidding was not performed, include the estimated annual dollar amount of purchases from the supplier.",
@@ -1699,7 +943,7 @@ export default {
   },
   {
    "id": "F187",
-   "no": 187,
+   "no": 103,
    "section": "Procurement",
    "risk": "HR",
    "ws": "All purchases in excess of $100k USD (per annum, assessed on a rolling 12 month basis) must go through an HSM contracted supplier. If there is a need to purchase a good or service not currently contracted by HSM, HSM must be notified, using the Purchase Notification Form.",
@@ -1708,7 +952,7 @@ export default {
   },
   {
    "id": "F188",
-   "no": 188,
+   "no": 104,
    "section": "Procurement",
    "risk": "MR",
    "ws": "Confirm that all contracts are within the authority limits as set forth in the Management Agreement (For Managed Hotels only) . All contracts are signed for a specified time period, which does not exceed the termination date of the Lease,  JV, or Management agreements.",
@@ -1717,7 +961,7 @@ export default {
   },
   {
    "id": "F189",
-   "no": 189,
+   "no": 105,
    "section": "Procurement",
    "risk": "HR",
    "ws": "Confirm that a current and comprehensive schedule of contracts is maintained; and the Finance Leader and/or Operations Leader review the schedule on a quarterly basis.",
@@ -1726,7 +970,7 @@ export default {
   },
   {
    "id": "F190",
-   "no": 190,
+   "no": 106,
    "section": "Procurement",
    "risk": "HR",
    "ws": "Validate that all purchase commitments via purchase orders, contracts, service agreements, leases, or other form of contractual agreement are documented on forms approved by the Legal Department or legal firm approved by Hilton (where available) or have otherwise received Legal approval.",
@@ -1735,7 +979,7 @@ export default {
   },
   {
    "id": "F191",
-   "no": 191,
+   "no": 107,
    "section": "Procurement",
    "risk": "HR",
    "ws": "Any payment in excess of $5M USD made in any single payment to any single entity, by a Hotel or Cluster of Hotels (excluding Shared Service Centers) is approved by the Regional VP Operations Finance.",
@@ -1744,7 +988,7 @@ export default {
   },
   {
    "id": "F192",
-   "no": 192,
+   "no": 108,
    "section": "Procurement",
    "risk": "HR",
    "ws": "An appropriate background investigation has been conducted by the Legal Compliance team prior to an award of a contract when the following occurs: \n• Any contract with a Contract Value is equal to or greater than US$500k, this includes renewals and refresh of the agreements. \n• All Master Service Agreements. \n• Any contract where the location of the counterparty or transactions with that counterparty involve potential trade sanctions. \n• Agency Agreements, which are Agreements with consultants, vendors, or other third parties to act as agents for Hilton to obtain government permits or licenses or to engage in lobbying efforts. \n• All sponsorship and partnership agreements where Hilton’s brand marks and other intellectual property are used. \n• Charitable contributions and political agreements.",
@@ -1753,7 +997,7 @@ export default {
   },
   {
    "id": "F193",
-   "no": 193,
+   "no": 109,
    "section": "Procurement",
    "risk": "HR",
    "ws": "Prior to commencing work, all suppliers must provide Certificates of Insurance evidencing that they are carrying the types of coverage with the limits specified in the applicable contracts and as guided by Hilton Global Provider Insurance Checklist.\nConfirm that either Certificate of Insurance is maintained or waiver is taken from the appropriate authority: High Risk Category - the waiver is taken from Risk Management; Low and medium risk category - the waiver is taken from Regional Finance Director.",
@@ -1762,7 +1006,7 @@ export default {
   },
   {
    "id": "F194",
-   "no": 194,
+   "no": 110,
    "section": "Revenue",
    "risk": "MR",
    "ws": "All paper gift certificates(including complimentary letters or certificates) are pre-printed and sequentially numbered with the following wordings on it: \ni) The certificates have no cash value (i.e., cannot be redeemed for cash)\nii) Expiration date \niii) other T&C (Non-Transferrable / Not Valid with any other offer / property of hotel, etc.)\niv) Unique number if in the form of a certificate or card (not necessarily applicable to letters).",
@@ -1771,7 +1015,7 @@ export default {
   },
   {
    "id": "F195",
-   "no": 195,
+   "no": 111,
    "section": "Revenue",
    "risk": "HR",
    "ws": "The inventory of certificates and electronic gift cards are kept in a secured location (locked). Finance counts and reconciles all issued certificates monthly.\nIf certificates are issued as a part of a Team Member's house funds, these are treated as cash and included in the monthly surprise house fund count.",
@@ -1780,7 +1024,7 @@ export default {
   },
   {
    "id": "F196",
-   "no": 196,
+   "no": 112,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Confirm that the accounting treatment for local gift certificates is properly handled as follows:\ni) Local gift certificates (i.e., not Hilton Amex program) purchased at the Hotel are credited in the gift certificate liability account on the Hotel’s balance sheet at the time of issuance and only recognized in the P&L once redeemed.\nii) When the certificates are redeemed, the appropriate revenue account is credited and the gift certificate liability account is debited.\niii) If the certificates expires without redemption, the gift certificate liability account is debited for the remaining amount and appropriate miscellaneous revenue account is credited (or as per local law on the subject of expiration dates and escheatment practices).\niv) Confirm that the value of complimentary letters and certificates is not recorded on the Balance Sheet as a liability.",
@@ -1789,7 +1033,7 @@ export default {
   },
   {
    "id": "F197",
-   "no": 197,
+   "no": 113,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Confirm that the Finance Leader determine the sources of commissionable revenue types (i.e., AV providers, Florists, Vending Machines, etc.) and document the procedure for their collection. The procedure must be consistent with the signed contract for these services and the revenue must be calculated in accordance with contractual terms.",
@@ -1798,7 +1042,7 @@ export default {
   },
   {
    "id": "F198",
-   "no": 198,
+   "no": 114,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Verify that there is a list of all Management level Team Members who are eligible to sign for Duty Meals, Entertainment/Promotional F&B charge and the list was approved by both the Operations Leader and Finance Leader. Verify that the hotel have an internal process in place to ensure only authorized Team Members have signed for these types of charges.",
@@ -1807,7 +1051,7 @@ export default {
   },
   {
    "id": "F199",
-   "no": 199,
+   "no": 115,
    "section": "Revenue",
    "risk": "MR",
    "ws": "For other revenue, both originating from an interfaced system and manually posted charges, confirm that a reconciliation is completed at least monthly where the manual log or invoice is compared to the charges posted manually to the PMS. Confirm that any variances are investigated and resolved.",
@@ -1816,7 +1060,7 @@ export default {
   },
   {
    "id": "F200",
-   "no": 200,
+   "no": 116,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Other rooms revenue: The Early Departure/Extended Stay Report has been reviewed and charges have been processed. The Cancellation Report has been reviewed and charges have been processed daily.",
@@ -1825,7 +1069,7 @@ export default {
   },
   {
    "id": "F201",
-   "no": 201,
+   "no": 117,
    "section": "Revenue",
    "risk": "MR",
    "ws": "On a daily basis the POS report is reviewed to ensure that there is no Open Checks carried forward. These checks must be closed as soon as possible.",
@@ -1834,7 +1078,7 @@ export default {
   },
   {
    "id": "F202",
-   "no": 202,
+   "no": 118,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Guest, City, and Advance Deposit ledger PMS reports are reconciled to the General Ledger daily.",
@@ -1843,7 +1087,7 @@ export default {
   },
   {
    "id": "F203",
-   "no": 203,
+   "no": 119,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Advance Deposit ledger is reviewed daily to ensure that stale or dated credits are refunded or credited to income timely.",
@@ -1852,7 +1096,7 @@ export default {
   },
   {
    "id": "F204",
-   "no": 204,
+   "no": 120,
    "section": "Revenue",
    "risk": "MR",
    "ws": "The House Account is reviewed daily to ensure that accounts are cleared timely. Sample check that the purpose of each House Account is clearly labeled in the PMS, and approved by the Finance or Operations Leader.",
@@ -1861,7 +1105,7 @@ export default {
   },
   {
    "id": "F205",
-   "no": 205,
+   "no": 121,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Check the JV for the previous two months to confirm that the credits remaining in the Guest and City ledger are reclassed to a liability account; and any debits in the Advance Deposit ledger are reclassed to an asset account at month-end.",
@@ -1870,7 +1114,7 @@ export default {
   },
   {
    "id": "F206",
-   "no": 206,
+   "no": 122,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Rate & Rate Override Report (or similar PMS report) have been reviewed by the Reservations/Revenue Manager (or designee) daily - this is evidenced by signature, date, tick marks and comments. The report is printed after night audit completion to ensure all changes are included.",
@@ -1879,7 +1123,7 @@ export default {
   },
   {
    "id": "F207",
-   "no": 207,
+   "no": 123,
    "section": "Revenue",
    "risk": "MR",
    "ws": "All complimentary and house use rooms are approved by the Operations Leader (or designee) for reasonable business purpose. Where possible, this approval should occur prior to the stay.",
@@ -1888,7 +1132,7 @@ export default {
   },
   {
    "id": "F208",
-   "no": 208,
+   "no": 124,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Verify that rooms provided under trade-out arrangements, promotional packages (e.g., buy two, get one free), or as group contract incentives (e.g., one free room per 50 booked) are not classified as complimentary. These rooms should be classified as one of the revenue categories (transient, group, or contract) and are considered when calculating Occupancy Percentage.",
@@ -1897,7 +1141,7 @@ export default {
   },
   {
    "id": "F209",
-   "no": 209,
+   "no": 125,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Housekeeping/ Room Discrepancy Report is reviewed daily by Front Office & Housekeeping with reasons and explanations for discrepancies documented and retained.",
@@ -1906,7 +1150,7 @@ export default {
   },
   {
    "id": "F210",
-   "no": 210,
+   "no": 126,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Other rooms revenue: The No Show report is periodically reviewed, has been signed by Front Office and/ or Reservations Management. Review includes that all the no show are charged, settled and checked out; and confirm that no room nights are recorded for a no-show. The Unresolved Guaranteed No Show Report is reviewed and all No Shows are less than 10 days aged.",
@@ -1915,7 +1159,7 @@ export default {
   },
   {
    "id": "F211",
-   "no": 211,
+   "no": 127,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Other rooms revenue: The Due Out Report has been reviewed and charges have been processed.",
@@ -1924,7 +1168,7 @@ export default {
   },
   {
    "id": "F212",
-   "no": 212,
+   "no": 128,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Confirm that applicable system generated reports for all Other Revenue (e.g. parking, laundry, golf club, spa, etc.) are obtained from the PMS, POS, or other source system and reviewed by management (at least prior to month-end close) to confirm that all due revenue has been charged or waived as appropriate.",
@@ -1933,7 +1177,7 @@ export default {
   },
   {
    "id": "F213",
-   "no": 213,
+   "no": 129,
    "section": "Revenue",
    "risk": "HR",
    "ws": "For F&B outlets, the POS system report is balanced back to the PMS report on a daily basis. Confirm that all variances are investigated and the results and actions are documented.",
@@ -1942,7 +1186,7 @@ export default {
   },
   {
    "id": "F214",
-   "no": 214,
+   "no": 130,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Confirm that all voids, discounts and entertainment/ duty F&B charges are authorized by the Management within 2 weeks. Verify that the ability to perform voids and discounts in the POS is restricted.",
@@ -1951,7 +1195,7 @@ export default {
   },
   {
    "id": "F215",
-   "no": 215,
+   "no": 131,
    "section": "Revenue",
    "risk": "HR",
    "ws": "The Income Auditor (or equivalent) distributes all duty meal checks or a summary of duty meals and entertainment / promotional F&B charges for approval,within 2 weeks, to the Operations Leader and the Finance Leader, at a minimum. The approved documentation is retained.",
@@ -1960,7 +1204,7 @@ export default {
   },
   {
    "id": "F216",
-   "no": 216,
+   "no": 132,
    "section": "Revenue",
    "risk": "MR",
    "ws": "All off-Line transactions are reviewed and posted as soon as the system became on-line. If no off-line transaction occurred, ensure that the Income Auditor can clearly explain the procedures for off-line transactions and the checks to be performed.",
@@ -1969,7 +1213,7 @@ export default {
   },
   {
    "id": "F217",
-   "no": 217,
+   "no": 133,
    "section": "Revenue",
    "risk": "MR",
    "ws": "In case of manual system (i.e., when no automated POS system exists or during emergency down times of the automated POS), F&B revenue controls as per policy FP-OPSFIN-130 Revenue Reconciliation Section E2 are followed.",
@@ -1978,7 +1222,7 @@ export default {
   },
   {
    "id": "F218",
-   "no": 218,
+   "no": 134,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Each C&E Function has a Banquet Event Order (BEO) sheet. Reconciliation between the PMS / POS postings and the BEO is performed and discrepancies are documented and followed up to resolution.",
@@ -1987,7 +1231,7 @@ export default {
   },
   {
    "id": "F219",
-   "no": 219,
+   "no": 135,
    "section": "Revenue",
    "risk": "MR",
    "ws": "For sampled events, check if the C&E revenue were charged correctly:\ni) guaranteed numbers or amounts were charged correctly.\nii) the meeting package rates and ensure the revenue has been allocated correctly.\niii) All extra charges for C&E must be documented and approved by an Authorized Group Contact.",
@@ -1996,7 +1240,7 @@ export default {
   },
   {
    "id": "F220",
-   "no": 220,
+   "no": 136,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Confirm that in the event of an allowance or adjustment, either a detailed explanation is entered into PMS or POS or a manual slip (or equivalent) is used to document the explanation for the allowance or adjustment.",
@@ -2005,7 +1249,7 @@ export default {
   },
   {
    "id": "F221",
-   "no": 221,
+   "no": 137,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Confirm that the system generated reports for all allowances and adjustments processed in PMS and POS is reviewed by the applicable department head (e.g. PMS report by Front Office Manager or designee) by the end of next day. Check that the supporting documents (e.g. guest letter, email, chargeback notification, etc.) for the allowances and adjustments are maintained where possible.",
@@ -2014,7 +1258,7 @@ export default {
   },
   {
    "id": "F222",
-   "no": 222,
+   "no": 138,
    "section": "Revenue",
    "risk": "HR",
    "ws": "The Occupancy Analysis Report (or equivalent) has been compared to the Audit Journal Report from OA and corrections have been processed",
@@ -2023,7 +1267,7 @@ export default {
   },
   {
    "id": "F223",
-   "no": 223,
+   "no": 139,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Verify that the reviewed system generated report(s) or a summary of all allowances and adjustments for the day are reviewed and approved periodically by the Operations Leader and Finance Leader, at the minimum, within two weeks period.",
@@ -2032,7 +1276,7 @@ export default {
   },
   {
    "id": "F224",
-   "no": 224,
+   "no": 140,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Confirm that Finance reviews the system generated report of all duty meals and entertainment / promotional F&B charges and reconciles to the F&B checks to ensure that they are appropriate and have been signed by an authorized Team Member along with a brief explanation.",
@@ -2041,7 +1285,7 @@ export default {
   },
   {
    "id": "F225",
-   "no": 225,
+   "no": 141,
    "section": "Revenue",
    "risk": "MR",
    "ws": "All applicable taxes and gratuities for duty meals and entertainment / promotional F&B charges are charged  in compliance with local regulations and, together with the corresponding costs, are included in the relevant departmental expenses (Revenue must not be recorded). Verify that breakfast provided as part of the Hilton Honors Program is coded to Rooms Departmental Expense.",
@@ -2050,7 +1294,7 @@ export default {
   },
   {
    "id": "F226",
-   "no": 226,
+   "no": 142,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Confirm that issuance and approval of gift certificates is adequately segregated and all certificates are properly approved. Also verify that a form or log is maintained for the gift certificates issuance to Team Member for sales to customers; and signed by both the Team Member receiving the gift certificates and the Team Member issuing the gift certificates.",
@@ -2059,7 +1303,7 @@ export default {
   },
   {
    "id": "F227",
-   "no": 227,
+   "no": 143,
    "section": "Revenue",
    "risk": "MR",
    "ws": "The redeemed certificate is invalidated (stamped or defaced) upon redemption and and dropped in the daily drop of the Team Member. Finance reconciles the system values (i.e. PMS, POS, etc.) to the redeemed certificates to ensure the correct revenue. And confirm that Complimentary letters or certificates  are redeemed as complimentary room in PMS, and any other goods or services are recorded at cost.",
@@ -2068,7 +1312,7 @@ export default {
   },
   {
    "id": "F228",
-   "no": 228,
+   "no": 144,
    "section": "Revenue",
    "risk": "MR",
    "ws": "The Hotel has a local standard operating procedure around who will be permitted to maintain, load, and sell the electronic gift cards. Verify that Team Member confirms no balance remains on the gift card upon redemption.",
@@ -2077,7 +1321,7 @@ export default {
   },
   {
    "id": "F229",
-   "no": 229,
+   "no": 145,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Verify that  gift card system activity is balanced back to the general ledger as part of the income audit process. Any variances are investigated and resolved immediately.",
@@ -2086,7 +1330,7 @@ export default {
   },
   {
    "id": "F230",
-   "no": 230,
+   "no": 146,
    "section": "Revenue",
    "risk": "HR",
    "ws": "Complimentary letters or certificates are signed by the Operations Leader and the distribution is controlled by a team member designated by the Operations Leader.",
@@ -2095,7 +1339,7 @@ export default {
   },
   {
    "id": "F231",
-   "no": 231,
+   "no": 147,
    "section": "Revenue",
    "risk": "MR",
    "ws": "For annual or prepaid memberships charges (i.e. Golf, Health Clubs, etc.), confirm that the income is deferred and released to P&L account in a proportional manner. Confirm that the initiation fees are recorded to revenue once payment is received.",
@@ -2104,7 +1348,7 @@ export default {
   },
   {
    "id": "F232",
-   "no": 232,
+   "no": 148,
    "section": "Revenue",
    "risk": "MR",
    "ws": "For group cancellation and attrition charges, confirm that the revenue is only recognized when the charges are paid or settled. Also, verify that all Cancellation / Attrition are handled as specified by the signed contract, and any exceptions such as forgiveness of the charge for booking a future event or settlement for less than the amount due are approved by the Operations Leader.",
@@ -2113,7 +1357,7 @@ export default {
   },
   {
    "id": "F233",
-   "no": 233,
+   "no": 149,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Confirm that the terms and conditions of property maintained Vending Machines, Arcade Machines, ATMs, etc. are clearly stated in writing and they are in compliance with local legal regulations and FP-OPSFIN-146 Hotel Contract Execution & Spending Policy. Also confirm that such machines are properly maintained as per contract.",
@@ -2122,7 +1366,7 @@ export default {
   },
   {
    "id": "F234",
-   "no": 234,
+   "no": 150,
    "section": "Revenue",
    "risk": "MR",
    "ws": "For third party service providers, confirm that verification is performed to ensure that sales reports and commissions checks are received in a timely basis in accordance with the terms of the contract.",
@@ -2131,7 +1375,7 @@ export default {
   },
   {
    "id": "F235",
-   "no": 235,
+   "no": 151,
    "section": "Revenue",
    "risk": "HR",
    "ws": "For cash bar, confirm that the Income Auditor reviews the following: \ni) A report prepared by controlling, issuing, and returning stock, combined with cash registers or ticket sales, which must include Cost of Goods Sold percentage.\nii) Cash registers are Z read by an individual independent of receipt of cash. Confirm that the Income Auditor reconciles the cash readings or ticket sales to the cash receipts/takings as deposited with the General Cashier.\niii)Income Auditor records all the No-Sales per POS and submits to the relevant Department Head for review and follow up.",
@@ -2140,7 +1384,7 @@ export default {
   },
   {
    "id": "F236",
-   "no": 236,
+   "no": 152,
    "section": "Revenue",
    "risk": "HR",
    "ws": "The Reconciliation Report (OnQ Report ID - OOOBALSUM) for reconciling the end-of-day generated Detailed Receivables Recap to the totals of the Room Balance, Group Master, House Account, Advance Deposit, and Accounts Receivable aging(s) totals, are reviewed nightly/daily and all exceptions are followed-up. Confirm that the evidence of review is retained. Note: Only applicable for Hotels using OnQ PMS.",
@@ -2149,7 +1393,7 @@ export default {
   },
   {
    "id": "F237",
-   "no": 237,
+   "no": 153,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Confirm that the Room Balance Summary Ledger  (or relevant guest ledger from other PMS) is reviewed on a daily basis to ensure that it only contains the balances for guests currently staying at the hotel; and all high balances are investigated. Confirm that extended stays are closed out weekly.",
@@ -2158,7 +1402,7 @@ export default {
   },
   {
    "id": "F238",
-   "no": 238,
+   "no": 154,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Confirm that the Group Master Balance Summary in OnQ PMS (or relevant report from other PMS) is reviewed on a daily basis to confirm that: i) Accounts are checked out timely (within 5 days of checkout) ii) Accounts with extended gaps (10 days or more) between check-in and check-out dates are properly managed by the designated Accounts Receivable and Front Office Team Members. iii) High balances need to be investigated. iv) Credit balances for checked-out accounts are refunded or credited to income timely.",
@@ -2167,7 +1411,7 @@ export default {
   },
   {
    "id": "F239",
-   "no": 239,
+   "no": 155,
    "section": "Revenue",
    "risk": "MR",
    "ws": "Confirm that the Finance Leader reviews the detailed Advance Deposit, Guest and City Ledgers in OnQ PMS (or relevant ledgers in other PMS) on a monthly basis to ensure credit balances for checked out accounts or cancelled events are appropriately refunded or recorded as income.",
@@ -2176,12 +1420,768 @@ export default {
   },
   {
    "id": "F240",
-   "no": 240,
+   "no": 156,
    "section": "Revenue",
    "risk": "Key",
    "ws": "Verify that the TM with OA role 414 review the supporting before approving the OA adjustments. Ensure that the supporting documents are retained.",
    "ts": null,
    "policy": "Key Controls"
+  },
+  {
+   "id": "F001",
+   "no": 157,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Prior to payment processing, the following checks i) to vii) are done for the invoice -evidenced by tick marks, comments, etc.",
+   "ts": "i) Hotel name & vendor details \nii) Correct quantities as per the purchase order / contract and delivery documents \niii) Correct price, tax & discounts (if applicable) \niv) Delivery documents signed by receiving Team Member is attached for properties with no electronic procurement system. For hotels with electronic procurement system, invoice must be matched to the received goods in the system. \nv) Purchase order was approved appropriately. \nvi) Purchase orders are marked closed in the procurement system once all items are received. \nvii) Invoices for services rendered must be accompanied by  documentation that the service was performed and completed in a satisfactory manner by a Supervisor or above from the applicable Department.",
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F002",
+   "no": 158,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Confirm that all purchase orders are approved appropriately per the policy approval matrix. An up-to-date list of team members (names and titles) authorized to approve purchase orders is to be maintained by the Hotel and may be kept within the procurement system if applicable.",
+   "ts": "The following matrix demonstrates the minimum required approvals for purchase orders: \ni) All Food & Beverage purchase orders are approved appropriately as per below. \nUp to $1,000 USD, No approval required \nUp to $10,000 USD, F&B Management \nUp to $50,000 USD, F&B Management & Finance Leader \nii) All other purchase orders are approved by Operations Leader & Finance Leader. \niii) Any PO over $50,000 USD should refer to FP-OPSFIN-146 Hotel Contract Execution and Spending.",
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F003",
+   "no": 159,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Confirm that the credit amount is only reduced from a supplier's account after the credit note has been received from the supplier.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F004",
+   "no": 160,
+   "section": "AP",
+   "risk": "Key",
+   "ws": "Obtain the most recent section of the lease agreement or management agreement for the determination of payments and the support for the calculation of lease rent expense (for leased hotels) or management fees (for managed hotels) for latest two (2) months. Verify the accuracy of the calculation of JV and payment and it reviewed and approved by the Finance Leader (or equivalent).",
+   "ts": null,
+   "policy": "Key Controls"
+  },
+  {
+   "id": "F005",
+   "no": 161,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Prior to month-end, the Finance Leader communicates with all Department Heads and obtain supporting documentation for any expense items, goods received, and services rendered in the month.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F006",
+   "no": 162,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "The Master Vendor Change Report is printed monthly and reviewed by the Finance Leader (or designee/ independent to receiving and AP function) to confirm that all updates (including bank details) are accurate and approved.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F007",
+   "no": 163,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "There is a standard naming convention for suppliers set-up to ensure that same supplier is not set up twice in the system. If any generic account being used, verify that there is monitoring of the use of the account by Finance.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F008",
+   "no": 164,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Validate that items recorded under the Prepaid Expenses account are for a benefit to be consumed within 12 months; and prepayments for benefits over 12 months are accounted for as Other Assets & Deferred Charges.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F009",
+   "no": 165,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Verify that the purchase order number is used as the reference number on the supplier invoice.  If supplier invoice does not have a reference to the PO number, verify hotel has noted the corresponding PO number and has a copy of the PO attached or appropriate supporting documentation.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F010",
+   "no": 166,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "If a perpetual stock system is in place, receipt of the items must be recorded before the end of the day in which they were delivered.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F011",
+   "no": 167,
+   "section": "AP",
+   "risk": "Key",
+   "ws": "Obtain the payment run report with a listing of all invoice payments for one (1) vendor payment run from two (2) different months. Verify that the Finance Leader has reviewed and approved the payment run report prior to releasing the amounts for payment. Review and approval is evidenced by the Finance Leader's comments (if any), signature and date on the report.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F012",
+   "no": 168,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "The delivery note / packing slip, or alternatively “Goods Received Note” must be matched to the PO prior to finalizing the receipt of items either by updating the procurement system or attaching to the paper PO. All complete documentation must be sent to the Finance Team on a daily basis.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F013",
+   "no": 169,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "There is a standard monthly accrual checklist that contains the common accruals which are made each month.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F014",
+   "no": 170,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Confirm that barter agreements are accounted for as following: \ni) Upon execution of the barter agreement, the fair market value of the transaction as defined in the contract is booked to the Balance Sheet prior to month-end close. \nii) Upon utilization of goods or services by the Hotel/other party, the expense/revenue is recorded against the Barter Agreement Assets/Liabilities.",
+   "ts": null,
+   "policy": "FP-OPSFIN-145 Barter Agreements"
+  },
+  {
+   "id": "F015",
+   "no": 171,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "For agreements that include other than fixed rent, confirm that an annual sales report is received and it is audited by the Finance Leader or General Manager or by an external audit firm hired by the hotel.",
+   "ts": null,
+   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
+  },
+  {
+   "id": "F016",
+   "no": 172,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Confirm that a summary of all tenant leases and concessionaire agreements is maintained on the Critical Contracts, License, Permit, & Tenant Listing. This listing is updated as soon as any changes to critical terms of the agreements occur and is reviewed at least annually.",
+   "ts": null,
+   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
+  },
+  {
+   "id": "F017",
+   "no": 173,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "All Vendors are set-up only with approved Supplier Set Up Form and supported by supplier documentation (set-up at the hotel to be approved by either the Finance Leader or Operations Leader; and set-up above property to be approved as per procedure established by Shared Service Center.)",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F018",
+   "no": 174,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "A system generated accounts payable aging report is produced and approved by the Finance Leader or Operations Leader on a monthly basis.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F019",
+   "no": 175,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Fixed rents and percentage/performance rent are accounted for on an accruals basis each month.",
+   "ts": null,
+   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
+  },
+  {
+   "id": "F020",
+   "no": 176,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "For purchases above $5,000 USD from a vendor not approved via HSM or corporate program (i.e., a local supplier or supplier without a national contract), three competitive quotes/bids are obtained and be included for reference prior to approval.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F021",
+   "no": 177,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "There is a written internal policy indicating a tolerance threshold on what can be received over and above the purchase order and this written policy was clearly communicated to all Team Members involved.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F022",
+   "no": 178,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "For Hotel that is Owned, Leased, or Joint Venture property, the Hotel must consider an accrual for capital invoices for which work is complete and the invoice is not yet received.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F023",
+   "no": 179,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Suppliers set-up in the procurement system is done by Team Member who does not receive goods; and the suppliers set-up in the account payable system is done by Team Member who does not have access to process account payable payments (i.e., check runs, electronic transfer, etc.)",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F024",
+   "no": 180,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "The team member completes a normal expense report which includes the travel advance amount when they return from the trip which the advance was acquired. Confirm that any surplus is returned within a week of return from the trip.",
+   "ts": null,
+   "policy": "FP-OPSFIN-143 Manual Expense Reports and Travel Advance Guidance"
+  },
+  {
+   "id": "F025",
+   "no": 181,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Utility meters are read on a monthly basis and the readings are used for the accrual calculation. If meter readings are not available, the alternative method is a per day average cost based on the historical bill.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F026",
+   "no": 182,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "All changes to supplier bank details must be accompanied by confirmation from the supplier on their company letterhead or their bank’s letterhead. Changes to supplier bank details must be confirmed with the supplier directly by calling / contacting them using details already on file.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F027",
+   "no": 183,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "If an invoice is not received electronically, all hard copy invoices are stamped / marked with date received. Confirm that there is an internal written procedure to ensure the paid invoices cannot be paid again.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F028",
+   "no": 184,
+   "section": "AP",
+   "risk": "Key",
+   "ws": "Obtain the month-end AP accrual listing for two (2) months. Verify that the Finance Leader (or designee) reviewed and approved the month end AP accrual JV which includes supporting documentation for the accrual amount. The review should include comments and tick marks as evidence of review, verifying that all goods and services received during the month are accurately accrued.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F029",
+   "no": 185,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "There is a standard Manual Expense Report Form that complies with the specific country requirements and contain the following item A to G. Note: This question is not applicable to hotels using Concur.",
+   "ts": "a) Name & position of Team Member claiming reimbursement\nb) Department Head and Finance Leader Approval (Regional / Area VP Operations for GM’s expense report) \nc) Date, description/ reason, amount net of tax (if tax is not reclaimable) and relevant tax amount (if tax is reclaimable) of each expense incurred \nd) Foreign currency exchange rate and relevant documentation (if applicable)\ne) Entertainment/Business meals to include names of people present, their company name, and purpose of meal \nf) Sequential reference number for each expense item to the receipt/supporting documentation \ng) Backed up with the original receipts or invoices (Travel back-up can be website print-outs from travel planner or charge log print out for travel cards)",
+   "policy": "FP-OPSFIN-143 Manual Expense Reports and Travel Advance Guidance"
+  },
+  {
+   "id": "F030",
+   "no": 186,
+   "section": "AP",
+   "risk": "Key",
+   "ws": "Confirm that any month-end AP accrual were properly accrued as a liability in the General Ledger (G/L).  Validate that all accruals posted at month end are reversed at the beginning of the next month (auto-reversing is preferred). Each month’s accrual must start over and invoices received should not be coded against the accrual liability.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F031",
+   "no": 187,
+   "section": "AP",
+   "risk": "Key",
+   "ws": "Validate the review by the Finance Leader (or designee) at month end included a review of all open purchase orders (whether or not they were received) and investigation of any significant aged open PO (i.e. 6 months)  with documented resolution. Ensure that the accrual is only recognized if goods or service have been received/ provided but haven't been invoiced.\nThe “Goods Received Without Invoice” report (or equivalent) was reviewed by the Finance Leader (or designee) and retained as support for the monthly accrual journal entry. \nNote:Open PO report should be run without date filters- i.e. should be run to include all prior months and not just for the current month.",
+   "ts": null,
+   "policy": "FP-OPSFIN-142 Accounts Payable Prepayments and Accruals"
+  },
+  {
+   "id": "F032",
+   "no": 188,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "If the quantities received is below the purchase order, the shorted amount is clearly indicated on the receiving documentation prior to signature by the representative of the supplier delivering the order. The shorted amount is recorded on the purchase order to ensure no payment to be made for the shorted items.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F033",
+   "no": 189,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Returns made to the suppliers are recorded either in the procurement system or on a returns log; and credit memo is obtained from the supplier confirming the quantity of returns.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F034",
+   "no": 190,
+   "section": "AP",
+   "risk": "Key",
+   "ws": "Confirm the details of the payment run report (i.e. vendor name, amount, bank account, etc.) were reconciled to the vendor invoices.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F035",
+   "no": 191,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Confirm that the following for goods receiving are in place: \ni) All goods are received in a designated receiving area and where possible, this should be a restricted area accessible to authorized Team Members and not directly accessible to guests.\nii) There is a written internal procedure for after hour deliveries.\niii) Verify that the Team Member who places the order is not the one doing the physical goods receiving nor the receiving in the procurement system.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F036",
+   "no": 192,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Please confirm that the ordering and custody of payment checks are properly managed as follows: \ni) Payment checks are not physically handled by Accounts Payable.\nii) Check register is signed and dated by Finance Leader (or designee).\niii) Pre-printed checks are in numbering sequence and being kept in a locked and secured location at the hotel.\niv)Payment checks are only ordered by the Finance Leader (or designee). Upon receipt of the pre-printed check order, the boxes are checked and confirmed that the first and last check sequence in each box is intact and verified against the order.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F037",
+   "no": 193,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Confirmed that expense claims are approved by the Department Head and the Finance Leader (GM Expense forms - Finance Leader and VP Ops in Regional Office) and submitted within one month of the expense being incurred; and the payment of expense claims are processed through the standard account payable process.\nAlso review the travel advance forms to ensure that the forms are signed by the Team Member receiving the travel advance and are approved by either the Finance Leader or Operations Leader and any advance in excess of USD $2,500 are approved by the Regional Finance Director.",
+   "ts": "Note: This question is not applicable to hotels using Concur.",
+   "policy": "FP-OPSFIN-143 Manual Expense Reports and Travel Advance Guidance"
+  },
+  {
+   "id": "F038",
+   "no": 194,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Confirm that only the following items are categorized as Operating Equipment on the Balance Sheet: a) China b) Glassware c) Silverware/Cutlery d) Linen. \nOperating Equipment are accounted as Direct Expense (preferred method)  i.e., expense as received. If amortized to Operating Expense – The purchase is spread not to exceed 12 months from point of receipt. Although Uniforms are not categorized as Operating Equipment, the same accounting treatment applies.",
+   "ts": "Note: Uniforms are not categorized as Operating Equipment but the same accounting treatment applies.",
+   "policy": "SOP-OPSFIN-240 Accounting for Operating Equipment & Uniforms"
+  },
+  {
+   "id": "F039",
+   "no": 195,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Confirm that proper issued procedures as follow are in place for pre-printed checks:\ni) The pre-printed checks issued for printing are recorded in a log which is signed by the Finance Leader and the Team Member who receives the pre-printed check.\nii) The Finance Leader confirms that all the checks issued for printing are returned for signing and that they agree to the final payment run report.\niii)On demand / manual check requests are approved on a “Check Request Form” and the checks are prepared by a Team Member who does not have check signing authority.The manual checks are processed through the accounts payable system timely.\niv) The void checks are properly mutilated and logged.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F040",
+   "no": 196,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "A review of unused vendors is performed. If a supplier has not been used for 18 months, and once all outstanding payments have been made to the supplier, this supplier must be locked / inactivated in the procurement and accounts payable systems.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F041",
+   "no": 197,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Confirm that: i) There is a market list/order completed by the kitchen for fresh items purchased daily and the list is used as the basis for placing order. ii) Dry food is ordered based on the par stock system adjusted for banquet requirements.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F042",
+   "no": 198,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "The item, quantity and weight (where applicable) is checked to the delivery note / packing slip and approved purchase order when the goods are received. In the case of fresh food, quality of the receiving item is also checked by a member of the kitchen team or designated member. Once the delivery has been checked, either delivery note, packing slip or invoice is signed and dated by the Team Member receiving and by the supplier’s representative delivering the goods.",
+   "ts": null,
+   "policy": "FP-OPSFIN-140 Accounts Payable Ordering and Receiving"
+  },
+  {
+   "id": "F043",
+   "no": 199,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "Review the tenant or concessionaire contract(s) and ensure following terms included:\ni) Deposit requirement.\nii) Billing terms for additional services (such as meals in employee cafeteria, housekeeping services, security, etc.)\niii) Utilities are charged separately.\niv) Internet access can only be provided if it is on a separate network other than the Hotel’s network.\nv) Insurance requirements.",
+   "ts": "Note: If any of these conditions are not included and legal approval is not obtained - mark \"No\"",
+   "policy": "FP-OPSFIN-144 Tenant Leases & Concessionaire Agreements"
+  },
+  {
+   "id": "F044",
+   "no": 200,
+   "section": "AP",
+   "risk": "MR",
+   "ws": "There is a threshold approved by both the Finance Leader and Operations Leader for allowable discrepancy between the invoice amount and purchase order amount. For any discrepancy that falls outside the threshold, the correct documentation is obtained, and/or an additional purchase order is raised for the difference, and/or the invoice is approved by both the Finance Leader and the Operations Leader.",
+   "ts": null,
+   "policy": "FP-OPSFIN-141 Accounts Payable Supplier Set-Up & Payment"
+  },
+  {
+   "id": "F045",
+   "no": 201,
+   "section": "AP",
+   "risk": "HR",
+   "ws": "Obtain the Barter Agreements and confirm that:\ni) all Barter Agreements are only relating to exchanging sleeping rooms for Media, Advertising Production, Direct Marketing, or Travel Related Services. Any other barter benefits given or received must be approved by the AVP of Operations (or equivalent) and the Regional Finance Director (or equivalent).\nii) all Barter Agreements only be entered after the necessary approvals in accordance with the Hotel Operations Approval Matrix in FP-OPSFIN-146 are obtained and the Hilton Standard Barter Agreement is used.",
+   "ts": null,
+   "policy": "FP-OPSFIN-145 Barter Agreements"
+  },
+  {
+   "id": "F084",
+   "no": 202,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "The required safety box forms (as per FP-RM-015) are completed and retained by the hotel. At least monthly, Front Office performs key audits on all guest Safety Deposit Boxes and documents their counts.",
+   "ts": null,
+   "policy": "FP-OPSFIN-116 Safety Deposit Box Audits"
+  },
+  {
+   "id": "F085",
+   "no": 203,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Is the General Cashier Report prepared for each day? Also confirm that a separate deposit slip is completed for each day’s total monies and a separate container/tamper proof bag is made for each day’s deposits.",
+   "ts": null,
+   "policy": "FP-OPSFIN-111 General Cashiering"
+  },
+  {
+   "id": "F086",
+   "no": 204,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "All Refunds are done in the same method as the original payment (e.g. cash to cash / credit card to credit card, Wechat/Alipay to Wechat/Alipay, etc.)\nAll credit card refunds are posted to the same credit card number as originally charged and recorded in the PMS.",
+   "ts": null,
+   "policy": "FP-OPSFIN-113 Guest Refunds & Paid Outs"
+  },
+  {
+   "id": "F087",
+   "no": 205,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Is the main vault audited by either Operations Leader or Finance Leader every month?",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F088",
+   "no": 206,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "A Safety Deposit Box Audit of all Team Member and Guest Safety Deposit Boxes is completed quarterly by a Finance Team Member (or a designee appointed by the Operations Leader if no Finance team member). The completed audit form must be approved by Finance Leader or Operations Leader and filed.",
+   "ts": null,
+   "policy": "FP-OPSFIN-116 Safety Deposit Box Audits"
+  },
+  {
+   "id": "F089",
+   "no": 207,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Are all House Funds secured and accessible for one (1) team member only at any time? Are house funds maintained at appropriate levels as verified by the Finance Leader?",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F090",
+   "no": 208,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "All overages and shortages identified as part of the GCR, must be investigated and resolved. Any appropriate back-up/explanation is to be included with the cash journal documentation",
+   "ts": null,
+   "policy": "FP-OPSFIN-111 General Cashiering"
+  },
+  {
+   "id": "F091",
+   "no": 209,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Is each House Fund totaling USD 2k or greater being audited every month? Are at least 50% of House Funds Audited each month? Is each House Fund audited at least once every 3 months (or banked into cash machines and reviewed daily)?",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F092",
+   "no": 210,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Is background check completed prior to the issuance of house funds (unless restricted by local law or legislation)? Is there a signed and authorized House Fund Contract and cash handling procedure for each TM holding a House Fund? Are house funds stored securely (in safety deposit box or alternative procedures approved by Regional Finance Director, Operations Leader and Finance Leader)?",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F093",
+   "no": 211,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Is there a Revolving House Fund handover log - proof that the house fund is counted by two (2) team members each time it is passed on to the next shift - document be signed by both TM with date, time and amount.",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F094",
+   "no": 212,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Are surprise House Fund Counts performed by the TM designed by Finance Leader and witnessed by Funds Custodian, and evidenced with signatures from both and documented? The General Cashier must never audit house funds or be part of the surprise count process in any way.",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F095",
+   "no": 213,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Does the General Cashier perform a daily self count audit of the main vault? At least weekly, is the count witnessed by a designated TM?",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F096",
+   "no": 214,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Confirm General Cashier Office control is performed properly: \ni) a panic alarm is equiped or the GC should be provided with an alternative means to call for help in case of emergency (i.e., a pager, etc.) \nii) Access to the General Cashier’s office must be restricted to the General Cashier only. Back-up access (key, code, or key card) to the GC office must be stored in a secure location either by the Finance Leader, Operations Leader, or Security.",
+   "ts": null,
+   "policy": "FP-OPSFIN-112 General Cashier's Office, Main Vault, & Drop Safe Security"
+  },
+  {
+   "id": "F097",
+   "no": 215,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Payment for the cash paid out is taken immediately by charging the guest credit card and commission is applied accordingly.",
+   "ts": null,
+   "policy": "FP-OPSFIN-113 Guest Refunds & Paid Outs"
+  },
+  {
+   "id": "F098",
+   "no": 216,
+   "section": "Cash",
+   "risk": "Key",
+   "ws": "Obtain the bank mandate for Electronic Funds Transfer (EFTs) and verify that the individuals authorized to initiate and approve EFTs is appropriate based on the Team Members' role and responsibilities.",
+   "ts": null,
+   "policy": "Key Controls"
+  },
+  {
+   "id": "F099",
+   "no": 217,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Paid outs are only issued from the Front Desk and are processed through the PMS system. All paid outs are compiled, routed, and approved by the Finance Leader or Operations Leader on a daily basis.",
+   "ts": null,
+   "policy": "FP-OPSFIN-113 Guest Refunds & Paid Outs"
+  },
+  {
+   "id": "F100",
+   "no": 218,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Is there a copy of the Revolving House Fund procedure that is approved by the Finance Leader and the Regional Finance Director? Are the House Bank Contract and Cash Handling Instructions completed by each TM with access to revolving funds?",
+   "ts": null,
+   "policy": "FP-OPSFIN-110 House Funds"
+  },
+  {
+   "id": "F101",
+   "no": 219,
+   "section": "Cash",
+   "risk": "Key",
+   "ws": "Select a sample of 1 EFT for a vendor payment run from two (2) months. Confirm that for each EFT selected, two separate parties initiated and approved the EFT and validate the supporting documentation for the release of the EFT.",
+   "ts": null,
+   "policy": "Key Controls"
+  },
+  {
+   "id": "F102",
+   "no": 220,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "As a part of the drop process, confirm that: \ni) TMs reconcile their own daily takings/ deposits, in a safe location, to the Property Management System (PMS) or Point of Sale System (POS) at the end their shift\nii) After separating TMs house funds, all remaining funds (including foreign currency) are dropped\niii) If there is a shortage to the house fund amount, a due back is processed\niv) System close-out report is not dropped\nv) Confirm that all shift drops (cash, checks, due backs, etc.) are documented on the drop log and witnessed in writing by an independent Team Member and placed in the drop safe.",
+   "ts": null,
+   "policy": "FP-OPSFIN-111 General Cashiering"
+  },
+  {
+   "id": "F103",
+   "no": 221,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Is the cash pick up performed by a professional security firm and/or the bank directly and is this performed at least once per week. Each deposit per day container/tamper proof bag is logged and signed for separately by the armored car service/professional security firm.",
+   "ts": null,
+   "policy": "FP-OPSFIN-111 General Cashiering"
+  },
+  {
+   "id": "F104",
+   "no": 222,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Foreign Currency Exchange gain (or loss) when realized is posted as revenue to Guest-Related Foreign Currency Transaction Gains (Losses), in Miscellaneous Income (11500-438230), unless the Management Agreement or the local legislation require different treatment.",
+   "ts": null,
+   "policy": "FP-OPSFIN-115 Foreign Currency Exchange"
+  },
+  {
+   "id": "F105",
+   "no": 223,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Access to the drop safe is controlled to ensure that two individuals (General Cashier and witness) are present to open the safe. GC and witness reconcile the number of envelopes collected and sign and date the drop log. The same would apply if there is a cash machine in place which is controlled by the hotel.",
+   "ts": null,
+   "policy": "FP-OPSFIN-111 General Cashiering"
+  },
+  {
+   "id": "F106",
+   "no": 224,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Confirm Main Vault and Drop Safe control is performed properly:\ni) Main Vault and Drop safeare located in a secure area (fireproof).\nii) Under no circumstances can anyone other than the General Cashier have access to the main vault. Back-up access must be segregated between Finance Leader and Operations Leader.",
+   "ts": null,
+   "policy": "FP-OPSFIN-112 General Cashier's Office, Main Vault, & Drop Safe Security"
+  },
+  {
+   "id": "F107",
+   "no": 225,
+   "section": "Cash",
+   "risk": "MR",
+   "ws": "Foreign currency transactions (excluding those completed at the Front Desk) are recorded at the spot rate closest to the date of the transaction. \nForeign currency transactions with any amounts outstanding on the Balance Sheet are remeasured using end of month exchange rates, with any difference recorded as Unrealized Foreign Exchange Gains or Losses in Other, Non-Operating Income and Expenses (11750-831020), below GOP.",
+   "ts": null,
+   "policy": "FP-OPSFIN-115 Foreign Currency Exchange"
+  },
+  {
+   "id": "F108",
+   "no": 226,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Confirm that Petty Cash controls are performed properly as below:\ni) Petty Cash Vouchers are approved and the original receipt is attached for ALL expenses as supporting document. Petty cash transactions greater than $100 (or the limit established by the Finance Leader) are approved prior to the purchase by the Team Member’s HOD or MOD and the Finance Leader. \nii) Petty Cash is NOT used for salary, tips, benefits or business travel & expense reimbursements/ payments. \niii) Petty Cash re-imbursement (for payout) summary is completed at least monthly and approved by the Finance Leader. All Petty Cash Vouchers and receipts are stamped or marked with \"Paid\" when pay out was performed.",
+   "ts": null,
+   "policy": "FP-OPSFIN-114 Petty Cash"
+  },
+  {
+   "id": "F109",
+   "no": 227,
+   "section": "Cash",
+   "risk": "HR",
+   "ws": "Confirm that Foreign Currency exchange services of front desk is preformed properly as following:\ni) Foreign Currency exchange services is only provided to registered in-house guest (excluding Foreign Currency Exchange machines that are not under the control of the hotel).\nii) Foreign Currency Exchange Rates are clearly displayed at the reception/front desk (excluding Foreign Currency Exchange machines that are not under the control of the hotel).\niii) Foreign Currency Exchange rates are updated in the PMS as a part of the night audit process at least weekly (or daily as determined by the Finance Leader) and commission/ mark-up applied.\niv) Guest is not refunded any unused deposit in any other currency than the local currency of the country in which the Hotel operates.",
+   "ts": null,
+   "policy": "FP-OPSFIN-115 Foreign Currency Exchange"
+  },
+  {
+   "id": "F149",
+   "no": 228,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Is FF&E provision/treatment made as per MA/BAMA FF&E concept and recorded in the books per regional FF&E accounting treatment guideline?",
+   "ts": "Obtain the latest MA/BAMA FF&E terms to confirm the applicable FF&E concept. Select 2 months to verify FF&E provision has been calculated correctly, and all GL entries & BS related accounts were recorded correctly per regional guideline.",
+   "policy": "Management Agreement"
+  },
+  {
+   "id": "F150",
+   "no": 229,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Insurance maintained by Hotel - All required insurances are in place with current certificate on file and in accordance with the Management Agreement. Check that there is a comprehensive schedule of required insurances and it is reviewed quarterly.",
+   "ts": null,
+   "policy": "Management Agreement"
+  },
+  {
+   "id": "F151",
+   "no": 230,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Review the current list of authorized bank signatories and confirm the members of each Group are appropriate and there are no employees who should not be an authorized signatory. Also, confirm that payments approval is in accordance with the Management Agreement, e.g. Owner approval is not required or practice unless guided by the MA.",
+   "ts": null,
+   "policy": "Management Agreement"
+  },
+  {
+   "id": "F152",
+   "no": 231,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Is hotel's FF&E bank account and funding in full compliance with MA/BAMA? \ni) a dedicated bank account has been established as per MA,\nii) the applicable FF&E reserve accounts are funded per the Management or Lease Agreement,\niii) the balance of the FF&E bank account is regularly reconciled with the corresponding BS account andand promptly investigate any variances.",
+   "ts": null,
+   "policy": "Management Agreement"
+  },
+  {
+   "id": "F153",
+   "no": 232,
+   "section": "MA Compliance",
+   "risk": "MR",
+   "ws": "Has an Owner review or audit of the books and records been completed, as guided by the MA? Confirm whether anomalies discovered upon the Owner review/audit are resolved? (select \"N/A\" if this is not a requirement as per MA;  input \"Yes\" if compliant)",
+   "ts": null,
+   "policy": "Red Flag Report"
+  },
+  {
+   "id": "F154",
+   "no": 233,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Confirm that the fee and any other payments (e.g. Group Services and Benefits, affiliated, etc.) to Hilton are up to date and accounted for correctly. Have the above fees been paid within accepted terms?",
+   "ts": null,
+   "policy": "Red Flag Report"
+  },
+  {
+   "id": "F155",
+   "no": 234,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Is the Owner currently meeting (and expected to continue meeting) their Working Capital obligations?",
+   "ts": null,
+   "policy": "Red Flag Report"
+  },
+  {
+   "id": "F156",
+   "no": 235,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Does the MA have any performance test defined? If yes, is it being met YTD? (input \"N/A\" if performance test is not defined; input \"Yes\" if compliant)",
+   "ts": null,
+   "policy": "Red Flag Report"
+  },
+  {
+   "id": "F157",
+   "no": 236,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Insurance maintained by Owners - All required insurances are in place with current certificate on file and in accordance with the Management Agreement. Check that there is a comprehensive schedule of required insurances and it is reviewed quarterly.",
+   "ts": null,
+   "policy": "Management Agreement"
+  },
+  {
+   "id": "F158",
+   "no": 237,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Confirm that no direct payments outside the scope of the MA have been made by the owner from the Bank account in the last 12 months?",
+   "ts": null,
+   "policy": "Red Flag Report"
+  },
+  {
+   "id": "F159",
+   "no": 238,
+   "section": "MA Compliance",
+   "risk": "MR",
+   "ws": "Confirm that pre-opening expenses are paid as per the Management Agreement. Note: this is only applicable if the hotel opened within the last 24 months of review",
+   "ts": null,
+   "policy": "Management Agreement"
+  },
+  {
+   "id": "F160",
+   "no": 239,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "The Finance Leader has performed a review/survey of the MA within the last 12 months. Any non-compliance areas have been reported and actioned. Any potential risk areas have been reported (e.g. likelihood of failing performance test, early termination risk, etc.)",
+   "ts": null,
+   "policy": "Management Agreement"
+  },
+  {
+   "id": "F161",
+   "no": 240,
+   "section": "MA Compliance",
+   "risk": "HR",
+   "ws": "Are there currently any issues being disputed between Hilton and Owner? If yes, is regional management aware of such issues? Does the hotel have an action plan to resolve these issues?",
+   "ts": null,
+   "policy": "Red Flag Report"
   }
  ]
 };

@@ -1,6 +1,6 @@
 // Exchanged files: building and verifying (DATA_MODEL §9). Pure functions, no DOM.
 import { APP_VERSION, FILE_FORMAT, FILE_SCHEMA } from './version.js';
-import { nowISO, hashOf, clone, fileSafe } from './util.js';
+import { nowISO, hashOf, clone, fileSafe, canonicalJSON } from './util.js';
 import { getItemSet } from './itemsets.js';
 import { contentOf, emptyItem, checkItemValue, validateComments, isAnswered, validateDoc, assignedTo } from './model.js';
 import { finalSummary } from './summary.js';
@@ -210,7 +210,8 @@ export async function verifyFile(obj, ctx) {
       const items = Object.fromEntries(Object.entries(p.items).map(([id, v]) => [id, contentOf(v)]));
       if (p.contentHash !== (await hashOf(items))) throw new FileError('summaryMismatch');
       const again = finalSummary(p.items, w.itemSetId);
-      if (JSON.stringify(again) !== JSON.stringify(p.summary)) throw new FileError('summaryMismatch');
+      // Key order may differ between app versions (e.g. section order); compare canonically.
+      if (canonicalJSON(again) !== canonicalJSON(p.summary)) throw new FileError('summaryMismatch');
       break;
     }
     case 'backup': {
