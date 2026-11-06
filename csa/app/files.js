@@ -2,8 +2,9 @@
 import { APP_VERSION, FILE_FORMAT, FILE_SCHEMA } from './version.js';
 import { nowISO, hashOf, clone, fileSafe } from './util.js';
 import { getItemSet } from './itemsets.js';
-import { contentOf, emptyItem, checkItemValue, validateComments, isAnswered, validateDoc } from './model.js';
+import { contentOf, emptyItem, checkItemValue, validateComments, isAnswered, validateDoc, assignedTo } from './model.js';
 import { finalSummary } from './summary.js';
+import { needsMigration, isTooNew, migrate } from './guard.js';
 
 export const KINDS = ['assignment', 'submission', 'review', 'final', 'backup'];
 const SUBMITTABLE = ['draft', 'submitted', 'returned'];
@@ -89,6 +90,17 @@ export function submissionPayload(doc, sections) {
     if (mine.length) comments[meta.id] = mine;
   }
   return { submitter: doc.local.me, assignmentVersion: doc.assignment.version, sections: [...sections], items, comments };
+}
+
+// Pre-submit checks shown to the preparer (SPEC §6.3). Pure: returns item metas / section names.
+export function submissionCheck(doc, sections) {
+  const set = getItemSet(doc.itemSetId);
+  const inSecs = set.items.filter((i) => sections.includes(i.section));
+  return {
+    unanswered: inSecs.filter((i) => !doc.items[i.id].result),
+    noPlan: inSecs.filter((i) => doc.items[i.id].result === 'no' && !(doc.items[i.id].remediation.action || '').trim()),
+    outside: sections.filter((sec) => !assignedTo(doc, sec).includes(doc.local.me)),
+  };
 }
 
 export async function finalPayload(doc) {
@@ -204,7 +216,15 @@ export async function verifyFile(obj, ctx) {
     case 'backup': {
       if (!p.doc) throw new FileError('badPayload');
       if (p.doc.wsId !== w.wsId) throw new FileError('corrupt');
-      const probe = { ...p.doc, local: {} };
+      // Backups written by an older app carry an older doc schema: migrate a copy, then
+      // validate the migrated doc. The checksum above was verified on the original payload.
+      if (isTooNew(p.doc)) throw new FileError('newerSchema');
+      if (needsMigration(p.doc)) {
+        let m;
+        try { m = migrate(p.doc); } catch { throw new FileError('corrupt'); }
+        obj = { ...obj, payload: { ...p, doc: m.doc }, migrated: m.applied };
+      }
+      const probe = { ...obj.payload.doc, local: {} };
       const errs = validateDoc(probe, w.wsId);
       if (errs.length) throw new FileError('badValues', errs.slice(0, 5).join('; '));
       if (!Array.isArray(p.history)) throw new FileError('badPayload');

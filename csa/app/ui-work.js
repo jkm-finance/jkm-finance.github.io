@@ -264,7 +264,7 @@ function listRow(ctl, set, m, onclick) {
   const [cls, txt] = RESULT_DOT[it.result] || ['dnone', ''];
   const muted = doc.local.role === 'preparer' && !assignedTo(doc, m.section).includes(doc.local.me);
   return h('div', { class: 'li' + (muted ? ' muted' : ''), 'data-id': m.id, tabindex: '0', onclick, onkeydown: (e) => { if (e.key === 'Enter') onclick(); } },
-    h('div', { class: 'ldot ' + cls, text: txt }),
+    h('div', { class: 'ldot ' + cls, text: txt, 'aria-hidden': 'true' }),
     h('div', { class: 'lmain' },
       h('div', { class: 'lno', text: `#${m.no} · ${m.section}` }),
       h('div', { class: 'ltx', text: itemText(m, getLang()).ws }),
@@ -287,7 +287,9 @@ function detail(ctl, set, id, redraw) {
   const s = ctl.state, doc = s.doc, it = doc.items[id], meta = set.byId[id];
   const lang = getLang();
   const tr = itemText(meta, lang);
-  const editable = !s.readonly && !s.fatal && wf.can('edit', wf.itemCtx(doc, id)).ok;
+  const editCheck = wf.can('edit', wf.itemCtx(doc, id));
+  const editable = !s.readonly && !s.fatal && editCheck.ok;
+  const why = editable ? null : t('err.' + (s.readonly || s.fatal ? 'readonly' : editCheck.reason));
   // Edits never throw out of an event handler (that would trip the fatal-error trap).
   const ed = (patch) => { try { apply(wf.editItem(ctl.state.doc, id, patch)); } catch (e) { toast(t('err.' + (e.code || 'generic'))); } };
   const card = h('article', { class: 'card' });
@@ -320,14 +322,14 @@ function detail(ctl, set, id, redraw) {
   b.appendChild(h('div', { class: 'fl', text: t('detail.result') }));
   const rrow = h('div', { class: 'rsrow' });
   for (const [val, cls, label] of [['yes', 'rby', 'Yes'], ['no', 'rbn', 'No'], ['na', 'rbna', 'N/A'], ['hold', 'rbh', 'Hold']]) {
-    rrow.appendChild(h('button', { class: 'rsb ' + cls + (it.result === val ? ' act' : ''), disabled: !editable, text: label,
+    rrow.appendChild(h('button', { class: 'rsb ' + cls + (it.result === val ? ' act' : ''), disabled: !editable, why, text: label,
       onclick: () => { ed({ result: ctl.state.doc.items[id].result === val ? null : val }); redraw(); } }));
   }
   b.appendChild(rrow);
 
   const field = (key, label, max, rows = 4) => {
     const cnt = h('span', { class: 'cnt' });
-    const ta = h('textarea', { rows: String(rows), maxlength: String(max), disabled: !editable, value: it[key] || '', 'aria-label': label });
+    const ta = h('textarea', { rows: String(rows), maxlength: String(max), disabled: !editable, why, value: it[key] || '', 'aria-label': label });
     const upd = () => { cnt.textContent = `${ta.value.length}/${max}`; cnt.classList.toggle('over', ta.value.length >= max); };
     ta.addEventListener('input', () => { upd(); ed({ [key]: ta.value }); });
     upd();
@@ -342,11 +344,11 @@ function detail(ctl, set, id, redraw) {
   const r = it.remediation || {};
   const need = it.result === 'no';
   const rin = (key, label, type, max) => {
-    const el = h('input', { type, disabled: !editable, value: r[key] || '', maxlength: max ? String(max) : null, 'aria-label': label });
+    const el = h('input', { type, disabled: !editable, why, value: r[key] || '', maxlength: max ? String(max) : null, 'aria-label': label });
     el.addEventListener(type === 'date' ? 'change' : 'input', () => ed({ remediation: { [key]: el.value || (type === 'date' ? null : '') } }));
     return h('div', { class: 'ig' }, h('label', { text: label }), el);
   };
-  const actTa = h('textarea', { rows: '3', disabled: !editable, maxlength: String(MAX_TEXT), value: r.action || '', 'aria-label': t('detail.remAction') });
+  const actTa = h('textarea', { rows: '3', disabled: !editable, why, maxlength: String(MAX_TEXT), value: r.action || '', 'aria-label': t('detail.remAction') });
   actTa.addEventListener('input', () => ed({ remediation: { action: actTa.value } }));
   const remed = h('div', { class: 'remed' + (need && !(r.action || '').trim() ? ' need' : '') },
     h('h4', { text: t('detail.remediation') + (need ? ' — ' + t('detail.remNeeded') : '') }),

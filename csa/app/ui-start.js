@@ -137,7 +137,7 @@ async function startFromAssignment(ctl, file, me) {
   openWorkspace(file.workspace.wsId);
 }
 
-async function restoreBackup(ctl, file, me) {
+export async function restoreBackup(ctl, file, me) {
   const p = file.payload;
   const existing = await ctl.store.load(file.workspace.wsId).catch(() => null);
   if (existing) {

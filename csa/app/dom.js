@@ -10,10 +10,13 @@ export function h(tag, attrs, ...kids) {
       else if (k === 'text') el.textContent = v;
       else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
       else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else if (k === 'why') continue;
       else if (k === 'value') el.value = v;
       else if (k === 'checked' || k === 'disabled' || k === 'selected' || k === 'open') el[k] = !!v;
       else el.setAttribute(k, v === true ? '' : String(v));
     }
+    // A disabled control says why (UI-08): `why` becomes the tooltip only while disabled.
+    if (attrs.disabled && attrs.why) { el.title = attrs.why; el.setAttribute('aria-description', attrs.why); }
   }
   append(el, kids);
   return el;

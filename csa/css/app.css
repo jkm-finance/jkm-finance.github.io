@@ -6,10 +6,10 @@
   --gl:#ead9ac;
   --bg:#eef3f2;
   --tx:#1a2426;
-  --mu:#7d8a8c;
+  --mu:#5a6769;          /* muted text, darkened for WCAG AA (UI-14) */
   --bd:#d9e1e0;
   --yc:#3C6E58; --nc:#9C4B3E; --hc:#B8862E; --ac:#8B93A0;   /* result colours: identical to CPA */
-  --kc:#9C4B3E; --hrc:#c76a1f; --mrc:#5b7a8c;              /* risk */
+  --kc:#9C4B3E; --hrc:#a65516; --mrc:#4a6676;              /* risk */
   --sh:0 2px 8px rgba(0,0,0,.08);
   --st-empty:#c9d1d0; --st-draft:#8a9a9c; --st-submitted:#3f6fa0; --st-returned:#b5532f; --st-approved:#3C6E58; --st-entered:#173B3F;
 }
@@ -96,7 +96,7 @@ button,input,textarea,select{font-family:inherit}
 
 #nav{background:#d9e6e4;border-bottom:2px solid #bcd0cd;display:flex;align-items:stretch}
 #tabs{display:flex;overflow-x:auto;scrollbar-width:thin;flex:1}
-.tab{padding:6px 9px;cursor:pointer;font-size:13px;font-weight:700;color:#5d7a78;border:none;background:none;border-bottom:3px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:4px;font-family:'Aptos Narrow','Arial Narrow',Arial,sans-serif;border-right:1px solid rgba(160,190,186,.5)}
+.tab{padding:6px 9px;cursor:pointer;font-size:13px;font-weight:700;color:#44605e;border:none;background:none;border-bottom:3px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:4px;font-family:'Aptos Narrow','Arial Narrow',Arial,sans-serif;border-right:1px solid rgba(160,190,186,.5)}
 .tab:hover{color:var(--p)}
 .tab.active{color:var(--p);border-bottom-color:var(--g);background:rgba(23,59,63,.08)}
 .tab.sep{border-left:2px solid #b3c9c6}
@@ -132,7 +132,7 @@ button,input,textarea,select{font-family:inherit}
 details summary{cursor:pointer;font-size:11px;color:var(--p2);font-weight:600;margin-top:6px}
 .poltag{display:inline-block;background:#e3eeec;color:var(--p);padding:5px 11px;border-radius:4px;font-size:11px;font-weight:600}
 .rsrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.rsb{padding:7px 18px;border:2px solid;border-radius:5px;cursor:pointer;font-size:13px;font-weight:700;background:#fff}
+.rsb{padding:7px 18px;border:2px solid;border-radius:5px;cursor:pointer;font-size:14px;font-weight:700;background:#fff}
 .rsb:disabled{cursor:not-allowed;opacity:.6}
 .rby{border-color:var(--yc);color:var(--yc)}.rby.act{background:var(--yc);color:#fff}
 .rbn{border-color:var(--nc);color:var(--nc)}.rbn.act{background:var(--nc);color:#fff}

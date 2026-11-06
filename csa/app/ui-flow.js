@@ -20,7 +20,7 @@ export function renderAssign(ctl) {
   const inputs = {};
   const rows = set.sections.map((sec) => {
     const n = set.items.filter((i) => i.section === sec).length;
-    const inp = h('input', { type: 'text', value: assignedTo(doc, sec).join(', '), placeholder: t('assign.ph'), disabled: ctl.state.readonly, maxlength: '300' });
+    const inp = h('input', { type: 'text', value: assignedTo(doc, sec).join(', '), placeholder: t('assign.ph'), disabled: ctl.state.readonly, why: t('err.readonly'), maxlength: '300' });
     inputs[sec] = inp;
     return h('tr', null, h('td', { text: sec }), h('td', { class: 'num', text: n }), h('td', null, inp));
   });
@@ -39,11 +39,11 @@ export function renderAssign(ctl) {
     card(t('assign.title'),
       h('p', { class: 'wsmeta', text: t('assign.help') }),
       h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', { text: t('col.section') }), h('th', { class: 'num', text: t('col.items') }), h('th', { text: t('col.assignee') }))), h('tbody', null, rows)),
-      h('div', { class: 'acts' }, h('button', { class: 'btn btn-p', disabled: ctl.state.readonly, text: t('assign.save'), onclick: save }))),
+      h('div', { class: 'acts' }, h('button', { class: 'btn btn-p', disabled: ctl.state.readonly, why: t('err.readonly'), text: t('assign.save'), onclick: save }))),
     card(t('assign.fileTitle'),
       h('p', { class: 'wsmeta', text: t('assign.fileHelp', { v: doc.assignment.version }) }),
       h('div', { class: 'acts' },
-        h('button', { class: 'btn btn-g', disabled: !doc.assignment.version, text: t('assign.exportAll'), onclick: () => exportFile('') }),
+        h('button', { class: 'btn btn-g', disabled: !doc.assignment.version, why: t('why.noAssignment'), text: t('assign.exportAll'), onclick: () => exportFile('') }),
         doc.assignment.members.map((m) => h('button', { class: 'btn btn-l', text: t('assign.exportFor', { name: m }), onclick: () => exportFile(m) })))));
 }
 
@@ -93,7 +93,7 @@ function reviewerFiles(ctl) {
       doc.finalize.current ? h('p', { class: 'fok', text: t('final.current', { v: doc.finalize.current.version, at: fmtTime(doc.finalize.current.at), by: doc.finalize.current.by }) }) : h('p', { text: t('final.notYet') }),
       blockers.length ? h('details', null, h('summary', { text: t('final.blockers', { n: blockers.length }) }), h('ul', null, blockers.slice(0, 60).map((b) => { const m = getItemSet(doc.itemSetId).byId[b.id]; return h('li', { text: `#${m.no} ${m.section} — ${b.reason === 'noResult' ? t('final.noResult') : t('status.' + b.reason)}` }); }))) : null,
       h('div', { class: 'acts' },
-        h('button', { class: 'btn btn-p', disabled: !!blockers.length || ctl.state.readonly, text: t('final.finalize'), onclick: () => finalizeFlow(ctl) }),
+        h('button', { class: 'btn btn-p', disabled: !!blockers.length || ctl.state.readonly, why: ctl.state.readonly ? t('err.readonly') : t('why.finalizeBlocked'), text: t('final.finalize'), onclick: () => finalizeFlow(ctl) }),
         doc.finalize.current ? h('button', { class: 'btn btn-g', text: t('final.download'), onclick: () => downloadFinal(ctl) }) : null)),
     card(t('files.excelTitle'), h('div', { class: 'acts' }, h('button', { class: 'btn btn-l', text: t('files.excel'), onclick: () => exportWorkspaceExcel(ctl.state.doc) }))));
 }
@@ -209,7 +209,7 @@ function preparerFiles(ctl) {
   const secRows = set.sections.map((sec) => {
     const items = set.items.filter((i) => i.section === sec);
     const ready = items.filter((i) => isAnswered(doc.items[i.id]) && ['draft', 'submitted', 'returned'].includes(doc.items[i.id].status)).length;
-    const cb = h('input', { type: 'checkbox', checked: mine.includes(sec) && ready > 0, disabled: !ready });
+    const cb = h('input', { type: 'checkbox', checked: mine.includes(sec) && ready > 0, disabled: !ready, why: t('why.nothingReady') });
     checks[sec] = cb;
     return h('tr', null, h('td', null, cb), h('td', { text: sec + (mine.includes(sec) ? ' ●' : '') }), h('td', { class: 'num', text: items.length }), h('td', { class: 'num', text: ready }));
   });
@@ -231,7 +231,7 @@ function preparerFiles(ctl) {
   return pane(
     card(t('submit.title'), h('p', { class: 'wsmeta', text: t('submit.help') }),
       h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', { text: '' }), h('th', { text: t('col.section') }), h('th', { class: 'num', text: t('col.items') }), h('th', { class: 'num', text: t('submit.ready') }))), h('tbody', null, secRows)),
-      h('div', { class: 'acts' }, h('button', { class: 'btn btn-g', disabled: ctl.state.readonly, text: t('submit.export'), onclick: () => submitFlow(ctl, Object.entries(checks).filter(([, c]) => c.checked).map(([k]) => k)) }))),
+      h('div', { class: 'acts' }, h('button', { class: 'btn btn-g', disabled: ctl.state.readonly, why: t('err.readonly'), text: t('submit.export'), onclick: () => submitFlow(ctl, Object.entries(checks).filter(([, c]) => c.checked).map(([k]) => k)) }))),
     card(t('files.receiveTitle'), h('p', { class: 'wsmeta', text: t('files.receiveHelp') }), ctl.state.readonly ? null : dropZone(t('files.drop'), onFiles), status),
     card(t('files.excelTitle'), h('div', { class: 'acts' }, h('button', { class: 'btn btn-l', text: t('files.excelMine'), onclick: () => exportWorkspaceExcel(ctl.state.doc, { onlyMine: true }) }))));
 }
@@ -239,12 +239,9 @@ function preparerFiles(ctl) {
 async function submitFlow(ctl, sections) {
   if (!sections.length) return toast(t('submit.none'));
   await flush();
-  const doc = ctl.state.doc, set = getItemSet(doc.itemSetId);
+  const doc = ctl.state.doc;
   const warnings = [];
-  const inSecs = set.items.filter((i) => sections.includes(i.section));
-  const unanswered = inSecs.filter((i) => !doc.items[i.id].result);
-  const noPlan = inSecs.filter((i) => doc.items[i.id].result === 'no' && !(doc.items[i.id].remediation.action || '').trim());
-  const outside = sections.filter((s) => !assignedTo(doc, s).includes(doc.local.me));
+  const { unanswered, noPlan, outside } = F.submissionCheck(doc, sections);
   if (unanswered.length) warnings.push(t('submit.wUnanswered', { n: unanswered.length }));
   if (noPlan.length) warnings.push(t('submit.wNoPlan', { list: noPlan.map((i) => '#' + i.no).join(', ') }));
   if (outside.length) warnings.push(t('submit.wOutside', { list: outside.join(', ') }));
@@ -271,7 +268,7 @@ export function renderBackupPane(ctl) {
     if (!list.length) snapsBox.appendChild(h('p', { text: '—' }));
     snapsBox.appendChild(h('table', { class: 'tbl' }, h('thead', null, h('tr', null, [t('backup.when'), t('backup.reason'), 'Seq', ''].map((x) => h('th', { text: x })))),
       h('tbody', null, list.slice(0, 120).map((sn) => h('tr', null, h('td', { text: fmtTime(sn.at) }), h('td', { text: t('reason.' + sn.reason) }), h('td', { text: sn.saveSeq }),
-        h('td', null, h('button', { class: 'btn btn-l', disabled: s.readonly, text: t('backup.restore'), onclick: async () => {
+        h('td', null, h('button', { class: 'btn btn-l', disabled: s.readonly, why: t('err.readonly'), text: t('backup.restore'), onclick: async () => {
           const yes = await modal({ title: t('backup.restore'), body: h('p', { text: t('backup.restoreConfirm', { at: fmtTime(sn.at) }) }), buttons: [{ label: t('btn.cancel'), value: false }, { label: t('backup.restore'), cls: 'btn-n', value: true }] });
           if (yes) restoreSnapshot(sn.id);
         } })))))));
@@ -282,16 +279,16 @@ export function renderBackupPane(ctl) {
       h('p', { text: b.status === 'ok' ? t('backup.folderOk', { name: b.dir ? b.dir.name : '', at: b.lastAt ? fmtTime(b.lastAt) : '—' }) : t('backup.' + b.status) }),
       h('p', { class: 'wsmeta', text: t('backup.folderHelp') }),
       h('div', { class: 'acts' },
-        h('button', { class: 'btn btn-p', disabled: s.readonly || b.status === 'unsupported', text: t('backup.choose'), onclick: () => chooseBackupDir() }),
+        h('button', { class: 'btn btn-p', disabled: s.readonly || b.status === 'unsupported', why: s.readonly ? t('err.readonly') : t('why.fsUnsupported'), text: t('backup.choose'), onclick: () => chooseBackupDir() }),
         b.status === 'needPermission' ? h('button', { class: 'btn btn-g', text: t('backup.reconnect'), onclick: () => reconnectBackup() }) : null)),
     card(t('backup.fullTitle'), h('p', { class: 'wsmeta', text: t('backup.fullHelp') }), h('div', { class: 'acts' }, h('button', { class: 'btn btn-g', text: t('backup.exportFull'), onclick: exportFull }))),
     card(t('backup.snapsTitle'), h('p', { class: 'wsmeta', text: t('backup.snapsHelp') }), snapsBox),
     card(t('backup.manageTitle'),
       h('div', { class: 'acts' },
-        h('button', { class: 'btn btn-l', disabled: s.readonly, text: doc.local.hidden ? t('backup.unhide') : t('backup.hide'), onclick: async () => {
+        h('button', { class: 'btn btn-l', disabled: s.readonly, why: t('err.readonly'), text: doc.local.hidden ? t('backup.unhide') : t('backup.hide'), onclick: async () => {
           s.doc = await ctl.store.touch(s.doc, { hidden: !doc.local.hidden }); toast(t('backup.hiddenChanged')); renderWorkspace(ctl);
         } }),
-        h('button', { class: 'btn btn-n', disabled: s.readonly, text: t('backup.delete'), onclick: () => deleteFlow(ctl) }))));
+        h('button', { class: 'btn btn-n', disabled: s.readonly, why: t('err.readonly'), text: t('backup.delete'), onclick: () => deleteFlow(ctl) }))));
 }
 
 async function deleteFlow(ctl) {

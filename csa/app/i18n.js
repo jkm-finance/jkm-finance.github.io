@@ -357,6 +357,10 @@ const D = {
   'hist.hide': ['숨김', 'hidden', '非表示'],
   'hist.delete': ['삭제', 'deleted', '削除'],
 
+  'why.noAssignment': ['먼저 배정을 저장하세요', 'Save an assignment first', '先に担当割当を保存してください'],
+  'why.finalizeBlocked': ['아래에 남은 문항을 먼저 처리하세요', 'Resolve the remaining items listed below first', '下記の残り項目を先に処理してください'],
+  'why.nothingReady': ['제출할 응답이 없습니다', 'No answered items to submit', '提出できる回答がありません'],
+  'why.fsUnsupported': ['이 브라우저는 폴더 자동 백업을 지원하지 않습니다', 'This browser does not support folder backup', 'このブラウザはフォルダ自動バックアップに対応していません'],
   'err.generic': ['처리하지 못했습니다', 'Could not complete the action', '処理できませんでした'],
   'err.noIndexedDB': ['이 브라우저에서는 데이터를 저장할 수 없습니다', 'This browser cannot store data', 'このブラウザではデータを保存できません'],
   'err.blocked': ['지금은 처리할 수 없습니다 (조건 미충족 또는 다른 창 사용 중)', 'Cannot do this now (conditions not met or another window is using it)', '現在は処理できません（条件未達または別ウィンドウ使用中）'],
