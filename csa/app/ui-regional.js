@@ -9,6 +9,7 @@ import { reportView, finalReportData } from './ui-report.js';
 import { exportSheets } from './excel.js';
 import { todayLocal } from './util.js';
 import { guideLink } from './main.js';
+import { policyEl } from './policy.js';
 
 const SECTIONS = [...new Set(allItemSets().flatMap((s) => s.sections))];
 
@@ -99,7 +100,7 @@ export async function renderRegional(ctl) {
         h('thead', null, h('tr', null, [t('reg.hotel'), '#', t('col.section'), 'Risk', t('detail.policy'), t('detail.remediation'), t('detail.remOwner'), t('detail.remDue')].map((x) => h('th', { text: x })))),
         h('tbody', null, list.map(({ f, m, it }) => { const due = it.remediation.due; const over = due && due < today; return h('tr', null,
           h('td', { text: f.workspace.hotelName }), h('td', { text: m.no }), h('td', { text: m.section }), h('td', null, h('span', { class: 'badge rk-' + m.risk, text: m.risk })),
-          h('td', { text: m.policy }), h('td', { class: 'pre', text: it.remediation.action || '—' }), h('td', { text: it.remediation.owner || '—' }),
+          h('td', null, policyEl(m.policy, 'polcell')), h('td', { class: 'pre', text: it.remediation.action || '—' }), h('td', { text: it.remediation.owner || '—' }),
           h('td', { class: over ? 'overdue' : '', text: (due || '—') + (over ? ' ⚠' : '') })); }))))));
     }
   };

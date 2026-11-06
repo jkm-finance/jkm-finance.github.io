@@ -131,6 +131,8 @@ a.guide-link{text-decoration:none;display:inline-flex;align-items:center}
 .tbox{background:#f6f9f8;border-radius:5px;padding:9px 12px;font-size:12.5px;line-height:1.7;border:1px solid #e7eeed;white-space:pre-wrap;word-break:break-word}
 .tbox.en{background:#fff;color:#4a5658;font-size:12px}
 details summary{cursor:pointer;font-size:11px;color:var(--p2);font-weight:600;margin-top:6px}
+.pollink{text-decoration:none;cursor:pointer}.pollink:hover{text-decoration:underline}
+a.polcell{color:var(--p)}
 .poltag{display:inline-block;background:#e3eeec;color:var(--p);padding:5px 11px;border-radius:4px;font-size:11px;font-weight:600}
 .rsrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .rsb{padding:7px 18px;border:2px solid;border-radius:5px;cursor:pointer;font-size:14px;font-weight:700;background:#fff}

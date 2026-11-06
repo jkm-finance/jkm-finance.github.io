@@ -5,6 +5,7 @@ import { getItemSet } from './itemsets.js';
 import { summarize, perAssignee } from './summary.js';
 import { MAX_TEXT, MAX_SHORT, isAnswered, assignedTo } from './model.js';
 import * as wf from './workflow.js';
+import { policyEl } from './policy.js';
 import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush, guideLink } from './main.js';
 import { renderAssign, renderFiles, renderBackupPane } from './ui-flow.js';
 import { renderReportPane } from './ui-report.js';
@@ -317,7 +318,7 @@ function detail(ctl, set, id, redraw) {
     if (tr.translated && tr.ts) b.appendChild(h('details', null, h('summary', { text: t('detail.original') }), h('div', { class: 'tbox en', text: meta.ts })));
   }
   b.appendChild(h('div', { class: 'fl', text: t('detail.policy') }));
-  b.appendChild(h('span', { class: 'poltag', text: meta.policy || '—' }));
+  b.appendChild(policyEl(meta.policy));
 
   // result
   b.appendChild(h('div', { class: 'fl', text: t('detail.result') }));
