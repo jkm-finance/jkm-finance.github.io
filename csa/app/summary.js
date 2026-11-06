@@ -1,5 +1,6 @@
 // Scores and progress (SPEC §5.3). Same formulas as the CPA dashboard.
 import { getItemSet } from './itemsets.js';
+import { itemAssignees } from './model.js';
 
 function blank() {
   return { total: 0, yes: 0, no: 0, na: 0, hold: 0, unanswered: 0 };
@@ -65,16 +66,14 @@ export function finalSummary(items, itemSetId) {
 export function perAssignee(doc) {
   const set = getItemSet(doc.itemSetId);
   const out = {};
-  for (const [section, names] of Object.entries(doc.assignment.sections || {})) {
-    for (const n of names) {
+  for (const meta of set.items) {
+    const it = doc.items[meta.id];
+    for (const n of itemAssignees(doc, meta.id, meta.section)) {
       out[n] = out[n] || { total: 0, done: 0, submitted: 0, returned: 0 };
-      for (const meta of set.items.filter((i) => i.section === section)) {
-        const it = doc.items[meta.id];
-        out[n].total += 1;
-        if (it.result) out[n].done += 1;
-        if (['submitted', 'approved', 'entered'].includes(it.status)) out[n].submitted += 1;
-        if (it.status === 'returned') out[n].returned += 1;
-      }
+      out[n].total += 1;
+      if (it.result) out[n].done += 1;
+      if (['submitted', 'approved', 'entered'].includes(it.status)) out[n].submitted += 1;
+      if (it.status === 'returned') out[n].returned += 1;
     }
   }
   return out;

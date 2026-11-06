@@ -3,7 +3,7 @@ import { h, clear, toast, modal, fmtTime, pct } from './dom.js';
 import { t, getLang, setLang, itemText } from './i18n.js';
 import { getItemSet } from './itemsets.js';
 import { summarize, perAssignee } from './summary.js';
-import { MAX_TEXT, MAX_SHORT, isAnswered, assignedTo } from './model.js';
+import { MAX_TEXT, MAX_SHORT, isAnswered, assignedTo, itemAssignees, itemOverride, isItemAssigned, hasItemsIn } from './model.js';
 import * as wf from './workflow.js';
 import { policyEl } from './policy.js';
 import { abIdOf } from './abexport.js';
@@ -122,7 +122,7 @@ export function refreshChrome(ctl) {
     for (const sec of set.sections) {
       const items = set.items.filter((i) => i.section === sec);
       const done = items.filter((i) => doc.items[i.id].result).length;
-      const mine = role === 'preparer' && assignedTo(doc, sec).includes(doc.local.me);
+      const mine = role === 'preparer' && hasItemsIn(doc, sec, doc.local.me);
       tabs.appendChild(mk('section', (mine ? '● ' : '') + sec, `${done}/${items.length}`, { section: sec }));
     }
     if (role === 'reviewer') tabs.appendChild(mk('queue', t('tab.queue'), st.submitted, { sep: true, alert: true }));
@@ -187,7 +187,7 @@ function overviewPane(ctl, set) {
     return h('tr', { onclick: () => setView(ctl, 'section', sec), style: { cursor: 'pointer' } },
       h('td', { text: sec }), h('td', { class: 'num', text: c.total }), h('td', null, bar),
       h('td', { class: 'num', text: c.yes }), h('td', { class: 'num', text: c.no }), h('td', { class: 'num', text: c.na }), h('td', { class: 'num', text: c.hold }),
-      h('td', { class: 'num', text: pct(c.score) }), h('td', { text: assignedTo(doc, sec).join(', ') || '—' }));
+      h('td', { class: 'num', text: pct(c.score) }), h('td', { text: (assignedTo(doc, sec).join(', ') || '—') + (() => { const n = set.items.filter((i) => i.section === sec && itemOverride(doc, i.id)).length; return n ? ' · ' + t('assign.itemCount', { n }) : ''; })() }));
   });
   pane.appendChild(h('div', { class: 'card' }, h('div', { class: 'ctitle', text: t('ov.bySection') }), h('div', { class: 'cbodyp' },
     h('table', { class: 'tbl' }, h('thead', null, h('tr', null, [t('col.section'), t('col.items'), t('col.progress'), 'Yes', 'No', 'N/A', 'Hold', t('col.score'), t('col.assignee')].map((x, i) => h('th', { class: i && i < 8 && i !== 2 ? 'num' : '', text: x })))), h('tbody', null, rows)))));
@@ -224,7 +224,7 @@ function userFilter(ctl, meta, it) {
   if (f.cpa && meta.cpaLink !== f.cpa) return false;
   if (f.unanswered && it.result) return false;
   if (f.noResponse && !(it.result && !(it.response || '').trim())) return false;
-  if (f.assignee && !assignedTo(doc, meta.section).includes(f.assignee)) return false;
+  if (f.assignee && !isItemAssigned(doc, meta.id, f.assignee, meta.section)) return false;
   if (f.q) {
     // '#12' or '12' = item number, an AuditBoard ID, or (3+ characters) words in the work step
     const q = f.q.trim().toLowerCase(), n = q.replace(/^#/, '');
@@ -275,7 +275,7 @@ function listAndDetail(ctl, set, body) {
 function listRow(ctl, set, m, onclick) {
   const doc = ctl.state.doc, it = doc.items[m.id];
   const [cls, txt] = RESULT_DOT[it.result] || ['dnone', ''];
-  const muted = doc.local.role === 'preparer' && !assignedTo(doc, m.section).includes(doc.local.me);
+  const muted = doc.local.role === 'preparer' && !isItemAssigned(doc, m.id, doc.local.me, m.section);
   return h('div', { class: 'li' + (muted ? ' muted' : ''), 'data-id': m.id, tabindex: '0', onclick, onkeydown: (e) => { if (e.key === 'Enter') onclick(); } },
     h('div', { class: 'ldot ' + cls, text: txt, 'aria-hidden': 'true' }),
     h('div', { class: 'lmain' },
@@ -313,7 +313,7 @@ function detail(ctl, set, id, redraw) {
     meta.cpaLink ? h('span', { class: 'badge cpa', text: meta.cpaLink.replace(/,/g, ' · ') }) : null,
     h('span', { class: 'badge st st-' + it.status, text: t('status.' + it.status) }),
     abIdOf(doc, id) ? h('span', { class: 'badge abid', title: t('ab.idTitle'), text: 'AB ' + abIdOf(doc, id) }) : null,
-    h('span', { class: 'hchip', text: t('col.assignee') + ': ' + (assignedTo(doc, meta.section).join(', ') || '—') })));
+    assigneeChip(ctl, id, meta, redraw)));
   const b = h('div', { class: 'cbody' });
   card.appendChild(b);
 
@@ -399,6 +399,27 @@ function detail(ctl, set, id, redraw) {
   });
   b.appendChild(det);
   return card;
+}
+
+// Assignee of one item. The reviewer can give the item its own assignee(s) instead of the section's.
+function assigneeChip(ctl, id, meta, redraw) {
+  const doc = ctl.state.doc, own = itemOverride(doc, id);
+  const text = t('col.assignee') + ': ' + (itemAssignees(doc, id, meta.section).join(', ') || '—') + (own ? ' ✎' : '');
+  const canEdit = doc.local.role === 'reviewer' && !ctl.state.readonly && !ctl.state.fatal;
+  if (!canEdit) return h('span', { class: 'hchip' + (own ? ' own' : ''), title: own ? t('assign.itemOwnTitle') : null, text });
+  return h('button', { class: 'hchip btnchip' + (own ? ' own' : ''), title: t('assign.itemEditTitle'), text, onclick: async () => {
+    const inp = h('input', { type: 'text', maxlength: '300', value: (own || []).join(', '), placeholder: assignedTo(doc, meta.section).join(', ') || t('assign.ph') });
+    const v = await modal({
+      title: t('assign.itemTitle', { no: meta.no }),
+      body: h('div', null, h('p', { class: 'wsmeta', text: t('assign.itemHelp', { sec: meta.section, names: assignedTo(doc, meta.section).join(', ') || '—' }) }), inp),
+      onMount: () => inp.focus(),
+      buttons: [{ label: t('btn.cancel'), value: null }, own ? { label: t('assign.itemReset'), cls: 'btn-l', value: '' } : null, { label: t('btn.ok'), cls: 'btn-p', value: () => inp.value }].filter(Boolean),
+    });
+    if (v === null || v === undefined) return;
+    const list = String(v).split(',').map((x) => x.trim()).filter(Boolean);
+    const r = await run((d) => wf.setItemAssignees(d, id, list), { render: true });
+    if (r) { toast(t('assign.saved')); redraw(); }
+  } });
 }
 
 function actionButtons(ctl, id, redraw) {

@@ -2,7 +2,7 @@
 import { APP_VERSION, FILE_FORMAT, FILE_SCHEMA } from './version.js';
 import { nowISO, hashOf, clone, fileSafe, canonicalJSON } from './util.js';
 import { getItemSet } from './itemsets.js';
-import { contentOf, emptyItem, checkItemValue, validateComments, isAnswered, validateDoc, assignedTo } from './model.js';
+import { contentOf, emptyItem, checkItemValue, validateComments, isAnswered, validateDoc, isItemAssigned, hasItemsIn, validateAssignment } from './model.js';
 import { finalSummary } from './summary.js';
 import { needsMigration, isTooNew, migrate } from './guard.js';
 
@@ -76,13 +76,20 @@ export function reviewPayload(doc) {
   };
 }
 
+// The preparer's own items: assigned to them, or last edited by them (work done before a reassignment).
+// Items of the same section that belong to someone else are never sent (schema 3, per-item assignees).
+export function isMine(doc, meta) {
+  const it = doc.items[meta.id];
+  return isItemAssigned(doc, meta.id, doc.local.me, meta.section) || it.updatedBy === doc.local.me;
+}
+
 // Preparer: answered, not yet approved items of the chosen sections. Caller marks them submitted afterwards.
 export function submissionPayload(doc, sections) {
   const set = getItemSet(doc.itemSetId);
   const items = {};
   const comments = {};
   for (const meta of set.items) {
-    if (!sections.includes(meta.section)) continue;
+    if (!sections.includes(meta.section) || !isMine(doc, meta)) continue;
     const it = doc.items[meta.id];
     if (!isAnswered(it) || !SUBMITTABLE.includes(it.status)) continue;
     items[meta.id] = { ...contentOf(it), baseRev: it.baseRev || 0, submittedAt: nowISO() };
@@ -95,11 +102,11 @@ export function submissionPayload(doc, sections) {
 // Pre-submit checks shown to the preparer (SPEC §6.3). Pure: returns item metas / section names.
 export function submissionCheck(doc, sections) {
   const set = getItemSet(doc.itemSetId);
-  const inSecs = set.items.filter((i) => sections.includes(i.section));
+  const inSecs = set.items.filter((i) => sections.includes(i.section) && isMine(doc, i));
   return {
     unanswered: inSecs.filter((i) => !doc.items[i.id].result),
     noPlan: inSecs.filter((i) => doc.items[i.id].result === 'no' && !(doc.items[i.id].remediation.action || '').trim()),
-    outside: sections.filter((sec) => !assignedTo(doc, sec).includes(doc.local.me)),
+    outside: sections.filter((sec) => !hasItemsIn(doc, sec, doc.local.me)),
   };
 }
 
@@ -156,6 +163,12 @@ function checkItems(items, set, { requireAll = false, withStatus = false } = {})
   if (errs.length) throw new FileError('badValues', errs.slice(0, 5).join('; '));
 }
 
+function checkAssignment(a, set) {
+  const errs = [];
+  validateAssignment(a, set, errs);
+  if (errs.length) throw new FileError('badValues', errs.slice(0, 5).join('; '));
+}
+
 function checkComments(comments, set) {
   if (comments === undefined) return;
   const errs = [];
@@ -196,11 +209,13 @@ export async function verifyFile(obj, ctx) {
       break;
     case 'assignment':
       if (!p.assignment || !p.master) throw new FileError('badPayload');
+      checkAssignment(p.assignment, set);
       checkItems(p.master.items, set, { requireAll: true, withStatus: true });
       checkComments(p.master.comments, set);
       break;
     case 'review':
       if (!p.assignment) throw new FileError('badPayload');
+      checkAssignment(p.assignment, set);
       checkItems(p.items, set, { requireAll: true, withStatus: true });
       checkComments(p.comments, set);
       break;

@@ -94,6 +94,49 @@ export function isAssigned(doc, section, name) {
   return assignedTo(doc, section).includes(name);
 }
 
+// Per-item assignees (schema 3): assignment.items[id] overrides the section's list for that item.
+export function itemOverride(doc, itemId) {
+  const o = doc.assignment && doc.assignment.items;
+  return o && Array.isArray(o[itemId]) && o[itemId].length ? o[itemId] : null;
+}
+
+function sectionOf(doc, itemId) {
+  const set = getItemSet(doc.itemSetId);
+  return set && set.byId[itemId] ? set.byId[itemId].section : null;
+}
+
+export function itemAssignees(doc, itemId, section) {
+  return itemOverride(doc, itemId) || assignedTo(doc, section === undefined ? sectionOf(doc, itemId) : section);
+}
+
+export function isItemAssigned(doc, itemId, name, section) {
+  return itemAssignees(doc, itemId, section).includes(name);
+}
+
+// Everyone who has at least one item in the section (section list first, then item-level names).
+export function sectionPeople(doc, section) {
+  const set = getItemSet(doc.itemSetId);
+  const out = [...assignedTo(doc, section)];
+  for (const m of set.items) if (m.section === section) for (const n of itemAssignees(doc, m.id, section)) if (!out.includes(n)) out.push(n);
+  return out;
+}
+
+export function hasItemsIn(doc, section, name) {
+  return sectionPeople(doc, section).includes(name);
+}
+
+export const MAX_ASSIGNEES = 20;
+
+export function validateAssignment(a, set, errs) {
+  if (!a || typeof a !== 'object') { errs.push('assignment missing'); return; }
+  if (a.items === undefined) return;
+  if (!a.items || typeof a.items !== 'object' || Array.isArray(a.items)) { errs.push('assignment.items invalid'); return; }
+  for (const [id, list] of Object.entries(a.items)) {
+    if (!set.byId[id]) errs.push(`assignment.items: unknown item ${id}`);
+    else if (!Array.isArray(list) || !list.length || list.length > MAX_ASSIGNEES || list.some((n) => typeof n !== 'string' || !n.trim() || n.length > MAX_SHORT)) errs.push(`assignment.items: ${id} invalid`);
+  }
+}
+
 // ---- validation -------------------------------------------------------------
 
 export function checkItemValue(id, it, errs) {
@@ -148,6 +191,7 @@ export function validateDoc(doc, key) {
   for (const id of keys) if (set.byId[id]) checkItemValue(id, items[id], errs);
   validateComments(doc.comments, set, errs);
   validateAb(doc.ab, set, errs);
+  validateAssignment(doc.assignment, set, errs);
   if (!Number.isInteger(doc.saveSeq) || doc.saveSeq < 0) errs.push('saveSeq invalid');
   return errs;
 }

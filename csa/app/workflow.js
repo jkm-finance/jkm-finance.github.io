@@ -1,7 +1,7 @@
 // Item states, permissions and transitions (SPEC §4). Pure functions on a cloned document.
 // Every mutating function returns { doc, events } and never changes its input.
 import { clone, nowISO, uuid, normText, hashOf } from './util.js';
-import { contentOf, isAnswered, isAssigned, sameContent, MAX_COMMENT, emptyContent } from './model.js';
+import { contentOf, isAnswered, isItemAssigned, sameContent, MAX_COMMENT, MAX_SHORT, MAX_ASSIGNEES, emptyContent } from './model.js';
 import { getItemSet } from './itemsets.js';
 
 const EDITABLE_BY_PREPARER = ['empty', 'draft', 'submitted', 'returned'];
@@ -57,7 +57,7 @@ export function itemCtx(doc, id, extra = {}) {
   const meta = set.byId[id];
   return {
     role: doc.local.role, status: it.status,
-    assigned: doc.local.role === 'reviewer' || isAssigned(doc, meta.section, doc.local.me),
+    assigned: doc.local.role === 'reviewer' || isItemAssigned(doc, id, doc.local.me, meta.section),
     answered: isAnswered(it), hasResult: !!it.result, ...extra,
   };
 }
@@ -195,17 +195,39 @@ export async function markSubmitted(doc0, ids) {
   return { doc, events };
 }
 
-export function setAssignment(doc0, sections) {
+// sections: { [section]: names[] }. items: { [itemId]: names[] } per-item override (schema 3);
+// undefined keeps the current item overrides. An override equal to its section's list is dropped.
+export function setAssignment(doc0, sections, items) {
   assertOk(can('assign', { role: doc0.local.role }));
   const doc = clone(doc0);
+  const set = getItemSet(doc.itemSetId);
+  const names = (list) => [...new Set((list || []).map((n) => normText(n).slice(0, MAX_SHORT)).filter(Boolean))].slice(0, MAX_ASSIGNEES);
+  const same = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
   const clean = {};
   const members = new Set();
-  for (const [sec, names] of Object.entries(sections)) {
-    const list = [...new Set((names || []).map((n) => normText(n)).filter(Boolean))];
-    if (list.length) { clean[sec] = list; list.forEach((n) => members.add(n)); }
+  for (const [sec, list] of Object.entries(sections)) {
+    const l = names(list);
+    if (l.length) { clean[sec] = l; l.forEach((n) => members.add(n)); }
+  }
+  const src = items === undefined ? (doc0.assignment.items || {}) : items;
+  const cleanItems = {};
+  for (const [id, list] of Object.entries(src)) {
+    const meta = set.byId[id];
+    if (!meta) throw Object.assign(new Error('Unknown item ' + id), { code: 'badInput' });
+    const l = names(list);
+    if (!l.length || same(l, clean[meta.section] || [])) continue;
+    cleanItems[id] = l; l.forEach((n) => members.add(n));
   }
   doc.assignment = { version: (doc.assignment.version || 0) + 1, updatedAt: nowISO(), members: [...members].sort(), sections: clean };
-  return { doc, events: [ev(doc, 'assign', null, { version: doc.assignment.version, sections: clean })] };
+  if (Object.keys(cleanItems).length) doc.assignment.items = cleanItems;
+  return { doc, events: [ev(doc, 'assign', null, { version: doc.assignment.version, sections: clean, items: Object.keys(cleanItems).length ? cleanItems : undefined })] };
+}
+
+// One item's assignees; null or [] = back to the section's list.
+export function setItemAssignees(doc0, id, list) {
+  const items = { ...(doc0.assignment.items || {}) };
+  if (list && list.length) items[id] = list; else delete items[id];
+  return setAssignment(doc0, doc0.assignment.sections, items);
 }
 
 // AuditBoard export link (doc.ab): IDs and AuditBoard preparer/reviewer per item. Reviewer only.

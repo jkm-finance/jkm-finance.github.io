@@ -76,6 +76,7 @@
 <ol class="steps">
   <li><span class="ui">배정</span> 탭에서 섹션마다 담당자 이름을 입력합니다. 여러 명은 쉼표로 구분합니다(예: <code>Irene Kim, Brad Jeong</code>). FSSC가 없는 호텔은 FSSC 표시 문항도 호텔 직원에게 배정하면 됩니다.</li>
   <li><span class="ui">배정 저장</span>.</li>
+  <li>섹션 안에서 일부 문항만 다른 사람이 맡으면 <strong>문항별 담당자</strong>를 씁니다. 문항 화면 위쪽의 <span class="ui">담당자</span> 칸을 눌러 이름을 넣거나, 「배정」 탭 <span class="ui">문항별 담당자</span>에 엑셀의 <code>#</code> 열과 담당자(PIC) 열을 함께 복사해 붙여넣고 <span class="ui">미리 보기</span> → <span class="ui">적용</span>을 누릅니다. <code>AR_HaEun</code>은 <code>HaEun</code>으로 바뀌고, 담당자가 없던 섹션은 가장 많이 나온 사람이 섹션 담당자가 됩니다. 작성자는 자기 문항만 고치고 제출할 수 있습니다.</li>
   <li><span class="ui">배정 파일 보내기</span>에서 <span class="ui">공통 배정 파일 내려받기</span>(모두에게 같은 파일) 또는 <span class="ui">{이름}용</span>을 눌러 파일을 받은 뒤, 메일·Teams·OneDrive로 작성자에게 보냅니다.</li>
   <li>배정을 바꾸면 버전이 올라갑니다. 새 배정 파일을 다시 보내면 작성자가 입력한 내용은 그대로 두고 배정만 바뀝니다.</li>
 </ol>
@@ -129,14 +130,14 @@
 </ol>
 <h3>4-2. 문항 입력</h3>
 <ul>
-  <li>상단 섹션 탭에서 내 담당 섹션을 열고, 왼쪽 목록에서 문항을 고릅니다. 필터(위험 등급·상태·미응답만 등)로 좁힐 수 있습니다.</li>
+  <li>상단 섹션 탭에서 <strong>●</strong> 표시된 섹션(내 문항이 있는 섹션)을 열고, 왼쪽 목록에서 문항을 고릅니다. 흐리게 보이는 문항은 다른 사람 담당이라 고칠 수 없고 제출 파일에도 들어가지 않습니다. 필터(위험 등급·상태·미응답만 등)로 좁힐 수 있습니다.</li>
   <li><strong>결과</strong>: <span class="r-y">Yes</span>(통제가 잘 운영됨) · <span class="r-n">No</span>(미흡) · <span class="r-a">N/A</span>(해당 없음) · <span class="r-h">Hold</span>(판정 보류 — 확인 중).</li>
   <li><span class="ui">작성자 설명 (국문 · 내부용)</span>: 담당자, 현재 수행 중인 프로세스, 증빙을 국문으로 적습니다. AuditBoard에는 들어가지 않습니다.</li>
   <li><span class="ui">AuditBoard Response (영문 · 리뷰어 확정)</span>: AuditBoard에 그대로 입력할 영문 문장입니다. 작성자가 초안을 써도 되지만, 리뷰어가 작성자 설명을 보고 확정합니다.</li>
   <li><span class="ui">증빙 자료 위치</span>: 파일 경로나 보관 위치. <span class="ui">샘플 테스트 내역</span>: 확인한 샘플(기간·건수 등). 각 5,000자까지.</li>
   <li>결과가 <span class="r-n">No</span>이면 <span class="ui">개선계획</span>(조치 내용·담당자·완료 예정일)을 꼭 입력합니다.</li>
   <li>입력은 자동 저장됩니다(상단 오른쪽에 저장 시각 표시). 따로 저장 버튼은 없습니다.</li>
-  <li>회색으로 꺼진 버튼이나 입력란에 마우스를 올리면 이유가 나옵니다(예: “잠긴 문항입니다”, “내 담당 섹션이 아닙니다”).</li>
+  <li>회색으로 꺼진 버튼이나 입력란에 마우스를 올리면 이유가 나옵니다(예: “잠긴 문항입니다”, “내 담당 문항이 아닙니다”).</li>
 </ul>
 <h3>4-3. 섹션 제출</h3>
 <ol class="steps">

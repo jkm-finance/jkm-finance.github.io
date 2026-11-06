@@ -1,6 +1,6 @@
 // Excel row builders (SPEC §10.1). Pure, so they can be unit-tested in Node.
 import { getItemSet } from './itemsets.js';
-import { assignedTo } from './model.js';
+import { isItemAssigned, itemAssignees } from './model.js';
 
 const RES = { yes: 'Yes', no: 'No', na: 'N/A', hold: 'Hold' };
 
@@ -19,10 +19,10 @@ export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) =>
   if (focus) header.push('HTL/FSSC', 'CPA link');
   header.push('Work Step (EN)');
   if (lang !== 'en') header.push('Work Step (' + lang.toUpperCase() + ')');
-  header.push('Policy', 'Result', 'Preparer Description (internal)', 'AuditBoard Response', 'Evidence', 'Sample', 'Remediation Action', 'Remediation Owner', 'Due Date', 'Status', 'Preparer', 'Last Updated', 'Reviewer Comment (latest)', 'AuditBoard Entered');
+  header.push('Policy', 'Result', 'Preparer Description (internal)', 'AuditBoard Response', 'Evidence', 'Sample', 'Remediation Action', 'Remediation Owner', 'Due Date', 'Status', 'Assignee', 'Preparer', 'Last Updated', 'Reviewer Comment (latest)', 'AuditBoard Entered');
   const rows = [header];
   for (const m of set.items) {
-    if (onlyMine && !assignedTo(doc, m.section).includes(doc.local.me)) continue;
+    if (onlyMine && !isItemAssigned(doc, m.id, doc.local.me, m.section)) continue;
     const it = doc.items[m.id];
     const comments = (doc.comments[m.id] || []).filter((c) => c.role === 'reviewer');
     const r = ab ? [m.no, ab[m.id] || '', m.section, m.risk] : [m.no, m.section, m.risk];
@@ -30,7 +30,7 @@ export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) =>
     r.push(m.ws);
     if (lang !== 'en') r.push(itemText ? itemText(m, lang).ws : m.ws);
     r.push(m.policy, RES[it.result] || '', it.process || '', it.response, it.evidence, it.sample,
-      it.remediation.action, it.remediation.owner, it.remediation.due || '', statusLabel(it.status),
+      it.remediation.action, it.remediation.owner, it.remediation.due || '', statusLabel(it.status), itemAssignees(doc, m.id, m.section).join(', '),
       it.submittedBy || it.updatedBy || '', it.updatedAt ? it.updatedAt.slice(0, 16).replace('T', ' ') : '',
       comments.length ? comments[comments.length - 1].text : '', it.enteredAt ? it.enteredAt.slice(0, 10) : '');
     rows.push(r.map(safeCell));

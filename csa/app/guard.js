@@ -42,6 +42,12 @@ export const MIGRATIONS = {
     d.schema = 2;
     return d;
   },
+  // 2 -> 3: per-item assignees (`assignment.items`). Absent = section assignment only, so nothing to add;
+  // the bump makes older apps refuse the document instead of dropping item assignments on save.
+  2: (d) => {
+    d.schema = 3;
+    return d;
+  },
 };
 
 export function needsMigration(doc) {

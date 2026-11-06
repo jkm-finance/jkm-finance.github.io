@@ -2,7 +2,7 @@
 // Files passed in here must already have passed files.verifyFile().
 import { clone, nowISO, hashOf } from './util.js';
 import { getItemSet } from './itemsets.js';
-import { contentOf, emptyItem, isAnswered, isAssigned, colorFor } from './model.js';
+import { contentOf, emptyItem, isAnswered, isItemAssigned, colorFor } from './model.js';
 import { APP_ID, APP_VERSION, DOC_SCHEMA } from './version.js';
 
 const key = (c) => JSON.stringify(contentOf(c));
@@ -45,7 +45,7 @@ export function previewSubmissions(doc, files) {
     if (!entries) continue;
     const cur = doc.items[id];
     const section = set.byId[id].section;
-    const outside = entries.filter((e) => !isAssigned(doc, section, e.submitter)).map((e) => e.fi);
+    const outside = entries.filter((e) => !isItemAssigned(doc, id, e.submitter, section)).map((e) => e.fi);
     outside.forEach((fi) => { fileStats[fi].outside += 1; });
     let type;
     if (cur.status === 'entered') {

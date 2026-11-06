@@ -2,7 +2,8 @@
 import { h, clear, toast, modal, download, dropZone, fmtTime } from './dom.js';
 import { t, getLang, itemText } from './i18n.js';
 import { getItemSet } from './itemsets.js';
-import { isAnswered, assignedTo, contentOf } from './model.js';
+import { isAnswered, assignedTo, contentOf, itemOverride, hasItemsIn } from './model.js';
+import { parseAssigneePaste, planFromPaste } from './assign.js';
 import * as wf from './workflow.js';
 import * as F from './files.js';
 import { previewSubmissions, applySubmissions, applyReview, applyAssignment } from './merge.js';
@@ -23,7 +24,8 @@ export function renderAssign(ctl) {
     const n = set.items.filter((i) => i.section === sec).length;
     const inp = h('input', { type: 'text', value: assignedTo(doc, sec).join(', '), placeholder: t('assign.ph'), disabled: ctl.state.readonly, why: t('err.readonly'), maxlength: '300' });
     inputs[sec] = inp;
-    return h('tr', null, h('td', { text: sec }), h('td', { class: 'num', text: n }), h('td', null, inp));
+    const own = set.items.filter((i) => i.section === sec && itemOverride(doc, i.id)).length;
+    return h('tr', null, h('td', { text: sec }), h('td', { class: 'num', text: n }), h('td', null, inp), h('td', { class: 'num', text: own || '' }));
   });
   const save = async () => {
     const sections = Object.fromEntries(Object.entries(inputs).map(([k, el]) => [k, el.value.split(',').map((x) => x.trim()).filter(Boolean)]));
@@ -39,8 +41,9 @@ export function renderAssign(ctl) {
   return pane(
     card(t('assign.title'),
       h('p', { class: 'wsmeta', text: t('assign.help') }),
-      h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', { text: t('col.section') }), h('th', { class: 'num', text: t('col.items') }), h('th', { text: t('col.assignee') }))), h('tbody', null, rows)),
+      h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', { text: t('col.section') }), h('th', { class: 'num', text: t('col.items') }), h('th', { text: t('col.assignee') }), h('th', { class: 'num', text: t('assign.itemCol') }))), h('tbody', null, rows)),
       h('div', { class: 'acts' }, h('button', { class: 'btn btn-p', disabled: ctl.state.readonly, why: t('err.readonly'), text: t('assign.save'), onclick: save }))),
+    itemAssignCard(ctl, set),
     card(t('assign.fileTitle'),
       h('p', { class: 'wsmeta', text: t('assign.fileHelp', { v: doc.assignment.version }) }),
       h('div', { class: 'acts' },
@@ -49,6 +52,42 @@ export function renderAssign(ctl) {
     card(t('ab.cardTitle'),
       h('p', { class: 'wsmeta', text: doc.ab ? t('ab.cardLinked', { file: doc.ab.file, n: Object.keys(doc.ab.ids).length, total: set.items.length, at: fmtTime(doc.ab.importedAt), by: doc.ab.importedBy }) : t('ab.cardNone') }),
       h('div', { class: 'acts' }, h('button', { class: 'btn btn-l', disabled: ctl.state.readonly, why: t('err.readonly'), text: doc.ab ? t('ab.relink') : t('ab.linkTitle'), onclick: () => linkExport(ctl, { withRestorePoint, linkAuditBoard: wf.linkAuditBoard }) }))));
+}
+
+// Per-item assignees: list of exceptions + paste from Excel (# and name columns).
+function itemAssignCard(ctl, set) {
+  const doc = ctl.state.doc, ro = ctl.state.readonly;
+  const own = set.items.filter((m) => itemOverride(doc, m.id));
+  const list = own.length
+    ? h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', { class: 'num', text: '#' }), h('th', { text: t('col.section') }), h('th', { text: 'Work Step' }), h('th', { text: t('col.assignee') }), h('th', { text: '' }))),
+      h('tbody', null, own.map((m) => h('tr', null, h('td', { class: 'num', text: m.no }), h('td', { text: m.section }), h('td', { class: 'wsmeta', text: m.ws.slice(0, 70) + (m.ws.length > 70 ? '…' : '') }),
+        h('td', { text: itemOverride(doc, m.id).join(', ') }),
+        h('td', null, h('button', { class: 'btn btn-l', disabled: ro, why: t('err.readonly'), text: t('assign.itemReset'), onclick: () => run((d) => wf.setItemAssignees(d, m.id, null), { render: true }) }))))))
+    : h('p', { class: 'wsmeta', text: t('assign.itemNone') });
+  const ta = h('textarea', { class: 'pastebox', rows: '6', placeholder: '#1\tHaEun\n#2\tAR_HaEun\n1283310\tIrene Kim, Brad Jeong', disabled: ro, 'aria-label': t('assign.pasteTitle') });
+  const strip = h('input', { type: 'checkbox', checked: true });
+  const out = h('div');
+  const preview = async () => {
+    clear(out);
+    const p = parseAssigneePaste(ta.value, ctl.state.doc, { stripPrefix: strip.checked });
+    const n = Object.keys(p.map).length;
+    out.appendChild(h('p', { class: n ? 'wsmeta' : 'ferr', text: t('assign.pasteResult', { n, bad: p.bad.length, dup: p.dup.length, skip: p.skipped }) }));
+    if (p.bad.length) out.appendChild(h('div', { class: 'wsmeta pre', text: p.bad.slice(0, 20).map((b) => `${t('ab.row')} ${b.line}: ${b.text}`).join('\n') }));
+    if (!n) return;
+    const plan = planFromPaste(ctl.state.doc, p.map);
+    const people = [...new Set(Object.values(p.map).flat())].sort();
+    if (plan.newDefaults.length) out.appendChild(h('p', { class: 'wsmeta', text: t('assign.pasteDefaults', { list: plan.newDefaults.map((s) => `${s} → ${plan.sections[s].join(', ')}`).join(' · ') }) }));
+    out.appendChild(h('p', { class: 'wsmeta', text: t('assign.pastePeople', { list: people.join(', ') }) }));
+    out.appendChild(h('div', { class: 'acts' }, h('button', { class: 'btn btn-p', disabled: ro, why: t('err.readonly'), text: t('assign.pasteApply', { n }), onclick: async () => {
+      const r = await withRestorePoint('before-assign', (d) => wf.setAssignment(d, plan.sections, plan.items));
+      if (r) toast(t('assign.saved'));
+    } })));
+  };
+  return card(t('assign.itemCardTitle'),
+    h('p', { class: 'wsmeta', text: t('assign.itemCardHelp') }), list,
+    h('div', { class: 'fl', text: t('assign.pasteTitle') }), h('p', { class: 'wsmeta', text: t('assign.pasteHelp') }), ta,
+    h('label', { class: 'wsmeta pastestrip' }, strip, ' ' + t('assign.pasteStrip')),
+    h('div', { class: 'acts' }, h('button', { class: 'btn btn-l', disabled: ro, why: t('err.readonly'), text: t('assign.pastePreview'), onclick: preview })), out);
 }
 
 // ---- files tab ------------------------------------------------------------------------
@@ -208,10 +247,10 @@ async function importBackupSameWs(ctl, file) {
 
 function preparerFiles(ctl) {
   const doc = ctl.state.doc, set = getItemSet(doc.itemSetId);
-  const mine = set.sections.filter((s) => assignedTo(doc, s).includes(doc.local.me));
+  const mine = set.sections.filter((s) => hasItemsIn(doc, s, doc.local.me));
   const checks = {};
   const secRows = set.sections.map((sec) => {
-    const items = set.items.filter((i) => i.section === sec);
+    const items = set.items.filter((i) => i.section === sec && F.isMine(doc, i));
     const ready = items.filter((i) => isAnswered(doc.items[i.id]) && ['draft', 'submitted', 'returned'].includes(doc.items[i.id].status)).length;
     const cb = h('input', { type: 'checkbox', checked: mine.includes(sec) && ready > 0, disabled: !ready, why: t('why.nothingReady') });
     checks[sec] = cb;
