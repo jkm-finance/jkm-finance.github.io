@@ -254,3 +254,10 @@ button.hchip.btnchip:hover{filter:brightness(1.15)}
 .sch-late td{color:var(--nc);font-weight:600}
 .sch-done td{color:var(--mu)}
 td.num.chg{font-weight:700}
+.tab.tk{background:#f7f0de;color:#6b4f1d;border-right-color:#e2d3ac}
+.tab.tk:hover{color:#4d3812}
+.tab.tk.active{background:#ecdcb3;color:#4d3812;border-bottom-color:#a67c2e}
+.hnav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.hnav .btn{white-space:nowrap}
+#hdr .hacts{margin-left:auto;justify-content:flex-end}
+#ttabs{display:flex;flex:none;border-left:2px solid #c9b47f;box-shadow:-6px 0 8px -6px rgba(0,0,0,.18)}

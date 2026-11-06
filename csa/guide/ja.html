@@ -65,26 +65,27 @@
 
 <section id="reviewer">
 <h2>3. レビュアー（Manager）</h2>
+<div class="note">画面構成: セクションタブの右端に <span class="ui">やること</span>（処理する項目があるときのみ）・<span class="ui">Findings</span>・<span class="ui">Hold</span> が別の色で固定され、<span class="ui">割当</span>・<span class="ui">マージ・確定</span>・<span class="ui">DOFレポート</span>・<span class="ui">バックアップ</span> は画面最上部のタイトル行のメニューボタンです。</div>
 <h3>3-1. ワークスペースの作成</h3>
 <ol class="steps">
   <li>パスワード <code>jkm</code> → <span class="ui">お名前</span> を入力 → <span class="ui">新規CSA（レビュアー）</span>。</li>
   <li>ホテル名を入力し、サービス区分 <strong>Full</strong>（240項目）または <strong>Focus</strong>（145項目）を選んで <span class="ui">作成</span>。</li>
-  <li><strong>または</strong> <span class="ui">AuditBoardエクスポートから開始（レビュアー）</span>: AuditBoardからダウンロードした監査Excel（.xlsx）を入れると、Full/Focusとホテル名が自動入力され、各項目にAuditBoard IDが紐付きます。作成前に一致した項目数と一致しない行が表示されます。既存のワークスペースには「割当」タブの <span class="ui">AuditBoard IDを紐付け</span> でIDのみ追加できます（入力内容は変わりません）。</li>
+  <li><strong>または</strong> <span class="ui">AuditBoardエクスポートから開始（レビュアー）</span>: AuditBoardからダウンロードした監査Excel（.xlsx）を入れると、Full/Focusとホテル名が自動入力され、各項目にAuditBoard IDが紐付きます。作成前に一致した項目数と一致しない行が表示されます。既存のワークスペースには「割当」メニューの <span class="ui">AuditBoard IDを紐付け</span> でIDのみ追加できます（入力内容は変わりません）。</li>
   <li>上部に黄色の案内が出たら <span class="ui">バックアップ先を指定</span> を押し、<strong>OneDrive内のフォルダ</strong>（例: <code>OneDrive › Finance › CSA 2026 Backup</code>）を選びます。<a href="#safety">7章</a>参照。</li>
 </ol>
 <h3>3-2. セクション割当と割当ファイル</h3>
-<div class="note"><strong>スケジュール</strong>: 「割当」タブの <span class="ui">スケジュール</span> に段階別の締切日（CSA配布 → 項目作成 → 証憑提出 → 一次レビュー → Managerインタビュー → DOF・ADOFレビュー → AuditBoard最終提出）を入れると、締切7日前から全員の画面上部に <code>次の予定（D-3）</code> のような案内が表示され、過ぎると警告になります。完了した段階は完了日を入れてください。概要にはスケジュール表と <span class="ui">日付別の進捗</span>（1日1行自動集計）が表示されます。</div>
-<div class="note"><strong>前年度結果</strong>: 「割当」タブの <span class="ui">前年度結果を読み込む</span> に昨年の結果Excel（Work Step・Response・Testing Notes列、または「2025 CSA | 2026 CSA」比較シート）を入れると、各項目に <code>2025: No</code> バッジと当時のテストノートが表示され、<span class="ui">2025年 No</span> フィルターで昨年の指摘項目を絞り込めます。年度表示のないシートは今年の結果の可能性があるため最初は未選択です。シート一覧を確認してから適用してください。割当ファイルに含まれ、作成者も確認できます。</div>
+<div class="note"><strong>スケジュール</strong>: 「割当」メニューの <span class="ui">スケジュール</span> に段階別の締切日（CSA配布 → 項目作成 → 証憑提出 → 一次レビュー → Managerインタビュー → DOF・ADOFレビュー → AuditBoard最終提出）を入れると、締切7日前から全員の画面上部に <code>次の予定（D-3）</code> のような案内が表示され、過ぎると警告になります。完了した段階は完了日を入れてください。概要にはスケジュール表と <span class="ui">日付別の進捗</span>（1日1行自動集計）が表示されます。</div>
+<div class="note"><strong>前年度結果</strong>: 「割当」メニューの <span class="ui">前年度結果を読み込む</span> に昨年の結果Excel（Work Step・Response・Testing Notes列、または「2025 CSA | 2026 CSA」比較シート）を入れると、各項目に <code>2025: No</code> バッジと当時のテストノートが表示され、<span class="ui">2025年 No</span> フィルターで昨年の指摘項目を絞り込めます。年度表示のないシートは今年の結果の可能性があるため最初は未選択です。シート一覧を確認してから適用してください。割当ファイルに含まれ、作成者も確認できます。</div>
 <ol class="steps">
-  <li><span class="ui">割当</span> タブでセクションごとに担当者名を入力します（複数はカンマ区切り、例: <code>Irene Kim, Brad Jeong</code>）。FSSCのないホテルは、FSSC表示の項目もホテルの担当者に割り当てます。</li>
+  <li><span class="ui">割当</span> メニューでセクションごとに担当者名を入力します（複数はカンマ区切り、例: <code>Irene Kim, Brad Jeong</code>）。FSSCのないホテルは、FSSC表示の項目もホテルの担当者に割り当てます。</li>
   <li><span class="ui">割当を保存</span>。</li>
-  <li>セクション内の一部の項目だけ別の人が担当する場合は<strong>項目別担当者</strong>を使います。項目画面上部の <span class="ui">担当者</span> 欄を押して名前を入れるか、「割当」タブの <span class="ui">項目別担当者</span> にExcelの <code>#</code> 列と担当者（PIC）列を一緒にコピーして貼り付け、<span class="ui">プレビュー</span> → <span class="ui">適用</span> を押します。<code>AR_HaEun</code> は <code>HaEun</code> になり、担当者のいないセクションは最も多い人がセクション担当者になります。作成者は自分の項目のみ修正・提出できます。</li>
+  <li>セクション内の一部の項目だけ別の人が担当する場合は<strong>項目別担当者</strong>を使います。項目画面上部の <span class="ui">担当者</span> 欄を押して名前を入れるか、「割当」メニューの <span class="ui">項目別担当者</span> にExcelの <code>#</code> 列と担当者（PIC）列を一緒にコピーして貼り付け、<span class="ui">プレビュー</span> → <span class="ui">適用</span> を押します。<code>AR_HaEun</code> は <code>HaEun</code> になり、担当者のいないセクションは最も多い人がセクション担当者になります。作成者は自分の項目のみ修正・提出できます。</li>
   <li><span class="ui">割当ファイルを送る</span> で <span class="ui">割当ファイルをダウンロード</span>（全員共通）または <span class="ui">{名前}用</span> を押してファイルを取得し、メール・Teams・OneDriveで作成者に送ります。</li>
   <li>割当を変更するとバージョンが上がります。新しい割当ファイルを送っても、作成者の入力内容はそのままで割当だけが更新されます。</li>
 </ol>
 <h3>3-3. 提出ファイルのマージ</h3>
 <ol class="steps">
-  <li><span class="ui">マージ・確定</span> タブ → <span class="ui">提出ファイルのマージ</span> に受け取った提出ファイルをまとめてドロップします。</li>
+  <li><span class="ui">マージ・確定</span> メニュー → <span class="ui">提出ファイルのマージ</span> に受け取った提出ファイルをまとめてドロップします。</li>
   <li><span class="ui">マージのプレビュー</span> でファイルごとに 新規・変更・同一・競合・拒否（ロック）・割当外 の件数を確認します。他ホテルのファイルや破損したファイルはそのファイルだけ拒否され、残りは処理されます。</li>
   <li><strong>競合</strong>（2人が同じ項目を違う内容で回答、またはレビュアーが修正した後に届いた提出）がある場合は <span class="ui">競合の解決へ</span> → 項目ごとに採用する内容を選びます。すべて現在の内容を残すなら <span class="ui">すべて現行内容を維持</span>。採用しなかった内容も履歴に残ります。</li>
   <li><strong>割当外</strong>の項目はチェックしたものだけ反映されます。</li>
@@ -93,14 +94,14 @@
 <h3>3-4. レビュー — 承認と差戻し</h3>
 <ul>
   <li>作成者は <span class="ui">作成者説明（社内用）</span> を書き、レビュアーはそれをもとに <span class="ui">AuditBoard Response（英語・レビュアー確定）</span> を作成・確定します。フィルターの <span class="ui">AuditBoard Responseなし</span> で英文Responseが未作成の項目だけを表示できます。</li>
-  <li><span class="ui">レビュー待ち</span> タブに提出された項目が集まります。項目を開いて <span class="ui">承認</span> または <span class="ui">差戻し</span> を押します。差戻しには理由の入力が必要です。</li>
+  <li>提出された項目があると <span class="ui">やること</span> タブが表示され、そこに集まります（ないときは非表示）。項目を開いて <span class="ui">承認</span> または <span class="ui">差戻し</span> を押します。差戻しには理由の入力が必要です。</li>
   <li><span class="ui">結果のあるn件を一括承認</span> でまとめて承認できます。</li>
   <li>項目下の <span class="ui">レビューコメント</span> に意見を残せます（追加のみ、削除不可）。</li>
   <li>レビュー完了項目の<strong>結果</strong>を変更する場合は理由の入力が必要です。理由はコメント（作成者にも表示）と変更履歴に残り、概要の <span class="ui">レビュー完了後の結果変更</span> 表にまとまります。</li>
   <li>レビュアーはレビュー完了の項目も直接修正できます。ステータスはレビュー完了のままで、確定後であれば確定が解除されます。入力完了（ロック）の項目は先にロックを解除します。</li>
 </ul>
 <h3>3-5. レビュー結果を送る</h3>
-<p><span class="ui">マージ・確定</span> タブ → <span class="ui">レビュー結果ファイルをダウンロード</span> → 作成者に送ります。承認・差戻しとコメントが伝わり、作成者がその間に修正した内容は上書きされません。</p>
+<p><span class="ui">マージ・確定</span> メニュー → <span class="ui">レビュー結果ファイルをダウンロード</span> → 作成者に送ります。承認・差戻しとコメントが伝わり、作成者がその間に修正した内容は上書きされません。</p>
 <h3>3-6. AuditBoard入力とロック</h3>
 <ol class="steps">
   <li>AuditBoard IDが紐付いていると項目の上部に <code>AB 1283309</code> のように表示され、一覧上の検索欄にAuditBoard IDや#番号を入れるとその項目へ移動できます。</li>
@@ -110,14 +111,14 @@
 </ol>
 <h3>3-7. 確定と最終結果ファイル</h3>
 <ol class="steps">
-  <li>全項目に結果があり、レビュー完了（または入力完了）になると、<span class="ui">マージ・確定</span> タブの <span class="ui">確定して最終結果を発行</span> が押せるようになります。押せない場合は残りの項目が下に表示されます。</li>
+  <li>全項目に結果があり、レビュー完了（または入力完了）になると、<span class="ui">マージ・確定</span> メニューの <span class="ui">確定して最終結果を発行</span> が押せるようになります。押せない場合は残りの項目が下に表示されます。</li>
   <li>発行された <code>…_FINAL_v1_….json</code> をHotel DOFとArea / Regional DOFに送ります。</li>
   <li>確定後に内容を修正すると確定は自動で解除されます（上部に案内表示）。再確定すると <strong>v2</strong> が発行され、受け取った側では最新版が標準で表示されます。入力完了の表示やロック解除だけでは確定は解除されません。</li>
 </ol>
 <h3>3-8. レポートとExcel</h3>
 <ul>
-  <li><span class="ui">DOFレポート</span> タブ: スコア・セクション別結果・Findingsと改善計画・Hold一覧。<span class="ui">印刷 / PDF保存</span> → 印刷画面で「PDFに保存」（A4縦）。確定前は「ドラフト — 未確定」と表示されます。</li>
-  <li><span class="ui">マージ・確定</span> タブの <span class="ui">全体をExcel出力</span>: 項目ごとの結果・内容・担当者・最新コメント。</li>
+  <li><span class="ui">DOFレポート</span> メニュー: スコア・セクション別結果・Findingsと改善計画・Hold一覧。<span class="ui">印刷 / PDF保存</span> → 印刷画面で「PDFに保存」（A4縦）。確定前は「ドラフト — 未確定」と表示されます。</li>
+  <li><span class="ui">マージ・確定</span> メニューの <span class="ui">全体をExcel出力</span>: 項目ごとの結果・内容・担当者・最新コメント。</li>
   <li><span class="ui">Overview</span>: 進捗（(Yes+No+N/A) ÷ 全体）、スコア（Yes ÷ (Yes+No)、N/A・Hold除外）、セクション別・担当者別・ステータス別の状況。</li>
 </ul>
 </section>
@@ -145,19 +146,19 @@
 </ul>
 <h3>4-3. セクション提出</h3>
 <ol class="steps">
-  <li><span class="ui">提出・受取</span> タブ → <span class="ui">セクション提出</span> で提出するセクションにチェックします（● = 担当）。</li>
+  <li><span class="ui">提出・受取</span> メニュー → <span class="ui">セクション提出</span> で提出するセクションにチェックします（● = 担当）。</li>
   <li><span class="ui">提出ファイルをダウンロード</span>。結果のない項目は含まれず、Noで改善計画がない項目や担当外のセクションがあれば警告が出ます。</li>
   <li>ダウンロードした <code>…_SUBMIT_….json</code> を<strong>レビュアーに送って</strong>提出完了です。</li>
   <li>セクションを分けて何回提出してもかまいません。提出済みの項目を修正して再提出することもできます。</li>
 </ol>
 <h3>4-4. レビュー結果の受け取りと差戻しの修正</h3>
 <ol class="steps">
-  <li>レビュアーから届いたレビュー結果ファイル（<code>…_REVIEW_….json</code>）または新しい割当ファイルを、<span class="ui">提出・受取</span> タブの <span class="ui">レビュアーのファイルを受け取る</span> に入れます。</li>
-  <li><span class="ui">差戻し</span> タブに差し戻された項目と理由が表示されます。修正して再提出します。</li>
+  <li>レビュアーから届いたレビュー結果ファイル（<code>…_REVIEW_….json</code>）または新しい割当ファイルを、<span class="ui">提出・受取</span> メニューの <span class="ui">レビュアーのファイルを受け取る</span> に入れます。</li>
+  <li>差し戻された項目は理由とともに <span class="ui">やること</span> タブに表示されます（再提出すると消えます）。修正して再提出します。</li>
   <li>まだ送っていない自分の入力は上書きされません。その項目には「レビュアーの内容と異なります」と表示されるので、修正が終わったら再提出してください。</li>
   <li>レビュー完了の項目は作成者は修正できません。修正が必要ならレビュアーに差戻しを依頼してください。</li>
 </ol>
-<div class="note">作成者も <span class="ui">バックアップ</span> タブで <span class="ui">バックアップ先を指定</span> しておくと、PCの故障に備えられます。</div>
+<div class="note">作成者も <span class="ui">バックアップ</span> メニューで <span class="ui">バックアップ先を指定</span> しておくと、PCの故障に備えられます。</div>
 </section>
 
 <section id="dof">

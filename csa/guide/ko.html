@@ -65,26 +65,27 @@
 
 <section id="reviewer">
 <h2>3. 리뷰어(Manager)</h2>
+<div class="note">화면 구성: 섹션 탭 오른쪽 끝에 <span class="ui">할 일</span>(처리할 문항이 있을 때만) · <span class="ui">Findings</span> · <span class="ui">Hold</span>가 다른 색으로 고정되어 있고, <span class="ui">배정</span> · <span class="ui">병합·확정</span> · <span class="ui">DOF 보고</span> · <span class="ui">백업·복원</span>은 화면 맨 위 제목 줄의 메뉴 버튼입니다.</div>
 <h3>3-1. 작업공간 만들기</h3>
 <ol class="steps">
   <li>비밀번호 <code>jkm</code> → <span class="ui">내 이름</span> 입력 → <span class="ui">새 CSA 시작 (리뷰어)</span>.</li>
   <li>호텔명을 입력하고 서비스 유형 <strong>Full</strong>(240문항) 또는 <strong>Focus</strong>(145문항)를 고른 뒤 <span class="ui">만들기</span>.</li>
-  <li><strong>또는</strong> <span class="ui">AuditBoard 내보내기 엑셀로 시작 (리뷰어)</span>: AuditBoard에서 내려받은 감사 엑셀(.xlsx)을 넣으면 Full/Focus와 호텔명이 자동으로 채워지고, 문항마다 AuditBoard ID가 연결됩니다. 만들기 전에 맞춘 문항 수와 맞지 않는 행을 보여 줍니다. 이미 만든 작업공간에는 「배정」 탭의 <span class="ui">AuditBoard ID 연결</span>로 ID만 붙일 수 있습니다(입력 내용은 바뀌지 않음).</li>
+  <li><strong>또는</strong> <span class="ui">AuditBoard 내보내기 엑셀로 시작 (리뷰어)</span>: AuditBoard에서 내려받은 감사 엑셀(.xlsx)을 넣으면 Full/Focus와 호텔명이 자동으로 채워지고, 문항마다 AuditBoard ID가 연결됩니다. 만들기 전에 맞춘 문항 수와 맞지 않는 행을 보여 줍니다. 이미 만든 작업공간에는 「배정」 메뉴의 <span class="ui">AuditBoard ID 연결</span>로 ID만 붙일 수 있습니다(입력 내용은 바뀌지 않음).</li>
   <li>상단에 노란 안내가 보이면 <span class="ui">백업 폴더 지정</span>을 눌러 <strong>OneDrive 안의 폴더</strong>(예: <code>OneDrive › Finance › CSA 2026 Backup</code>)를 고릅니다. <a href="#safety">7장</a> 참고.</li>
 </ol>
 <h3>3-2. 섹션 배정과 배정 파일</h3>
-<div class="note"><strong>일정</strong>: 「배정」 탭 <span class="ui">일정</span>에 단계별 마감일(CSA 배부 → 항목 작성 → 증빙 자료 제출 → 1차 검토 → Manager 인터뷰 → DOF·ADOF 검토 → AuditBoard 최종 제출)을 넣으면, 마감 7일 전부터 모든 사람 화면 위에 <code>다음 일정 (D-3)</code>처럼 안내가 뜨고 지나면 경고로 바뀝니다. 끝난 단계는 완료일을 넣으세요. 개요에는 일정 표와 <span class="ui">날짜별 진행</span>(하루 한 줄 자동 집계)이 보입니다.</div>
-<div class="note"><strong>전년도 결과</strong>: 「배정」 탭 <span class="ui">전년도 결과 불러오기</span>에 작년 결과 엑셀(Work Step·Response·Testing Notes 열, 또는 "2025 CSA | 2026 CSA" 비교 시트)을 넣으면 문항마다 <code>2025: No</code> 배지와 당시 테스트 노트가 보이고, <span class="ui">2025년 No</span> 필터로 작년 지적 문항만 모아 볼 수 있습니다. 연도 표시가 없는 시트는 올해 결과일 수 있어 처음엔 선택되지 않으니, 시트 목록을 확인하고 적용하세요. 배정 파일에 함께 들어가 작성자도 봅니다.</div>
+<div class="note"><strong>일정</strong>: 「배정」 메뉴 <span class="ui">일정</span>에 단계별 마감일(CSA 배부 → 항목 작성 → 증빙 자료 제출 → 1차 검토 → Manager 인터뷰 → DOF·ADOF 검토 → AuditBoard 최종 제출)을 넣으면, 마감 7일 전부터 모든 사람 화면 위에 <code>다음 일정 (D-3)</code>처럼 안내가 뜨고 지나면 경고로 바뀝니다. 끝난 단계는 완료일을 넣으세요. 개요에는 일정 표와 <span class="ui">날짜별 진행</span>(하루 한 줄 자동 집계)이 보입니다.</div>
+<div class="note"><strong>전년도 결과</strong>: 「배정」 메뉴 <span class="ui">전년도 결과 불러오기</span>에 작년 결과 엑셀(Work Step·Response·Testing Notes 열, 또는 "2025 CSA | 2026 CSA" 비교 시트)을 넣으면 문항마다 <code>2025: No</code> 배지와 당시 테스트 노트가 보이고, <span class="ui">2025년 No</span> 필터로 작년 지적 문항만 모아 볼 수 있습니다. 연도 표시가 없는 시트는 올해 결과일 수 있어 처음엔 선택되지 않으니, 시트 목록을 확인하고 적용하세요. 배정 파일에 함께 들어가 작성자도 봅니다.</div>
 <ol class="steps">
-  <li><span class="ui">배정</span> 탭에서 섹션마다 담당자 이름을 입력합니다. 여러 명은 쉼표로 구분합니다(예: <code>Irene Kim, Brad Jeong</code>). FSSC가 없는 호텔은 FSSC 표시 문항도 호텔 직원에게 배정하면 됩니다.</li>
+  <li><span class="ui">배정</span> 메뉴에서 섹션마다 담당자 이름을 입력합니다. 여러 명은 쉼표로 구분합니다(예: <code>Irene Kim, Brad Jeong</code>). FSSC가 없는 호텔은 FSSC 표시 문항도 호텔 직원에게 배정하면 됩니다.</li>
   <li><span class="ui">배정 저장</span>.</li>
-  <li>섹션 안에서 일부 문항만 다른 사람이 맡으면 <strong>문항별 담당자</strong>를 씁니다. 문항 화면 위쪽의 <span class="ui">담당자</span> 칸을 눌러 이름을 넣거나, 「배정」 탭 <span class="ui">문항별 담당자</span>에 엑셀의 <code>#</code> 열과 담당자(PIC) 열을 함께 복사해 붙여넣고 <span class="ui">미리 보기</span> → <span class="ui">적용</span>을 누릅니다. <code>AR_HaEun</code>은 <code>HaEun</code>으로 바뀌고, 담당자가 없던 섹션은 가장 많이 나온 사람이 섹션 담당자가 됩니다. 작성자는 자기 문항만 고치고 제출할 수 있습니다.</li>
+  <li>섹션 안에서 일부 문항만 다른 사람이 맡으면 <strong>문항별 담당자</strong>를 씁니다. 문항 화면 위쪽의 <span class="ui">담당자</span> 칸을 눌러 이름을 넣거나, 「배정」 메뉴 <span class="ui">문항별 담당자</span>에 엑셀의 <code>#</code> 열과 담당자(PIC) 열을 함께 복사해 붙여넣고 <span class="ui">미리 보기</span> → <span class="ui">적용</span>을 누릅니다. <code>AR_HaEun</code>은 <code>HaEun</code>으로 바뀌고, 담당자가 없던 섹션은 가장 많이 나온 사람이 섹션 담당자가 됩니다. 작성자는 자기 문항만 고치고 제출할 수 있습니다.</li>
   <li><span class="ui">배정 파일 보내기</span>에서 <span class="ui">공통 배정 파일 내려받기</span>(모두에게 같은 파일) 또는 <span class="ui">{이름}용</span>을 눌러 파일을 받은 뒤, 메일·Teams·OneDrive로 작성자에게 보냅니다.</li>
   <li>배정을 바꾸면 버전이 올라갑니다. 새 배정 파일을 다시 보내면 작성자가 입력한 내용은 그대로 두고 배정만 바뀝니다.</li>
 </ol>
 <h3>3-3. 제출 파일 병합</h3>
 <ol class="steps">
-  <li><span class="ui">병합·확정</span> 탭 → <span class="ui">제출 파일 병합</span> 상자에 받은 제출 파일을 한꺼번에 끌어다 놓습니다.</li>
+  <li><span class="ui">병합·확정</span> 메뉴 → <span class="ui">제출 파일 병합</span> 상자에 받은 제출 파일을 한꺼번에 끌어다 놓습니다.</li>
   <li><span class="ui">병합 미리보기</span>에서 파일별로 신규·변경·동일·충돌·거부(잠금)·배정 외 건수를 확인합니다. 다른 호텔의 파일이나 손상된 파일은 그 파일만 거부되고 나머지는 처리됩니다.</li>
   <li><strong>충돌</strong>(두 사람이 같은 문항을 다르게 썼거나, 내가 고친 뒤에 들어온 제출)이 있으면 <span class="ui">충돌 해결로</span> → 문항마다 쓸 내용을 고릅니다. 모두 지금 내용을 유지하려면 <span class="ui">모두 정본 유지</span>. 채택하지 않은 내용도 이력에 남습니다.</li>
   <li><strong>배정 외</strong> 문항은 체크한 것만 반영됩니다.</li>
@@ -93,14 +94,14 @@
 <h3>3-4. 검토 — 승인과 반려</h3>
 <ul>
   <li>작성자는 <span class="ui">작성자 설명 (국문 · 내부용)</span>을 쓰고, 리뷰어는 이를 바탕으로 <span class="ui">AuditBoard Response (영문 · 리뷰어 확정)</span>을 작성·확정합니다. 왼쪽 필터의 <span class="ui">AuditBoard Response 없음</span>으로 아직 영문 Response가 없는 문항만 모아 볼 수 있습니다.</li>
-  <li><span class="ui">검토함</span> 탭에 제출된 문항이 모입니다. 문항을 열어 내용을 보고 <span class="ui">승인</span> 또는 <span class="ui">반려</span>를 누릅니다. 반려는 사유를 꼭 입력해야 합니다.</li>
+  <li>제출된 문항이 있으면 <span class="ui">할 일</span> 탭이 나타나 그곳에 모입니다(없으면 숨겨짐). 문항을 열어 내용을 보고 <span class="ui">승인</span> 또는 <span class="ui">반려</span>를 누릅니다. 반려는 사유를 꼭 입력해야 합니다.</li>
   <li>여러 건은 <span class="ui">결과가 있는 n건 일괄 승인</span>으로 한 번에 승인할 수 있습니다.</li>
   <li>문항 아래 <span class="ui">리뷰 코멘트</span>에 의견을 남길 수 있습니다(추가만 가능, 지울 수 없음).</li>
   <li>검토완료 문항의 <strong>결과</strong>를 바꾸면 사유를 꼭 입력해야 합니다. 사유는 코멘트(작성자에게도 보임)와 변경 이력에 남고, 개요의 <span class="ui">검토완료 후 결과 변경</span> 표에 모입니다.</li>
   <li>리뷰어는 검토완료 문항도 직접 고칠 수 있습니다. 상태는 검토완료 그대로이며, 이미 확정한 뒤라면 확정이 해제됩니다. 입력완료(잠김) 문항은 먼저 잠금을 해제해야 합니다.</li>
 </ul>
 <h3>3-5. 검토 결과 보내기</h3>
-<p><span class="ui">병합·확정</span> 탭 → <span class="ui">검토 결과 파일 내려받기</span> → 작성자에게 보냅니다. 승인·반려 상태와 코멘트가 전달되며, 작성자가 그사이 고친 내용은 덮어쓰지 않습니다.</p>
+<p><span class="ui">병합·확정</span> 메뉴 → <span class="ui">검토 결과 파일 내려받기</span> → 작성자에게 보냅니다. 승인·반려 상태와 코멘트가 전달되며, 작성자가 그사이 고친 내용은 덮어쓰지 않습니다.</p>
 <h3>3-6. AuditBoard 입력과 잠금</h3>
 <ol class="steps">
   <li>AuditBoard ID가 연결되어 있으면 문항 머리에 <code>AB 1283309</code>처럼 보이고, 목록 위 찾기 칸에 AuditBoard ID나 # 번호를 넣으면 그 문항으로 바로 갈 수 있습니다.</li>
@@ -110,14 +111,14 @@
 </ol>
 <h3>3-7. 확정과 최종 결과 파일</h3>
 <ol class="steps">
-  <li>모든 문항에 결과가 있고 검토완료(또는 입력완료)이면 <span class="ui">병합·확정</span> 탭의 <span class="ui">확정하고 최종 결과 파일 발행</span>이 켜집니다. 꺼져 있으면 아래 목록에 남은 문항이 표시됩니다.</li>
+  <li>모든 문항에 결과가 있고 검토완료(또는 입력완료)이면 <span class="ui">병합·확정</span> 메뉴의 <span class="ui">확정하고 최종 결과 파일 발행</span>이 켜집니다. 꺼져 있으면 아래 목록에 남은 문항이 표시됩니다.</li>
   <li>발행된 <code>…_FINAL_v1_….json</code> 파일을 Hotel DOF와 Area / Regional DOF에게 보냅니다.</li>
   <li>확정 뒤에 내용을 고치면 확정이 자동으로 해제됩니다(상단 안내 표시). 다시 확정하면 <strong>v2</strong>가 발행되고, 받는 쪽에서는 가장 높은 버전이 기본으로 보입니다. AuditBoard 입력 완료 표시나 잠금 해제만으로는 확정이 풀리지 않습니다.</li>
 </ol>
 <h3>3-8. 보고서와 Excel</h3>
 <ul>
-  <li><span class="ui">DOF 보고</span> 탭: 점수·섹션별 결과·Findings와 개선계획·Hold 목록. <span class="ui">인쇄 / PDF 저장</span> → 인쇄 창에서 “PDF로 저장”(A4 세로). 확정 전에는 “초안 — 미확정” 표시가 붙습니다.</li>
-  <li><span class="ui">병합·확정</span> 탭의 <span class="ui">전체 Excel 내보내기</span>: 문항별 결과·내용·담당자·최근 코멘트 전체.</li>
+  <li><span class="ui">DOF 보고</span> 메뉴: 점수·섹션별 결과·Findings와 개선계획·Hold 목록. <span class="ui">인쇄 / PDF 저장</span> → 인쇄 창에서 “PDF로 저장”(A4 세로). 확정 전에는 “초안 — 미확정” 표시가 붙습니다.</li>
+  <li><span class="ui">병합·확정</span> 메뉴의 <span class="ui">전체 Excel 내보내기</span>: 문항별 결과·내용·담당자·최근 코멘트 전체.</li>
   <li><span class="ui">Overview</span>: 진행률(Yes+No+N/A ÷ 전체), 점수(Yes ÷ (Yes+No), N/A·Hold 제외), 섹션별·담당자별·상태별 현황.</li>
 </ul>
 </section>
@@ -145,19 +146,19 @@
 </ul>
 <h3>4-3. 섹션 제출</h3>
 <ol class="steps">
-  <li><span class="ui">제출·받기</span> 탭 → <span class="ui">섹션 제출</span>에서 제출할 섹션을 체크합니다(● = 내 담당).</li>
+  <li><span class="ui">제출·받기</span> 메뉴 → <span class="ui">섹션 제출</span>에서 제출할 섹션을 체크합니다(● = 내 담당).</li>
   <li><span class="ui">제출 파일 내려받기</span>. 결과가 없는 문항은 빠지고, No인데 개선계획이 없거나 내 담당이 아닌 섹션이 있으면 경고가 나옵니다.</li>
   <li>내려받은 <code>…_SUBMIT_….json</code> 파일을 <strong>리뷰어에게 보내야</strong> 제출이 끝납니다.</li>
   <li>섹션을 나눠서 여러 번 제출해도 됩니다. 이미 제출한 문항을 고친 뒤 다시 제출해도 됩니다.</li>
 </ol>
 <h3>4-4. 검토 결과 받기와 반려 수정</h3>
 <ol class="steps">
-  <li>리뷰어가 보낸 검토 결과 파일(<code>…_REVIEW_….json</code>) 또는 새 배정 파일을 <span class="ui">제출·받기</span> 탭 → <span class="ui">리뷰어 파일 받기</span>에 넣습니다.</li>
-  <li><span class="ui">반려</span> 탭에 반려된 문항과 사유가 보입니다. 고친 뒤 다시 제출합니다.</li>
+  <li>리뷰어가 보낸 검토 결과 파일(<code>…_REVIEW_….json</code>) 또는 새 배정 파일을 <span class="ui">제출·받기</span> 메뉴 → <span class="ui">리뷰어 파일 받기</span>에 넣습니다.</li>
+  <li>반려된 문항이 있으면 <span class="ui">할 일</span> 탭에 사유와 함께 보입니다(다시 제출하면 빠짐). 고친 뒤 다시 제출합니다.</li>
   <li>아직 보내지 않은 내 입력은 덮어쓰지 않습니다. 이런 문항에는 “리뷰어 정본과 내용이 다릅니다” 표시가 붙으니, 수정이 끝나면 다시 제출하세요.</li>
   <li>검토완료된 문항은 작성자가 고칠 수 없습니다. 고쳐야 하면 리뷰어에게 반려를 요청하세요.</li>
 </ol>
-<div class="note">작성자도 <span class="ui">백업·복원</span> 탭에서 <span class="ui">백업 폴더 지정</span>을 해 두면 PC 문제에 대비할 수 있습니다.</div>
+<div class="note">작성자도 <span class="ui">백업·복원</span> 메뉴에서 <span class="ui">백업 폴더 지정</span>을 해 두면 PC 문제에 대비할 수 있습니다.</div>
 </section>
 
 <section id="dof">

@@ -28,7 +28,7 @@ export function renderWorkspace(ctl) {
   app.appendChild(header(ctl));
   app.appendChild(h('div', { id: 'banners' }));
   app.appendChild(h('div', { id: 'prg' }));
-  app.appendChild(h('nav', { id: 'nav', 'aria-label': 'sections' }, h('div', { id: 'tabs' })));
+  app.appendChild(h('nav', { id: 'nav', 'aria-label': 'sections' }, h('div', { id: 'tabs' }), h('div', { id: 'ttabs' })));
   const body = h('div', { id: 'ct' });
   app.appendChild(body);
 
@@ -63,6 +63,12 @@ function header(ctl) {
       h('span', { class: 'role-badge', text: t('role.' + doc.local.role) + (s.readonly ? ' · ' + t('hdr.readonly') : '') }),
       h('span', { class: 'hchip', text: doc.local.me || '—' }),
       doc.finalize.current ? h('span', { class: 'badge st st-approved', text: t('final.badgeV', { v: doc.finalize.current.version }) }) : null),
+    h('nav', { class: 'hnav', 'aria-label': t('hdr.tools') }, [
+      doc.local.role === 'reviewer' ? ['assign', '👥 ' + t('tab.assign')] : null,
+      ['files', '🔀 ' + (doc.local.role === 'reviewer' ? t('tab.filesReviewer') : t('tab.filesPreparer'))],
+      ['report', '📄 ' + t('tab.report')],
+      ['backup', '💾 ' + t('tab.backup')],
+    ].filter(Boolean).map(([v, label]) => h('button', { class: 'btn btn-o hnavb' + (s.view === v ? ' act' : ''), 'data-view': v, text: label, onclick: () => setView(ctl, v) }))),
     h('div', { class: 'hacts' },
       h('span', { class: 'save-ind', id: 'saveInd' }),
       h('span', { class: 'save-ind', id: 'backupInd' }),
@@ -118,11 +124,12 @@ export function refreshChrome(ctl) {
       ['draft', 'submitted', 'returned', 'approved', 'entered'].map((k) => dotStat(`var(--st-${k})`, t('status.' + k), st[k]))));
   }
 
+  document.querySelectorAll('#hdr .hnavb').forEach((b) => b.classList.toggle('act', b.dataset.view === s.view));
   const tabs = document.getElementById('tabs');
   if (tabs) {
     clear(tabs);
     const role = doc.local.role;
-    const mk = (view, label, count, extra = {}) => h('button', { class: 'tab' + (extra.sep ? ' sep' : '') + (s.view === view && (view !== 'section' || s.section === extra.section) ? ' active' : ''), onclick: () => setView(ctl, view, extra.section || null) },
+    const mk = (view, label, count, extra = {}) => h('button', { class: 'tab' + (extra.sep ? ' sep' : '') + (extra.task ? ' tk' : '') + (s.view === view && (view !== 'section' || s.section === extra.section) ? ' active' : ''), onclick: () => setView(ctl, view, extra.section || null) },
       label, count !== undefined && count !== null ? h('span', { class: 'tn' + (extra.alert && count ? ' alert' : ''), text: String(count) }) : null);
     tabs.appendChild(mk('overview', t('tab.overview')));
     for (const sec of set.sections) {
@@ -131,14 +138,16 @@ export function refreshChrome(ctl) {
       const mine = role === 'preparer' && hasItemsIn(doc, sec, doc.local.me);
       tabs.appendChild(mk('section', (mine ? '● ' : '') + sec, `${done}/${items.length}`, { section: sec }));
     }
-    if (role === 'reviewer') tabs.appendChild(mk('queue', t('tab.queue'), st.submitted, { sep: true, alert: true }));
-    tabs.appendChild(mk('returned', t('tab.returned'), st.returned, { sep: role !== 'reviewer', alert: true }));
-    tabs.appendChild(mk('findings', t('tab.findings'), sum.counts.no));
-    tabs.appendChild(mk('hold', t('tab.hold'), sum.counts.hold));
-    if (role === 'reviewer') tabs.appendChild(mk('assign', t('tab.assign'), null, { sep: true }));
-    tabs.appendChild(mk('files', role === 'reviewer' ? t('tab.filesReviewer') : t('tab.filesPreparer'), null, { sep: role !== 'reviewer' }));
-    tabs.appendChild(mk('report', t('tab.report')));
-    tabs.appendChild(mk('backup', t('tab.backup')));
+    // "To do" (was Review queue + Returned): the reviewer's submitted items or the preparer's returned items.
+    // Hidden while empty, except while it is open.
+    const todo = set.items.filter((m) => isTodo(doc, doc.items[m.id])).length;
+    const tt = document.getElementById('ttabs');
+    if (tt) {
+      clear(tt);
+      if (todo || s.view === 'todo') tt.appendChild(mk('todo', t('tab.todo'), todo, { alert: true, task: true }));
+      tt.appendChild(mk('findings', t('tab.findings'), sum.counts.no, { task: true }));
+      tt.appendChild(mk('hold', t('tab.hold'), sum.counts.hold, { task: true }));
+    }
   }
 
   // list dots
@@ -251,11 +260,17 @@ function overviewPane(ctl, set) {
 
 // ---- list + detail ----------------------------------------------------------------
 
+// Reviewer: submitted items waiting for approval. Preparer: returned items not yet sent back
+// (still returned, or fixed locally but not submitted again).
+export function isTodo(doc, it) {
+  if (doc.local.role === 'reviewer') return it.status === 'submitted';
+  return it.status === 'returned' || (it.masterStatus === 'returned' && it.status === 'draft');
+}
+
 function viewFilter(ctl, meta, it) {
   const v = ctl.state.view;
   if (v === 'section') return meta.section === ctl.state.section;
-  if (v === 'queue') return it.status === 'submitted';
-  if (v === 'returned') return it.status === 'returned' || it.masterStatus === 'returned';
+  if (v === 'todo') return isTodo(ctl.state.doc, it);
   if (v === 'findings') return it.result === 'no';
   if (v === 'hold') return it.result === 'hold';
   return true;
@@ -309,7 +324,7 @@ function listAndDetail(ctl, set, body) {
     clear(lp);
     lp.appendChild(filterBar(ctl, set, draw));
     const metas = set.items.filter((m) => viewFilter(ctl, m, doc.items[m.id]) && userFilter(ctl, m, doc.items[m.id]));
-    if (s.view === 'queue' && metas.length) {
+    if (s.view === 'todo' && doc.local.role === 'reviewer' && metas.length) {
       lp.appendChild(h('div', { class: 'flt' }, h('button', { class: 'btn btn-y', text: t('queue.approveAll', { n: metas.filter((m) => doc.items[m.id].result).length }), onclick: () => bulkApprove(ctl, metas.map((m) => m.id)) })));
     }
     if (!metas.length) lp.appendChild(h('div', { class: 'empty', text: t('list.empty') }));

@@ -65,26 +65,27 @@
 
 <section id="reviewer">
 <h2>3. Reviewer (Manager)</h2>
+<div class="note">Layout: at the right end of the section tabs, <span class="ui">To do</span> (only when there is something to handle) · <span class="ui">Findings</span> · <span class="ui">Hold</span> stay pinned in a different colour; <span class="ui">Assign</span> · <span class="ui">Merge &amp; finalize</span> · <span class="ui">DOF report</span> · <span class="ui">Backup</span> are menu buttons in the title bar at the top.</div>
 <h3>3-1. Create the workspace</h3>
 <ol class="steps">
   <li>Password <code>jkm</code> → type <span class="ui">Your name</span> → <span class="ui">New CSA (reviewer)</span>.</li>
   <li>Enter the hotel name, choose service type <strong>Full</strong> (240 items) or <strong>Focus</strong> (145 items), then <span class="ui">Create</span>.</li>
-  <li><strong>Or</strong> <span class="ui">Start from AuditBoard export (reviewer)</span>: drop the audit Excel (.xlsx) downloaded from AuditBoard. Full/Focus and the hotel name are filled in and every item gets its AuditBoard ID. Before creating, you see how many items matched and any rows that did not. For an existing workspace, use <span class="ui">Link AuditBoard IDs</span> on the Assignment tab (entries are not changed).</li>
+  <li><strong>Or</strong> <span class="ui">Start from AuditBoard export (reviewer)</span>: drop the audit Excel (.xlsx) downloaded from AuditBoard. Full/Focus and the hotel name are filled in and every item gets its AuditBoard ID. Before creating, you see how many items matched and any rows that did not. For an existing workspace, use <span class="ui">Link AuditBoard IDs</span> on the Assign menu (entries are not changed).</li>
   <li>When the yellow notice appears, click <span class="ui">Choose backup folder</span> and pick a folder <strong>inside OneDrive</strong> (e.g. <code>OneDrive › Finance › CSA 2026 Backup</code>). See <a href="#safety">section 7</a>.</li>
 </ol>
 <h3>3-2. Assign sections and send the assignment file</h3>
-<div class="note"><strong>Schedule</strong>: on the Assign tab under <span class="ui">Schedule</span>, enter a due date per stage (Distribute CSA → Draft items → Submit evidence → First review → Manager interview → DOF/ADOF review → Final submission in AuditBoard). From 7 days before, everyone sees e.g. <code>Next … (D-3)</code> at the top; after the date it becomes a warning. Enter the done date when a stage is finished. The overview shows the schedule and <span class="ui">Progress by date</span> (one row per day, automatic).</div>
-<div class="note"><strong>Prior-year results</strong>: on the Assign tab, <span class="ui">Load prior-year results</span> with last year's result Excel (Work Step, Response, Testing Notes columns, or a "2025 CSA | 2026 CSA" comparison sheet). Each item then shows e.g. <code>2025: No</code> with last year's testing note, and the <span class="ui">2025 No</span> filter lists last year's findings. Sheets without a year label start unticked because they may hold this year's results, so check the sheet list before applying. The results travel in the assignment file, so preparers see them too.</div>
+<div class="note"><strong>Schedule</strong>: on the Assign menu under <span class="ui">Schedule</span>, enter a due date per stage (Distribute CSA → Draft items → Submit evidence → First review → Manager interview → DOF/ADOF review → Final submission in AuditBoard). From 7 days before, everyone sees e.g. <code>Next … (D-3)</code> at the top; after the date it becomes a warning. Enter the done date when a stage is finished. The overview shows the schedule and <span class="ui">Progress by date</span> (one row per day, automatic).</div>
+<div class="note"><strong>Prior-year results</strong>: on the Assign menu, <span class="ui">Load prior-year results</span> with last year's result Excel (Work Step, Response, Testing Notes columns, or a "2025 CSA | 2026 CSA" comparison sheet). Each item then shows e.g. <code>2025: No</code> with last year's testing note, and the <span class="ui">2025 No</span> filter lists last year's findings. Sheets without a year label start unticked because they may hold this year's results, so check the sheet list before applying. The results travel in the assignment file, so preparers see them too.</div>
 <ol class="steps">
-  <li>On the <span class="ui">Assign</span> tab, enter preparer names for each section, separated by commas (e.g. <code>Irene Kim, Brad Jeong</code>). Hotels without an FSSC can assign FSSC-marked items to hotel staff.</li>
+  <li>On the <span class="ui">Assign</span> menu, enter preparer names for each section, separated by commas (e.g. <code>Irene Kim, Brad Jeong</code>). Hotels without an FSSC can assign FSSC-marked items to hotel staff.</li>
   <li><span class="ui">Save assignment</span>.</li>
-  <li>If some items in a section are handled by someone else, use <strong>per-item assignees</strong>: click the <span class="ui">Assignee</span> chip at the top of the item, or on the Assign tab under <span class="ui">Per-item assignees</span> paste the <code>#</code> column and the assignee (PIC) column copied from Excel, then <span class="ui">Preview</span> → <span class="ui">Apply</span>. <code>AR_HaEun</code> becomes <code>HaEun</code>; a section without an assignee gets its most frequent name. Preparers can edit and submit only their own items.</li>
+  <li>If some items in a section are handled by someone else, use <strong>per-item assignees</strong>: click the <span class="ui">Assignee</span> chip at the top of the item, or on the Assign menu under <span class="ui">Per-item assignees</span> paste the <code>#</code> column and the assignee (PIC) column copied from Excel, then <span class="ui">Preview</span> → <span class="ui">Apply</span>. <code>AR_HaEun</code> becomes <code>HaEun</code>; a section without an assignee gets its most frequent name. Preparers can edit and submit only their own items.</li>
   <li>Under <span class="ui">Send assignment file</span>, click <span class="ui">Download assignment file</span> (one file for everyone) or <span class="ui">For {name}</span>, and send the file by email, Teams or OneDrive.</li>
   <li>Changing the assignment raises its version. Sending a new assignment file updates only the assignment; preparers keep what they entered.</li>
 </ol>
 <h3>3-3. Merge submissions</h3>
 <ol class="steps">
-  <li><span class="ui">Merge &amp; finalize</span> tab → drop all received submission files into <span class="ui">Merge submissions</span> at once.</li>
+  <li><span class="ui">Merge &amp; finalize</span> menu → drop all received submission files into <span class="ui">Merge submissions</span> at once.</li>
   <li>The <span class="ui">Merge preview</span> shows, per file, New · Changed · Same · Conflict · Refused (locked) · Outside assignment. A file from another hotel or a damaged file is refused on its own; the others are still processed.</li>
   <li>For <strong>conflicts</strong> (two people answered the same item differently, or a submission arrived after you changed the item), click <span class="ui">Resolve conflicts</span> and pick the version to keep for each item, or <span class="ui">Keep master for all</span>. Versions not chosen are kept in the history.</li>
   <li>Items <strong>outside the assignment</strong> are applied only if you tick them.</li>
@@ -93,14 +94,14 @@
 <h3>3-4. Review — approve and return</h3>
 <ul>
   <li>Preparers write the <span class="ui">Preparer description (internal)</span>; the reviewer writes and confirms the <span class="ui">AuditBoard Response (English, reviewer-confirmed)</span> from it. Tick <span class="ui">No AuditBoard Response</span> in the filters to list items still missing the English Response.</li>
-  <li>Submitted items appear on the <span class="ui">Review queue</span> tab. Open an item and click <span class="ui">Approve</span> or <span class="ui">Return</span>. A reason is required to return.</li>
+  <li>When items are submitted, a <span class="ui">To do</span> tab appears and collects them (hidden when empty). Open an item and click <span class="ui">Approve</span> or <span class="ui">Return</span>. A reason is required to return.</li>
   <li>Use <span class="ui">Approve all n with a result</span> to approve many at once.</li>
   <li>Add notes under <span class="ui">Review comments</span> (comments can be added, not deleted).</li>
   <li>Changing the <strong>result</strong> of an approved item requires a reason. It is kept as a comment (visible to preparers) and in the history, and listed on the overview under <span class="ui">Result changes after approval</span>.</li>
   <li>The reviewer can edit an approved item directly. It stays Approved; if the CSA was already finalized, finalization is cleared. Entered (locked) items must be unlocked first.</li>
 </ul>
 <h3>3-5. Send review results</h3>
-<p><span class="ui">Merge &amp; finalize</span> tab → <span class="ui">Download review file</span> → send it to preparers. Approvals, returns and comments go back to them; edits they made in the meantime are not overwritten.</p>
+<p><span class="ui">Merge &amp; finalize</span> menu → <span class="ui">Download review file</span> → send it to preparers. Approvals, returns and comments go back to them; edits they made in the meantime are not overwritten.</p>
 <h3>3-6. Enter in AuditBoard and lock</h3>
 <ol class="steps">
   <li>When AuditBoard IDs are linked, each item shows e.g. <code>AB 1283309</code>, and typing an AuditBoard ID or # number in the search box above the list jumps to that item.</li>
@@ -110,14 +111,14 @@
 </ol>
 <h3>3-7. Finalize and issue the final result file</h3>
 <ol class="steps">
-  <li>When every item has a result and is Approved (or Entered), <span class="ui">Finalize and issue final file</span> on the <span class="ui">Merge &amp; finalize</span> tab becomes available. If it is greyed out, the remaining items are listed below it.</li>
+  <li>When every item has a result and is Approved (or Entered), <span class="ui">Finalize and issue final file</span> on the <span class="ui">Merge &amp; finalize</span> menu becomes available. If it is greyed out, the remaining items are listed below it.</li>
   <li>Send the <code>…_FINAL_v1_….json</code> file to the Hotel DOF and the Area / Regional DOF.</li>
   <li>Changing content after finalizing clears the finalization (a notice appears at the top). Finalizing again issues <strong>v2</strong>; recipients see the highest version by default. Marking items entered or unlocking alone does not clear finalization.</li>
 </ol>
 <h3>3-8. Report and Excel</h3>
 <ul>
-  <li><span class="ui">DOF report</span> tab: score, results by section, findings and remediation, items on hold. <span class="ui">Print / Save as PDF</span> → choose “Save as PDF” (A4 portrait). Before finalizing the report carries a “DRAFT — not final” mark.</li>
-  <li><span class="ui">Export all to Excel</span> on the <span class="ui">Merge &amp; finalize</span> tab: every item with result, text, preparer and latest comment.</li>
+  <li><span class="ui">DOF report</span> menu: score, results by section, findings and remediation, items on hold. <span class="ui">Print / Save as PDF</span> → choose “Save as PDF” (A4 portrait). Before finalizing the report carries a “DRAFT — not final” mark.</li>
+  <li><span class="ui">Export all to Excel</span> on the <span class="ui">Merge &amp; finalize</span> menu: every item with result, text, preparer and latest comment.</li>
   <li><span class="ui">Overview</span>: progress ((Yes+No+N/A) ÷ all), score (Yes ÷ (Yes+No); N/A and Hold excluded), by section, by preparer and by status.</li>
 </ul>
 </section>
@@ -145,19 +146,19 @@
 </ul>
 <h3>4-3. Submit sections</h3>
 <ol class="steps">
-  <li><span class="ui">Submit &amp; receive</span> tab → under <span class="ui">Submit sections</span>, tick the sections to submit (● = yours).</li>
+  <li><span class="ui">Submit &amp; receive</span> menu → under <span class="ui">Submit sections</span>, tick the sections to submit (● = yours).</li>
   <li><span class="ui">Download submission file</span>. Items without a result are left out; you are warned about No without a remediation plan and sections not assigned to you.</li>
   <li>The submission is complete only when you <strong>send the <code>…_SUBMIT_….json</code> file to your reviewer</strong>.</li>
   <li>You may submit sections separately, and resubmit items after changing them.</li>
 </ol>
 <h3>4-4. Receive review results and fix returned items</h3>
 <ol class="steps">
-  <li>Drop the review file (<code>…_REVIEW_….json</code>) or a new assignment file into <span class="ui">Receive reviewer files</span> on the <span class="ui">Submit &amp; receive</span> tab.</li>
-  <li>The <span class="ui">Returned</span> tab lists returned items with the reason. Fix and submit again.</li>
+  <li>Drop the review file (<code>…_REVIEW_….json</code>) or a new assignment file into <span class="ui">Receive reviewer files</span> on the <span class="ui">Submit &amp; receive</span> menu.</li>
+  <li>Returned items appear with the reason on the <span class="ui">To do</span> tab (they leave it once resubmitted). Fix and submit again.</li>
   <li>Your unsent entries are never overwritten. Such items show “Differs from the reviewer's copy”; submit them again when you are done.</li>
   <li>Approved items cannot be edited by preparers. Ask the reviewer to return the item if a change is needed.</li>
 </ol>
-<div class="note">Preparers can also set <span class="ui">Choose backup folder</span> on the <span class="ui">Backup</span> tab to be safe if the PC fails.</div>
+<div class="note">Preparers can also set <span class="ui">Choose backup folder</span> on the <span class="ui">Backup</span> menu to be safe if the PC fails.</div>
 </section>
 
 <section id="dof">
