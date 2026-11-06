@@ -1,6 +1,7 @@
 // Excel row builders (SPEC §10.1). Pure, so they can be unit-tested in Node.
 import { getItemSet } from './itemsets.js';
 import { isItemAssigned, itemAssignees } from './model.js';
+import { priorOf } from './prior.js';
 
 const RES = { yes: 'Yes', no: 'No', na: 'N/A', hold: 'Hold' };
 
@@ -20,6 +21,7 @@ export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) =>
   header.push('Work Step (EN)');
   if (lang !== 'en') header.push('Work Step (' + lang.toUpperCase() + ')');
   header.push('Policy', 'Result', 'Preparer Description (internal)', 'AuditBoard Response', 'Evidence', 'Sample', 'Remediation Action', 'Remediation Owner', 'Due Date', 'Status', 'Assignee', 'Preparer', 'Last Updated', 'Reviewer Comment (latest)', 'AuditBoard Entered');
+  if (doc.prior) header.push(`Prior Result (${doc.prior.year})`, `Prior Note (${doc.prior.year})`);
   const rows = [header];
   for (const m of set.items) {
     if (onlyMine && !isItemAssigned(doc, m.id, doc.local.me, m.section)) continue;
@@ -33,6 +35,7 @@ export function workspaceRows(doc, { lang = 'en', itemText, statusLabel = (s) =>
       it.remediation.action, it.remediation.owner, it.remediation.due || '', statusLabel(it.status), itemAssignees(doc, m.id, m.section).join(', '),
       it.submittedBy || it.updatedBy || '', it.updatedAt ? it.updatedAt.slice(0, 16).replace('T', ' ') : '',
       comments.length ? comments[comments.length - 1].text : '', it.enteredAt ? it.enteredAt.slice(0, 10) : '');
+    if (doc.prior) { const pr = priorOf(doc, m.id); r.push(pr ? RES[pr.result] : '', pr ? pr.note || '' : ''); }
     rows.push(r.map(safeCell));
   }
   return rows;

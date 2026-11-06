@@ -7,10 +7,12 @@ import { MAX_TEXT, MAX_SHORT, isAnswered, assignedTo, itemAssignees, itemOverrid
 import * as wf from './workflow.js';
 import { policyEl } from './policy.js';
 import { abIdOf } from './abexport.js';
+import { priorOf } from './prior.js';
 import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush, guideLink } from './main.js';
 import { renderAssign, renderFiles, renderBackupPane } from './ui-flow.js';
 import { renderReportPane } from './ui-report.js';
 
+const PRIOR_LABEL = { yes: 'Yes', no: 'No', na: 'N/A', hold: 'Hold' };
 const RESULT_DOT = { yes: ['dy', 'Y'], no: ['dn', 'N'], na: ['dna', '–'], hold: ['dhold', 'H'] };
 
 export function renderWorkspace(ctl) {
@@ -224,6 +226,8 @@ function userFilter(ctl, meta, it) {
   if (f.cpa && meta.cpaLink !== f.cpa) return false;
   if (f.unanswered && it.result) return false;
   if (f.noResponse && !(it.result && !(it.response || '').trim())) return false;
+  if (f.priorNo && !(priorOf(doc, meta.id) && priorOf(doc, meta.id).result === 'no')) return false;
+  if (f.priorDiff && !(it.result && priorOf(doc, meta.id) && priorOf(doc, meta.id).result !== it.result)) return false;
   if (f.assignee && !isItemAssigned(doc, meta.id, f.assignee, meta.section)) return false;
   if (f.q) {
     // '#12' or '12' = item number, an AuditBoard ID, or (3+ characters) words in the work step
@@ -247,7 +251,9 @@ function filterBar(ctl, set, rerender) {
     doc.serviceType === 'focus' ? sel('tower', 'HTL/FSSC', ['HTL', 'FSSC-RTR', 'FSSC-OTC', 'FSSC-RA', 'FSSC-PTP'].map((x) => [x, x])) : null,
     doc.serviceType === 'focus' ? sel('cpa', t('flt.cpa'), ['CSA', 'CSA,CPA', 'CSA,CPA,Validation'].map((x) => [x, x])) : null,
     h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.unanswered, onchange: (e) => { f.unanswered = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.unanswered')),
-    h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.noResponse, onchange: (e) => { f.noResponse = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.noResponse')));
+    h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.noResponse, onchange: (e) => { f.noResponse = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.noResponse')),
+    doc.prior ? h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.priorNo, onchange: (e) => { f.priorNo = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.priorNo', { y: doc.prior.year })) : null,
+    doc.prior ? h('label', { class: 'wsmeta' }, h('input', { type: 'checkbox', checked: !!f.priorDiff, onchange: (e) => { f.priorDiff = e.target.checked || undefined; rerender(); } }), ' ' + t('flt.priorDiff', { y: doc.prior.year })) : null);
   return bar;
 }
 
@@ -284,6 +290,7 @@ function listRow(ctl, set, m, onclick) {
       h('div', { class: 'lbadges' },
         h('span', { class: 'badge rk-' + m.risk, text: m.risk }),
         h('span', { class: 'badge st stb st-' + it.status, text: t('status.' + it.status) }),
+        priorOf(doc, m.id) && priorOf(doc, m.id).result === 'no' ? h('span', { class: 'badge prior p-no', title: t('prior.title', { y: doc.prior.year }), text: `${String(doc.prior.year).slice(2)} No` }) : null,
         m.tower ? h('span', { class: 'badge tw' + (m.tower === 'HTL' ? ' tw-HTL' : ''), text: m.tower }) : null,
         (doc.comments[m.id] || []).length ? h('span', { class: 'badge tw', text: '💬 ' + doc.comments[m.id].length }) : null)));
 }
@@ -313,6 +320,7 @@ function detail(ctl, set, id, redraw) {
     meta.cpaLink ? h('span', { class: 'badge cpa', text: meta.cpaLink.replace(/,/g, ' · ') }) : null,
     h('span', { class: 'badge st st-' + it.status, text: t('status.' + it.status) }),
     abIdOf(doc, id) ? h('span', { class: 'badge abid', title: t('ab.idTitle'), text: 'AB ' + abIdOf(doc, id) }) : null,
+    priorOf(doc, id) ? h('span', { class: 'badge prior p-' + priorOf(doc, id).result, title: t('prior.title', { y: doc.prior.year }), text: `${doc.prior.year}: ${PRIOR_LABEL[priorOf(doc, id).result]}` }) : null,
     assigneeChip(ctl, id, meta, redraw)));
   const b = h('div', { class: 'cbody' });
   card.appendChild(b);
@@ -329,6 +337,8 @@ function detail(ctl, set, id, redraw) {
     b.appendChild(h('div', { class: 'tbox', text: tr.ts || meta.ts }));
     if (tr.translated && tr.ts) b.appendChild(h('details', null, h('summary', { text: t('detail.original') }), h('div', { class: 'tbox en', text: meta.ts })));
   }
+  const pr = priorOf(doc, id);
+  if (pr) b.appendChild(h('div', { class: 'priorbox p-' + pr.result }, h('b', { text: t('prior.box', { y: doc.prior.year, r: PRIOR_LABEL[pr.result] }) }), pr.note ? h('div', { class: 'pre', text: t('prior.note') + ': ' + pr.note }) : null));
   b.appendChild(h('div', { class: 'fl', text: t('detail.policy') }));
   b.appendChild(policyEl(meta.policy));
 

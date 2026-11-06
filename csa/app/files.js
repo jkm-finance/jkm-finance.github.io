@@ -2,6 +2,7 @@
 import { APP_VERSION, FILE_FORMAT, FILE_SCHEMA } from './version.js';
 import { nowISO, hashOf, clone, fileSafe, canonicalJSON } from './util.js';
 import { getItemSet } from './itemsets.js';
+import { validatePrior, priorForFile } from './prior.js';
 import { contentOf, emptyItem, checkItemValue, validateComments, isAnswered, validateDoc, isItemAssigned, hasItemsIn, validateAssignment } from './model.js';
 import { finalSummary } from './summary.js';
 import { needsMigration, isTooNew, migrate } from './guard.js';
@@ -63,14 +64,14 @@ function masterItem(it) {
 
 export function assignmentPayload(doc) {
   return {
-    reviewerName: doc.reviewerName, assignment: doc.assignment,
+    reviewerName: doc.reviewerName, assignment: doc.assignment, prior: priorForFile(doc),
     master: { items: Object.fromEntries(Object.entries(doc.items).map(([id, it]) => [id, masterItem(it)])), comments: doc.comments },
   };
 }
 
 export function reviewPayload(doc) {
   return {
-    reviewerName: doc.reviewerName, assignment: doc.assignment,
+    reviewerName: doc.reviewerName, assignment: doc.assignment, prior: priorForFile(doc),
     items: Object.fromEntries(Object.entries(doc.items).map(([id, it]) => [id, masterItem(it)])),
     comments: doc.comments,
   };
@@ -116,7 +117,7 @@ export async function finalPayload(doc) {
   const items = Object.fromEntries(Object.entries(doc.items).map(([id, it]) => [id, { ...contentOf(it), status: it.status, enteredAt: it.enteredAt }]));
   return {
     finalVersion: cur.version, finalizedAt: cur.at, finalizedBy: cur.by, contentHash: cur.contentHash,
-    items, summary: finalSummary(items, doc.itemSetId),
+    items, summary: finalSummary(items, doc.itemSetId), prior: priorForFile(doc),
   };
 }
 
@@ -197,6 +198,11 @@ export async function verifyFile(obj, ctx) {
     if (w.serviceType !== d.serviceType || w.year !== d.year || w.itemSetId !== d.itemSetId) throw new FileError('typeMismatch');
   }
   const p = obj.payload;
+  if (p.prior !== undefined && ['assignment', 'review', 'final'].includes(obj.kind)) {
+    const errs = [];
+    validatePrior(p.prior, set, errs, { year: w.year });
+    if (errs.length) throw new FileError('badValues', errs.slice(0, 5).join('; '));
+  }
   switch (obj.kind) {
     case 'submission':
       if (typeof p.submitter !== 'string' || !Array.isArray(p.sections)) throw new FileError('badPayload');

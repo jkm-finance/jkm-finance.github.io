@@ -239,6 +239,14 @@ export function linkAuditBoard(doc0, ab) {
   return { doc, events: [ev(doc, 'ab-link', null, { file: ab.file, matched: Object.keys(ab.ids).length })] };
 }
 
+// Prior-year results (doc.prior). Reviewer only; null removes them. Item content is not touched.
+export function setPrior(doc0, prior) {
+  assertOk(can('assign', { role: doc0.local.role }));
+  const doc = clone(doc0);
+  if (prior) doc.prior = clone(prior); else delete doc.prior;
+  return { doc, events: [ev(doc, 'prior', null, prior ? { year: prior.year, file: prior.file, matched: Object.keys(prior.items).length } : { removed: true })] };
+}
+
 // ---- finalization -----------------------------------------------------------
 
 export function finalizeBlockers(doc) {

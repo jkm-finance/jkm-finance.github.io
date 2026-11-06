@@ -31,12 +31,14 @@ export function reportView(data, { showOriginal = false } = {}) {
     h('tbody', null, set.sections.map((s) => { const c = sum.bySection[s]; return h('tr', null, h('td', { text: s }), h('td', { class: 'num', text: c.total }), h('td', { class: 'num', text: c.yes }), h('td', { class: 'num', text: c.no }), h('td', { class: 'num', text: c.na }), h('td', { class: 'num', text: c.hold }), h('td', { class: 'num', text: pct(c.score) })); }))));
 
   const findings = set.items.filter((m) => data.items[m.id].result === 'no');
-  r.appendChild(h('h2', { text: `${t('report.findings')} (${findings.length})` }));
+  const repeat = (m) => data.prior && data.prior.items[m.id] && data.prior.items[m.id].result === 'no';
+  const nRepeat = findings.filter(repeat).length;
+  r.appendChild(h('h2', { text: `${t('report.findings')} (${findings.length})` + (data.prior ? ' · ' + t('prior.repeatN', { y: data.prior.year, n: nRepeat }) : '') }));
   if (!findings.length) r.appendChild(h('p', { text: t('report.none') }));
   else r.appendChild(h('table', { class: 'tbl' },
     h('thead', null, h('tr', null, ['#', t('col.section'), 'Risk', t('detail.workStep'), t('detail.response'), t('detail.remediation'), t('detail.remOwner'), t('detail.remDue')].map((x) => h('th', { text: x })))),
     h('tbody', null, findings.map((m) => { const it = data.items[m.id]; const rem = it.remediation || {}; return h('tr', null,
-      h('td', { text: m.no }), h('td', { text: m.section }), h('td', null, h('span', { class: 'badge rk-' + m.risk, text: m.risk })), h('td', { class: 'pre', text: txt(m) }),
+      h('td', null, String(m.no), repeat(m) ? h('div', { class: 'badge prior p-no', text: t('prior.repeat') }) : null), h('td', { text: m.section }), h('td', null, h('span', { class: 'badge rk-' + m.risk, text: m.risk })), h('td', { class: 'pre', text: txt(m) }),
       h('td', { class: 'pre', text: it.response || '—' }), h('td', { class: 'pre', text: rem.action || '—' }), h('td', { text: rem.owner || '—' }), h('td', { text: rem.due || '—' })); }))));
 
   const holds = set.items.filter((m) => data.items[m.id].result === 'hold');
@@ -48,12 +50,12 @@ export function reportView(data, { showOriginal = false } = {}) {
 }
 
 export function workspaceReportData(doc) {
-  return { hotelName: doc.hotelName, serviceType: doc.serviceType, year: doc.year, itemSetId: doc.itemSetId, items: doc.items, final: doc.finalize.current };
+  return { hotelName: doc.hotelName, serviceType: doc.serviceType, year: doc.year, itemSetId: doc.itemSetId, items: doc.items, final: doc.finalize.current, prior: doc.prior };
 }
 
 export function finalReportData(file) {
   const w = file.workspace, p = file.payload;
-  return { hotelName: w.hotelName, serviceType: w.serviceType, year: w.year, itemSetId: w.itemSetId, items: p.items, final: { version: p.finalVersion, at: p.finalizedAt, by: p.finalizedBy } };
+  return { hotelName: w.hotelName, serviceType: w.serviceType, year: w.year, itemSetId: w.itemSetId, items: p.items, final: { version: p.finalVersion, at: p.finalizedAt, by: p.finalizedBy }, prior: p.prior };
 }
 
 function reportToolbar(rerender, state) {

@@ -11,6 +11,7 @@ import { run, withRestorePoint, flush, chooseBackupDir, reconnectBackup, fullBac
 import { renderWorkspace } from './ui-work.js';
 import { exportWorkspaceExcel } from './excel.js';
 import { linkExport } from './ui-ab.js';
+import { importPrior } from './ui-prior.js';
 
 const pane = (...kids) => h('div', { class: 'pane' }, ...kids);
 const card = (title, ...kids) => h('div', { class: 'card' }, h('div', { class: 'ctitle', text: title }), h('div', { class: 'cbodyp' }, ...kids));
@@ -49,6 +50,14 @@ export function renderAssign(ctl) {
       h('div', { class: 'acts' },
         h('button', { class: 'btn btn-g', disabled: !doc.assignment.version, why: t('why.noAssignment'), text: t('assign.exportAll'), onclick: () => exportFile('') }),
         doc.assignment.members.map((m) => h('button', { class: 'btn btn-l', text: t('assign.exportFor', { name: m }), onclick: () => exportFile(m) })))),
+    card(t('prior.cardTitle'),
+      h('p', { class: 'wsmeta', text: doc.prior ? t('prior.cardLinked', { y: doc.prior.year, file: doc.prior.file, n: Object.keys(doc.prior.items).length, no: Object.values(doc.prior.items).filter((v) => v.result === 'no').length, at: fmtTime(doc.prior.importedAt) }) : t('prior.cardNone') }),
+      h('div', { class: 'acts' },
+        h('button', { class: 'btn btn-l', disabled: ctl.state.readonly, why: t('err.readonly'), text: doc.prior ? t('prior.replace') : t('prior.import'), onclick: () => importPrior(ctl, { withRestorePoint, setPrior: wf.setPrior }) }),
+        doc.prior ? h('button', { class: 'btn btn-n', disabled: ctl.state.readonly, why: t('err.readonly'), text: t('prior.remove'), onclick: async () => {
+          const yes = await modal({ title: t('prior.remove'), body: h('p', { text: t('prior.removeConfirm', { y: doc.prior.year }) }), buttons: [{ label: t('btn.cancel'), value: false }, { label: t('prior.remove'), cls: 'btn-n', value: true }] });
+          if (yes) await withRestorePoint('before-prior', (d) => wf.setPrior(d, null));
+        } }) : null)),
     card(t('ab.cardTitle'),
       h('p', { class: 'wsmeta', text: doc.ab ? t('ab.cardLinked', { file: doc.ab.file, n: Object.keys(doc.ab.ids).length, total: set.items.length, at: fmtTime(doc.ab.importedAt), by: doc.ab.importedBy }) : t('ab.cardNone') }),
       h('div', { class: 'acts' }, h('button', { class: 'btn btn-l', disabled: ctl.state.readonly, why: t('err.readonly'), text: doc.ab ? t('ab.relink') : t('ab.linkTitle'), onclick: () => linkExport(ctl, { withRestorePoint, linkAuditBoard: wf.linkAuditBoard }) }))));

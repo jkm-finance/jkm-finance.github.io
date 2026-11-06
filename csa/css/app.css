@@ -240,3 +240,9 @@ button.hchip.btnchip:hover{filter:brightness(1.15)}
 .hchip.own{outline:2px solid var(--g);outline-offset:-2px}
 .pastebox{display:block;width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;padding:8px;border:1px solid var(--bd);border-radius:6px}
 .pastestrip{display:block;margin-top:6px}
+.badge.prior{border:1px solid currentColor;background:#fff;font-weight:700}
+.badge.prior.p-no{color:var(--nc)}.badge.prior.p-yes{color:var(--yc)}.badge.prior.p-na{color:#5f6672}.badge.prior.p-hold{color:#8a6420}
+.chdr .badge.prior{background:#fff}
+.priorbox{margin:10px 0 2px;padding:8px 12px;border-left:4px solid #8b93a0;background:#f4f6f7;border-radius:0 6px 6px 0;font-size:13px}
+.priorbox.p-no{border-left-color:var(--nc);background:#fbefed}.priorbox .pre{margin-top:4px;white-space:pre-wrap}
+.priorsheets label{display:block;margin:3px 0}
