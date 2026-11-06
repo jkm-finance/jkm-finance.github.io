@@ -4,7 +4,6 @@ import { t, getLang, itemText } from './i18n.js';
 import { getItemSet } from './itemsets.js';
 import { isAnswered, assignedTo, contentOf, itemOverride, hasItemsIn } from './model.js';
 import { parseAssigneePaste, planFromPaste } from './assign.js';
-import { parseHintPaste } from './hints.js';
 import { emptySchedule } from './schedule.js';
 import { stageLabel } from './ui-work.js';
 import * as wf from './workflow.js';
@@ -54,7 +53,6 @@ export function renderAssign(ctl) {
         h('button', { class: 'btn btn-g', disabled: !doc.assignment.version, why: t('why.noAssignment'), text: t('assign.exportAll'), onclick: () => exportFile('') }),
         doc.assignment.members.map((m) => h('button', { class: 'btn btn-l', text: t('assign.exportFor', { name: m }), onclick: () => exportFile(m) })))),
     scheduleCard(ctl),
-    hintCard(ctl),
     card(t('prior.cardTitle'),
       h('p', { class: 'wsmeta', text: doc.prior ? t('prior.cardLinked', { y: doc.prior.year, file: doc.prior.file, n: Object.keys(doc.prior.items).length, no: Object.values(doc.prior.items).filter((v) => v.result === 'no').length, at: fmtTime(doc.prior.importedAt) }) : t('prior.cardNone') }),
       h('div', { class: 'acts' },
@@ -124,35 +122,6 @@ function scheduleCard(ctl) {
     h('table', { class: 'tbl schtbl' }, h('thead', null, h('tr', null, [t('sch.stage'), t('sch.due'), t('sch.done')].map((x) => h('th', { text: x })))),
       h('tbody', null, inputs.map((x) => h('tr', null, h('td', null, x.label), h('td', null, x.due), h('td', null, x.done))))),
     h('div', { class: 'acts' }, h('button', { class: 'btn btn-p', disabled: ro, why: t('err.readonly'), text: t('sch.save'), onclick: save })));
-}
-
-// Item guidance notes: count + paste from Excel (# and note columns) + clear.
-function hintCard(ctl) {
-  const doc = ctl.state.doc, ro = ctl.state.readonly;
-  const n = Object.keys(doc.hints || {}).length;
-  const ta = h('textarea', { class: 'pastebox', rows: '5', disabled: ro, placeholder: '#1\t' + t('hint.ph'), 'aria-label': t('hint.cardTitle') + ' — ' + t('hint.pasteTitle') });
-  const out = h('div');
-  const preview = () => {
-    clear(out);
-    const p = parseHintPaste(ta.value, ctl.state.doc);
-    const k = Object.keys(p.map).length;
-    out.appendChild(h('p', { class: k ? 'wsmeta' : 'ferr', text: t('hint.pasteResult', { n: k, bad: p.bad.length, dup: p.dup.length, long: p.long.length, skip: p.skipped }) }));
-    if (p.bad.length) out.appendChild(h('div', { class: 'wsmeta pre', text: p.bad.slice(0, 20).map((b) => `${t('ab.row')} ${b.line}: ${b.text}`).join('\n') }));
-    if (!k) return;
-    out.appendChild(h('div', { class: 'acts' }, h('button', { class: 'btn btn-p', disabled: ro, why: t('err.readonly'), text: t('hint.pasteApply', { n: k }), onclick: async () => {
-      const r = await withRestorePoint('before-hints', (d) => wf.setHints(d, { ...(d.hints || {}), ...p.map }, { pasted: k }));
-      if (r) toast(t('assign.saved'));
-    } })));
-  };
-  return card(t('hint.cardTitle'),
-    h('p', { class: 'wsmeta', text: t('hint.cardHelp') + ' ' + t('hint.count', { n }) }),
-    h('div', { class: 'fl', text: t('hint.pasteTitle') }), h('p', { class: 'wsmeta', text: t('hint.pasteHelp') }), ta,
-    h('div', { class: 'acts' },
-      h('button', { class: 'btn btn-l', disabled: ro, why: t('err.readonly'), text: t('assign.pastePreview'), onclick: preview }),
-      n ? h('button', { class: 'btn btn-n', disabled: ro, why: t('err.readonly'), text: t('hint.clear'), onclick: async () => {
-        const yes = await modal({ title: t('hint.clear'), body: h('p', { text: t('hint.clearConfirm', { n }) }), buttons: [{ label: t('btn.cancel'), value: false }, { label: t('hint.clear'), cls: 'btn-n', value: true }] });
-        if (yes) await withRestorePoint('before-hints', (d) => wf.setHints(d, null, { cleared: true }));
-      } }) : null), out);
 }
 
 // ---- files tab ------------------------------------------------------------------------

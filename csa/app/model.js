@@ -4,7 +4,6 @@ import { uuid, nowISO, normText, isISODate, hashOf } from './util.js';
 import { getItemSet } from './itemsets.js';
 import { validateAb } from './abexport.js';
 import { validatePrior } from './prior.js';
-import { validateHints } from './hints.js';
 import { validateSchedule, validateProgress } from './schedule.js';
 
 export const STATUSES = ['empty', 'draft', 'submitted', 'returned', 'approved', 'entered'];
@@ -196,7 +195,6 @@ export function validateDoc(doc, key) {
   validateAb(doc.ab, set, errs);
   validateAssignment(doc.assignment, set, errs);
   validatePrior(doc.prior, set, errs, { year: doc.year });
-  validateHints(doc.hints, set, errs);
   validateSchedule(doc.schedule, errs);
   validateProgress(doc.progress, errs);
   if (!Number.isInteger(doc.saveSeq) || doc.saveSeq < 0) errs.push('saveSeq invalid');

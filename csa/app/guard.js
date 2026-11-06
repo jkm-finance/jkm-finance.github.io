@@ -48,6 +48,24 @@ export const MIGRATIONS = {
     d.schema = 3;
     return d;
   },
+  // 3 -> 4: the item guidance notes (`hints`, v0.3.2-v0.4.0) were removed; each note becomes a reviewer
+  // comment on its item. The comment id is fixed ('hint-<item>') so the reviewer's and the preparers'
+  // copies produce the same comment and merging files never duplicates it.
+  3: (d) => {
+    if (d.hints && typeof d.hints === 'object' && !Array.isArray(d.hints)) {
+      d.comments = d.comments || {};
+      const at = d.savedAt || d.createdAt || '2026-11-06T00:00:00.000Z';
+      for (const [id, text] of Object.entries(d.hints)) {
+        if (typeof text !== 'string' || !text.trim() || !(d.items && d.items[id])) continue;
+        const list = (d.comments[id] = d.comments[id] || []);
+        const cid = 'hint-' + id;
+        if (!list.some((c) => c.id === cid)) list.push({ id: cid, at, by: d.reviewerName || 'Reviewer', role: 'reviewer', kind: 'comment', text: text.trim().slice(0, 2000) });
+      }
+    }
+    delete d.hints;
+    d.schema = 4;
+    return d;
+  },
 };
 
 export function needsMigration(doc) {

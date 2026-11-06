@@ -8,7 +8,6 @@ import * as wf from './workflow.js';
 import { policyEl } from './policy.js';
 import { abIdOf } from './abexport.js';
 import { priorOf } from './prior.js';
-import { hintOf, HINT_MAX } from './hints.js';
 import { pathsIn, todayLocal } from './util.js';
 import { openStages, progressDiffs, emptySchedule, STAGE_KEYS } from './schedule.js';
 import { apply, run, goStart, confirmShrink, takeOverEditing, exportEmergency, chooseBackupDir, reconnectBackup, withRestorePoint, flush, guideLink } from './main.js';
@@ -373,18 +372,6 @@ function detail(ctl, set, id, redraw) {
   if (it.differsFromMaster) b.appendChild(h('div', { class: 'diffbar', text: t('detail.differs', { st: t('status.' + (it.masterStatus || 'draft')) }) }));
   else if (it.masterStatus === 'returned' && it.status !== 'returned') b.appendChild(h('div', { class: 'diffbar', text: t('detail.wasReturned') }));
 
-  const hint = hintOf(doc, id);
-  const canHint = doc.local.role === 'reviewer' && !s.readonly && !s.fatal;
-  if (hint || canHint) b.appendChild(h('div', { class: 'hintbox' + (hint ? '' : ' empty') },
-    hint ? h('span', { class: 'pre', text: '📌 ' + hint }) : h('span', { class: 'wsmeta', text: t('hint.none') }),
-    canHint ? h('button', { class: 'btn btn-l hintedit', text: hint ? t('hint.edit') : t('hint.add'), onclick: async () => {
-      const ta = h('textarea', { rows: '3', maxlength: String(HINT_MAX), value: hint });
-      const v = await modal({ title: t('hint.title', { no: meta.no }), body: h('div', null, h('p', { class: 'wsmeta', text: t('hint.help') }), ta), onMount: () => ta.focus(),
-        buttons: [{ label: t('btn.cancel'), value: null }, { label: t('btn.ok'), cls: 'btn-p', value: () => ta.value }] });
-      if (v === null || v === undefined) return;
-      const r = await run((d) => wf.setHint(d, id, v), { render: true });
-      if (r) redraw();
-    } }) : null));
   b.appendChild(h('div', { class: 'fl', text: t('detail.workStep') }));
   b.appendChild(h('div', { class: 'tbox', text: tr.ws }));
   if (tr.translated) b.appendChild(h('details', null, h('summary', { text: t('detail.original') }), h('div', { class: 'tbox en', text: meta.ws })));

@@ -246,10 +246,6 @@ button.hchip.btnchip:hover{filter:brightness(1.15)}
 .priorbox{margin:10px 0 2px;padding:8px 12px;border-left:4px solid #8b93a0;background:#f4f6f7;border-radius:0 6px 6px 0;font-size:13px}
 .priorbox.p-no{border-left-color:var(--nc);background:#fbefed}.priorbox .pre{margin-top:4px;white-space:pre-wrap}
 .priorsheets label{display:block;margin:3px 0}
-.hintbox{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;margin:0 0 10px;padding:8px 12px;background:#fbf7ec;border-left:4px solid var(--g);border-radius:0 6px 6px 0;font-size:13px}
-.hintbox.empty{background:transparent;border-left-color:var(--bd);padding:4px 12px}
-.hintbox .pre{white-space:pre-wrap;flex:1}
-.hintbox .hintedit{flex:none;padding:2px 10px;font-size:12px}
 .paths{margin-top:6px}
 .pathrow{display:flex;gap:6px;align-items:center;margin:4px 0;min-width:0}
 .pathrow code{font-family:inherit;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#f3f6f5;border:1px solid var(--bd);border-radius:4px;padding:3px 6px;font-size:12px}
