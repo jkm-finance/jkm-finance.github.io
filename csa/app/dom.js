@@ -62,6 +62,16 @@ export function modal({ title, body, buttons = [], wide = false, closable = true
     bg.appendChild(box);
     document.body.appendChild(bg);
     document.addEventListener('keydown', esc);
+    // Enter in a one-line text box = the dialog's main button (never a destructive one; not while the IME is composing Korean/Japanese).
+    box.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || e.isComposing || e.keyCode === 229 || e.shiftKey || e.ctrlKey || e.altKey) return;
+      const tg = e.target;
+      if (!(tg instanceof HTMLInputElement) || !['text', 'search', 'email', 'number', 'date', ''].includes(tg.type)) return;
+      const main = btnEls.filter((b) => b.classList.contains('btn-p') && !b.disabled);
+      if (main.length !== 1) return;
+      e.preventDefault();
+      main[0].click();
+    });
     if (onMount) onMount({ buttons: btnEls, close: done, box });
   });
 }
