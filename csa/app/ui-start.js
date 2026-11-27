@@ -1,10 +1,11 @@
 // Start screen (SPEC §3): name once, continue a workspace, or start new by role (reviewer / preparer / results).
 import { YEAR, APP_VERSION } from './version.js';
-import { h, clear, modal, dropZone, toast, fmtTime } from './dom.js';
+import { h, clear, modal, dropZone, toast, fmtTime, download } from './dom.js';
 import { t } from './i18n.js';
 import { createWorkspace } from './model.js';
 import { itemSetIdFor, getItemSet } from './itemsets.js';
-import { readAndVerify } from './files.js';
+import { readAndVerify, buildFile, backupPayload, fileName } from './files.js';
+import { tryEditLock } from './safety.js';
 import { workspaceFromAssignment, applyAssignment } from './merge.js';
 import { openWorkspace, setUserName, langRow, openDof } from './main.js';
 import { FinalStore } from './store.js';
@@ -18,6 +19,9 @@ export async function renderStart(ctl) {
 
   box.appendChild(h('div', { class: 'glogo' }, h('span', { class: 'csa-badge', text: 'CSA' }), t('app.title')));
   box.appendChild(h('div', { class: 'gsub', text: t('app.subtitle') + ' · v' + APP_VERSION }));
+  const banner = h('div');
+  box.appendChild(banner);
+  newerVersion().then((v) => { if (v) banner.appendChild(h('div', { class: 'gnotice' }, h('span', { text: t('start.newVersion', { v }) }), h('button', { class: 'btn btn-p', text: t('start.reload'), onclick: () => location.reload() }))); });
 
   // Name: asked prominently once; afterwards a small editable line.
   const nameIn = h('input', { class: 'gin' + (s.me ? ' gin-sm' : ''), value: s.me || '', placeholder: t('start.namePh'), maxlength: '80', 'aria-label': t('start.name') });
@@ -26,7 +30,8 @@ export async function renderStart(ctl) {
   else box.appendChild(h('div', { class: 'gfirst' }, h('div', { class: 'gsec', text: t('start.name') }), nameIn, h('div', { class: 'wsmeta', text: t('start.nameHelp') })));
   const needName = () => {
     const v = nameIn.value.trim();
-    if (!v) { toast(t('start.nameRequired')); nameIn.focus(); return null; }
+    if (!v) { toast(t('start.nameRequired')); nameIn.classList.add('need'); nameIn.scrollIntoView({ block: 'center' }); nameIn.focus(); return null; }
+    nameIn.classList.remove('need');
     if (v !== s.me) setUserName(v);
     return v;
   };
@@ -35,12 +40,21 @@ export async function renderStart(ctl) {
   const list = await ctl.store.listWorkspaces();
   const visible = list.filter((w) => !w.hidden).sort((a, b) => String(b.lastOpenedAt).localeCompare(String(a.lastOpenedAt)));
   const hidden = list.filter((w) => w.hidden);
-  const open = (w) => () => { if (needName()) openWorkspace(w.wsId); };
+  // Opening shows progress on the row; anything that goes wrong is shown, never silent.
+  const open = (w) => async (row) => {
+    if (!needName() || row.classList.contains('busy')) return;
+    row.classList.add('busy');
+    try { await openWorkspace(w.wsId); } catch (e) {
+      row.classList.remove('busy');
+      await modal({ title: t('start.openFailed'), body: h('div', null, h('p', { text: w.hotelName }), h('p', { class: 'ferr', text: String((e && (e.message || e.name)) || e).slice(0, 300) }), h('p', { class: 'wsmeta', text: t('start.openFailedHelp') })), buttons: [{ label: t('btn.close'), cls: 'btn-p', value: null }] });
+    }
+  };
+  const del = (w) => () => deleteFromStart(ctl, w);
   if (visible.length) box.appendChild(h('div', { class: 'gsec', text: t('start.continue') }));
-  box.appendChild(h('div', { class: 'wslist' }, visible.map((w) => wsRow(w, open(w)))));
+  box.appendChild(h('div', { class: 'wslist' }, visible.map((w) => wsRow(w, open(w), del(w)))));
   if (hidden.length) {
     box.appendChild(h('details', { class: 'ghidden' }, h('summary', { text: t('start.hidden', { n: hidden.length }) }),
-      h('div', { class: 'wslist' }, hidden.map((w) => wsRow(w, open(w))))));
+      h('div', { class: 'wslist' }, hidden.map((w) => wsRow(w, open(w), del(w))))));
   }
 
   // Start something new by what you do (reviewer / preparer / results). Folded away when there is work to continue.
@@ -63,15 +77,59 @@ export async function renderStart(ctl) {
   box.appendChild(langRow(() => renderStart(ctl)));
 }
 
-function wsRow(w, onOpen) {
-  const row = h('div', { class: 'wsrow', tabindex: '0', role: 'button', title: 'ID ' + w.wsId.slice(0, 6), onclick: onOpen, onkeydown: (e) => { if (e.key === 'Enter') onOpen(); } },
+function wsRow(w, onOpen, onDelete) {
+  const go = () => onOpen(row);
+  const row = h('div', { class: 'wsrow', tabindex: '0', role: 'button', title: 'ID ' + w.wsId.slice(0, 6), onclick: go, onkeydown: (e) => { if (e.key === 'Enter' && e.target === row) go(); } },
     h('div', { class: 'wsname' }, w.hotelName,
       h('div', { class: 'wsmeta', text: `${w.serviceType === 'full' ? 'Full' : 'Focus'} · ${w.year} · ${t('start.lastOpened')} ${fmtTime(w.lastOpenedAt)}` })),
     h('span', { class: 'wsrole r-' + w.role, text: t('role.' + w.role) }),
     w.finalized ? h('span', { class: 'badge st st-approved', text: t('final.badge') }) : null,
+    h('span', { class: 'wsopening', text: t('start.opening') }),
+    h('button', { class: 'wsdel', type: 'button', title: t('start.delete'), 'aria-label': t('start.delete') + ' ' + w.hotelName, text: t('start.delete'), onclick: (e) => { e.stopPropagation(); onDelete(); } }),
     h('span', { class: 'wsgo', text: '›' }));
   row.style.borderLeftColor = w.color || '';
   return row;
+}
+
+// Newer deploy than the code running in this tab (a tab left open keeps the old code until reloaded).
+async function newerVersion() {
+  try {
+    const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+    const v = r.ok ? (await r.json()).version : null;
+    return v && v !== APP_VERSION ? v : null;
+  } catch { return null; }
+}
+
+// Delete from the start screen: one warning dialog. A workspace with any entries is downloaded as a full backup first,
+// so a mistaken delete can be undone with "Restore from a full backup".
+async function deleteFromStart(ctl, w) {
+  const lock = await tryEditLock(w.wsId);
+  if (!lock) { await modal({ title: t('start.delTitle'), body: h('p', { text: t('start.delBusy', { hotel: w.hotelName }) }), buttons: [{ label: t('btn.close'), cls: 'btn-p', value: null }] }); return; }
+  try {
+    const doc = await ctl.store.load(w.wsId);
+    if (!doc) return;
+    const history = await ctl.store.history(w.wsId);
+    const n = Object.values(doc.items).filter((i) => i.updatedAt || (i.status && i.status !== 'empty')).length;
+    const hasData = n > 0 || history.some((e) => e.action !== 'create');
+    const ok = await modal({
+      title: t('start.delTitle'),
+      body: h('div', null,
+        h('p', { class: 'delname', text: `${doc.hotelName} · ${doc.serviceType === 'full' ? 'Full' : 'Focus'} · ${doc.year} · ${t('role.' + (doc.local?.role || 'reviewer'))}` }),
+        h('p', { class: 'ferr', text: t('start.delWarn') }),
+        h('p', { text: hasData ? t('start.delHasData', { n }) : t('start.delEmpty') })),
+      buttons: [{ label: t('btn.cancel'), value: false }, { label: t('start.delOk'), cls: 'btn-n', value: true }],
+    });
+    if (!ok) return;
+    if (hasData) download(JSON.stringify(await buildFile('backup', doc, backupPayload(doc, history))), fileName('backup', doc));
+    await ctl.store.deleteWorkspace(w.wsId);
+    if (sessionStorage.getItem('jkmcsa.current') === w.wsId) sessionStorage.removeItem('jkmcsa.current');
+    toast(hasData ? t('start.deletedBackup') : t('backup.deleted'));
+  } catch (e) {
+    toast(t('err.' + (e.code || 'storage')));
+  } finally {
+    lock.release();
+  }
+  renderStart(ctl);
 }
 
 async function newCsaDialog(ctl, me) {

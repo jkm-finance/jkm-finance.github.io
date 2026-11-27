@@ -62,15 +62,24 @@ export function modal({ title, body, buttons = [], wide = false, closable = true
     bg.appendChild(box);
     document.body.appendChild(bg);
     document.addEventListener('keydown', esc);
-    // Enter in a one-line text box = the dialog's main button (never a destructive one; not while the IME is composing Korean/Japanese).
+    // Enter in a one-line text box = the dialog's main button (never a destructive one).
+    // IME: Korean Enter finishes the syllable and should still submit; Japanese Enter only confirms the conversion.
+    let comp = '', pending = false;
+    const submit = () => { const main = btnEls.filter((b) => b.classList.contains('btn-p') && !b.disabled); if (main.length === 1 && bg.isConnected) main[0].click(); };
+    box.addEventListener('compositionupdate', (e) => { comp = e.data || ''; });
     box.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' || e.isComposing || e.keyCode === 229 || e.shiftKey || e.ctrlKey || e.altKey) return;
+      const isEnter = e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter';
+      if (!isEnter) return;
+      if (e.shiftKey || e.ctrlKey || e.altKey) return;
       const tg = e.target;
       if (!(tg instanceof HTMLInputElement) || !['text', 'search', 'email', 'number', 'date', ''].includes(tg.type)) return;
-      const main = btnEls.filter((b) => b.classList.contains('btn-p') && !b.disabled);
-      if (main.length !== 1) return;
+      if (e.isComposing || e.keyCode === 229) {
+        if (/[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]/.test(comp)) { pending = true; setTimeout(() => { if (pending) { pending = false; submit(); } }, 80); }
+        return;
+      }
+      pending = false;
       e.preventDefault();
-      main[0].click();
+      submit();
     });
     if (onMount) onMount({ buttons: btnEls, close: done, box });
   });
