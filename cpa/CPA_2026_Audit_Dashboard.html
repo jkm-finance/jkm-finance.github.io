@@ -1731,6 +1731,7 @@ var _st=null;
 function saveDbc(){clearTimeout(_st);_st=setTimeout(save,900);}
 
 function save(){
+  if(window._cpaAgg)return;   /* consolidation screen is read-only */
   try{
     var d={results:results,notes:notes,samples:samples,tstamps:tstamps,
       bsResults:bsResults,bsChecks:bsChecks,bsNotes:bsNotes,
@@ -3761,6 +3762,7 @@ function resetZoom(){
 }
 function checkPw(){
   var v=document.getElementById('pw-input').value;
+  if(v==='apac'&&typeof openAgg==='function'){document.getElementById('pw-input').blur();resetZoom();sessionStorage.setItem('cpa_auth','agg');openAgg();return;}
   if(v==='jkm'){
     document.getElementById('pw-input').blur();
     resetZoom();
@@ -4219,6 +4221,7 @@ if(sessionStorage.getItem('cpa_auth')==='1'){
 }
 setInterval(save,30000);
 window.addEventListener('beforeunload',function(e){
+  if(window._cpaAgg)return;
   if(currentHotel)save();
   var msg=lang==='ko'?'⚠ 닫기 전에 Export JSON으로 백업하셨나요?\n백업 없이 닫으면 작업 내용이 사라질 수 있습니다.\n상단의 Export 버튼을 눌러 백업 파일을 저장해 주세요.':lang==='ja'?'⚠ 閉じる前にExport JSONでバックアップしましたか？\nバックアップなしで閉じるとデータが失われる可能性があります。\n上部のExportボタンでバックアップしてください。':'⚠ Have you exported a backup before closing?\nWithout an Export JSON backup, your audit data may be lost.\nPlease click the Export button above to save your backup file.';
   e.preventDefault();e.returnValue=msg;return msg;
@@ -4259,6 +4262,489 @@ window.addEventListener('beforeunload',function(e){
   </div>
 </div>
 
+<!--AGG-->
+<style>
+#agg{display:none;position:fixed;inset:0;z-index:9990;background:#f0f2f5;overflow:auto;color:#1a1a2e;font-size:13px}
+#agg.open{display:block}
+#agg .ag-hdr{position:sticky;top:0;z-index:3;background:#1B2A41;color:#fff;display:flex;align-items:center;gap:6px;padding:10px 38px;flex-wrap:wrap}
+#agg .ag-title{font-weight:800;font-size:16px;margin-right:auto}
+#agg .ag-title small{font-weight:400;opacity:.75;font-size:12px;margin-left:8px}
+#agg .ag-hdr button{border:1px solid rgba(255,255,255,.45);background:transparent;color:#fff;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+#agg .ag-hdr button.on{background:#c8a96e;border-color:#c8a96e;color:#1B2A41}
+#agg .ag-hdr .ag-sep{width:1px;height:20px;background:rgba(255,255,255,.3);margin:0 4px}
+#agg .ag-body{padding:16px 38px 60px}
+#agg .ag-card{background:#fff;border:1px solid #dee2e6;border-radius:10px;margin-bottom:14px}
+#agg .ag-ct{font-weight:800;font-size:13px;color:#1B2A41;padding:10px 14px;border-bottom:1px solid #eef0f3;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#agg .ag-ct .ag-r{margin-left:auto;display:flex;gap:8px;align-items:center;font-weight:400;font-size:12px;flex-wrap:wrap}
+#agg .ag-cb{padding:12px 14px}
+#agg .ag-help{color:#5a6472;font-size:12px;line-height:1.6;margin:0 0 10px}
+#agg .ag-drop{border:2px dashed #b8c0cc;border-radius:10px;padding:18px;text-align:center;color:#5a6472;cursor:pointer;background:#fafbfc;font-weight:700}
+#agg .ag-drop:hover,#agg .ag-drop.over{border-color:#1B2A41;background:#e8edf8;color:#1B2A41}
+#agg .ag-msg{margin:8px 0 0;font-size:12px;line-height:1.7}
+#agg .ag-msg .ok{color:#3C6E58}#agg .ag-msg .er{color:#9C4B3E}#agg .ag-msg .wa{color:#B8862E}
+#agg .ag-srcs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#agg .ag-src{display:inline-flex;align-items:center;gap:6px;border:1px solid #dee2e6;border-radius:14px;padding:3px 4px 3px 10px;font-size:11.5px;background:#f8f9fa}
+#agg .ag-src button{border:none;background:none;color:#8B93A0;cursor:pointer;font-size:14px;line-height:1;padding:0 4px}
+#agg .ag-src button:hover{color:#9C4B3E}
+#agg .ag-btn{border:1px solid #1B2A41;background:#fff;color:#1B2A41;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+#agg .ag-btn.p{background:#1B2A41;color:#fff}
+#agg .ag-btn.g{background:#3C6E58;border-color:#3C6E58;color:#fff}
+#agg .ag-tw{overflow-x:auto}
+#agg table{border-collapse:collapse;width:100%;font-size:12.5px}
+#agg th,#agg td{border-bottom:1px solid #eef0f3;padding:7px 8px;text-align:left;vertical-align:top}
+#agg th{background:#f6f7f9;color:#1B2A41;font-size:11.5px;white-space:nowrap}
+#agg th[data-sort]{cursor:pointer}
+#agg th[data-sort]:hover{background:#e8edf8}
+#agg td.n,#agg th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#agg td.c,#agg th.c{text-align:center}
+#agg tr.ag-row:hover td{background:#fafbfd}
+#agg a.ag-h{color:#1B2A41;font-weight:800;text-decoration:underline;cursor:pointer}
+#agg .ag-sub{font-size:11px;color:#8B93A0;margin-top:2px}
+#agg .ag-bar{display:flex;height:9px;background:#e5e7eb;border-radius:4px;overflow:hidden;min-width:90px;margin-top:4px}
+#agg .ag-bar i{display:block;height:100%}
+#agg .b-yes{background:#3C6E58}#agg .b-no{background:#9C4B3E}#agg .b-na{background:#8B93A0}#agg .b-hold{background:#B8862E}
+#agg .ag-badge{display:inline-block;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;background:#dbeafe;color:#1B2A41}
+#agg .ag-badge.fo{background:#e0f2fe;color:#0369a1}
+#agg .ag-res{display:inline-block;border-radius:10px;padding:1px 9px;font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
+#agg .r-yes{background:#3C6E58}#agg .r-no{background:#9C4B3E}#agg .r-na{background:#8B93A0}#agg .r-hold{background:#B8862E}#agg .r-{background:#e9ecef;color:#8B93A0}
+#agg .ag-rk{font-size:10px;font-weight:700;border-radius:3px;padding:1px 5px;background:#f3e8d0;color:#7a5a17}
+#agg .ag-rk.HR{background:#e8edf8;color:#1B2A41}
+#agg .ag-warn{color:#B8862E;font-weight:700}
+#agg td.hc{color:#fff;text-align:center;font-weight:700;min-width:62px}
+#agg .ag-legend{display:flex;gap:12px;font-size:11px;color:#5a6472;flex-wrap:wrap}
+#agg .ag-legend span i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+#agg .ag-kpis{display:flex;gap:10px;flex-wrap:wrap}
+#agg .ag-kpi{border:1px solid #dee2e6;border-top:3px solid #1B2A41;border-radius:8px;padding:8px 14px;min-width:110px;background:#fff}
+#agg .ag-kpi b{display:block;font-size:20px;color:#1B2A41}
+#agg .ag-kpi span{font-size:11px;color:#8B93A0}
+#agg .ag-ws{max-width:520px;line-height:1.5}
+#agg .ag-pre{white-space:pre-wrap;max-width:360px;line-height:1.5}
+#agg .ag-sec td{background:#f6f7f9;font-weight:800;color:#1B2A41}
+#agg .ag-empty{color:#8B93A0;text-align:center;padding:26px}
+#agg select,#agg input[type=search]{border:1px solid #dee2e6;border-radius:6px;padding:4px 8px;font-size:12px;font-family:inherit}
+@media(max-width:768px){#agg .ag-hdr{padding:8px 12px}#agg .ag-body{padding:12px 10px 50px}}
+@media print{body.print-agg>*:not(#agg){display:none!important}body.print-agg #agg{position:static;display:block;overflow:visible;background:#fff}body.print-agg #agg .ag-hdr,body.print-agg #agg .ag-noprint{display:none!important}}
+</style>
+<div id="agg" aria-live="polite"></div>
+<script>
+/* CPA 2026 consolidation (password apac): results by hotel from Export / auto-backup JSON files and,
+   optionally, the hotels audited in this browser. Read-only: it never writes audit storage (cpa* keys,
+   cpa2026_safety); loaded files are kept only in their own IndexedDB database "cpa2026_agg". */
+(function(){
+var T={
+ ko:{title:'CPA 2026 취합',sub:'호텔별 결과 · 읽기 전용',hotels:'호텔별',heat:'섹션 히트맵',find:'전체 Findings',excel:'⇓ 취합 Excel',print:'🖶 인쇄',logout:'나가기',
+  load:'결과 파일 불러오기',loadHelp:'감사자가 보낸 ⇧ Export 파일(.json)이나 자동 백업 …_LATEST.json을 여러 개 한꺼번에 끌어다 놓거나 아래를 눌러 고르세요. 같은 호텔·같은 서비스 유형(Full/Focus)의 파일은 문항마다 가장 최근에 입력한 결과로 합칩니다. 불러온 파일은 이 브라우저의 취합 전용 공간에만 보관되며, 감사 데이터는 바뀌지 않습니다.',
+  drop:'여기에 .json 파일을 끌어다 놓거나 클릭해서 고르기',local:'이 PC에서 감사한 호텔도 포함',thisPC:'이 PC',files:'불러온 파일',removeAll:'모두 빼기',
+  rmOne:'"{f}" 파일을 취합에서 뺄까요?\n(원본 파일과 감사 데이터는 그대로입니다)',rmAll:'불러온 파일 {n}개를 모두 취합에서 뺄까요?\n(원본 파일과 감사 데이터는 그대로입니다)',
+  empty:'아직 취합할 결과가 없습니다. 위에서 Export 파일을 불러오세요.',hidden:'숨긴 호텔 {n}개는 제외했습니다.',
+  ok:'✓ {f} — {h} ({t}), 결과 {n}개',dup:'· {f} — 이미 불러온 파일입니다',unk:' · 이 유형에 없는 문항 {n}개 제외',
+  e_json:'JSON 파일이 아니거나 손상되었습니다',e_notcpa:'CPA Export 파일이 아닙니다',e_csa:'CSA 파일입니다 — CSA 대시보드의 취합 화면에서 여세요',e_move:'주소 이전용 파일입니다 — 취합에는 Export 파일을 쓰세요',e_nohotel:'파일에 호텔명이 없습니다',e_big:'파일이 너무 큽니다 (20MB 초과)',e_noresults:'결과가 들어 있지 않습니다 (Prep만 내보낸 파일 등)',e_db:'이 브라우저에 저장하지 못했습니다',
+  hotel:'호텔',type:'유형',auditor:'감사자',src:'출처',last:'최근 입력',prog:'진행률',score:'CPA 총점',conf:'충돌',pend:'미응답',
+  confHelp:'같은 문항에 파일마다 다른 결과가 있습니다. 가장 최근에 입력한 결과를 썼습니다.',back:'← 호텔 목록',
+  no:'#',sec:'섹션',risk:'Risk',item:'항목',res:'결과',sample:'Sample',notes:'Notes',at:'입력 시각',
+  allSec:'섹션 전체',allRisk:'Risk 전체',withHold:'Hold 포함',search:'검색',answered:'답변',
+  legend:'점수 = Yes ÷ (Yes + No) × 100, N/A·Hold 제외 (대시보드 Overview와 같은 계산)',heatHelp:'칸을 누르면 그 호텔의 상세 결과가 열립니다.',
+  others:'다른 결과',files_n:'파일 {n}개'},
+ en:{title:'CPA 2026 Consolidation',sub:'Results by hotel · read-only',hotels:'Hotels',heat:'Section heatmap',find:'All findings',excel:'⇓ Consolidated Excel',print:'🖶 Print',logout:'Log out',
+  load:'Load result files',loadHelp:'Drop several ⇧ Export files (.json) or auto-backup …_LATEST.json files from the auditors here at once, or click below to choose them. Files for the same hotel and service type (Full/Focus) are combined item by item, using the most recently entered result. Loaded files are kept only in this browser\'s consolidation storage; audit data is not changed.',
+  drop:'Drop .json files here or click to choose',local:'Also include hotels audited on this PC',thisPC:'This PC',files:'Loaded files',removeAll:'Remove all',
+  rmOne:'Remove "{f}" from the consolidation?\n(The original file and the audit data are not changed.)',rmAll:'Remove all {n} loaded files from the consolidation?\n(The original files and the audit data are not changed.)',
+  empty:'No results to consolidate yet. Load Export files above.',hidden:'{n} hidden hotel(s) excluded.',
+  ok:'✓ {f} — {h} ({t}), {n} results',dup:'· {f} — already loaded',unk:' · {n} item(s) not in this type skipped',
+  e_json:'Not a JSON file, or damaged',e_notcpa:'Not a CPA Export file',e_csa:'This is a CSA file — open it in the CSA dashboard consolidation',e_move:'This is an address-move file — use Export files for consolidation',e_nohotel:'The file has no hotel name',e_big:'File too large (over 20 MB)',e_noresults:'No results in this file (e.g. Prep only)',e_db:'Could not store it in this browser',
+  hotel:'Hotel',type:'Type',auditor:'Auditor',src:'Sources',last:'Last entry',prog:'Progress',score:'CPA Total Score',conf:'Conflicts',pend:'Pending',
+  confHelp:'Files disagree on this item. The most recently entered result is used.',back:'← Hotel list',
+  no:'#',sec:'Section',risk:'Risk',item:'Item',res:'Result',sample:'Sample',notes:'Notes',at:'Entered',
+  allSec:'All sections',allRisk:'All risks',withHold:'Include Hold',search:'Search',answered:'answered',
+  legend:'Score = Yes ÷ (Yes + No) × 100, N/A and Hold excluded (same as the dashboard Overview)',heatHelp:'Click a cell to open that hotel\'s results.',
+  others:'Other results',files_n:'{n} file(s)'},
+ ja:{title:'CPA 2026 集計',sub:'ホテル別結果・閲覧のみ',hotels:'ホテル別',heat:'セクション ヒートマップ',find:'全 Findings',excel:'⇓ 集計 Excel',print:'🖶 印刷',logout:'ログアウト',
+  load:'結果ファイルを読み込む',loadHelp:'監査担当者から届いた ⇧ Export ファイル（.json）や自動バックアップ …_LATEST.json を、まとめてここにドラッグするか、下をクリックして選んでください。同じホテル・同じサービスタイプ（Full/Focus）のファイルは、項目ごとに最も新しく入力された結果でまとめます。読み込んだファイルはこのブラウザの集計専用領域にだけ保管され、監査データは変わりません。',
+  drop:'ここに .json ファイルをドラッグ、またはクリックして選択',local:'このPCで監査したホテルも含める',thisPC:'このPC',files:'読み込んだファイル',removeAll:'すべて除外',
+  rmOne:'「{f}」を集計から除外しますか？\n（元のファイルと監査データはそのままです）',rmAll:'読み込んだ {n} 件のファイルをすべて集計から除外しますか？\n（元のファイルと監査データはそのままです）',
+  empty:'集計する結果はまだありません。上で Export ファイルを読み込んでください。',hidden:'非表示のホテル {n} 件は除外しました。',
+  ok:'✓ {f} — {h}（{t}）、結果 {n} 件',dup:'· {f} — 読み込み済みのファイルです',unk:'・このタイプにない項目 {n} 件を除外',
+  e_json:'JSONファイルではないか、破損しています',e_notcpa:'CPA Export ファイルではありません',e_csa:'CSAファイルです — CSAダッシュボードの集計画面で開いてください',e_move:'アドレス移行用のファイルです — 集計には Export ファイルを使ってください',e_nohotel:'ファイルにホテル名がありません',e_big:'ファイルが大きすぎます（20MB超）',e_noresults:'結果が含まれていません（Prepのみ等）',e_db:'このブラウザに保存できませんでした',
+  hotel:'ホテル',type:'タイプ',auditor:'監査担当者',src:'出典',last:'最終入力',prog:'進捗',score:'CPA総合スコア',conf:'不一致',pend:'未回答',
+  confHelp:'ファイルによって結果が異なります。最も新しく入力された結果を使いました。',back:'← ホテル一覧',
+  no:'#',sec:'セクション',risk:'Risk',item:'項目',res:'結果',sample:'Sample',notes:'Notes',at:'入力日時',
+  allSec:'全セクション',allRisk:'全 Risk',withHold:'Hold を含む',search:'検索',answered:'回答',
+  legend:'スコア = Yes ÷（Yes + No）× 100、N/A・Hold は除外（ダッシュボード Overview と同じ計算）',heatHelp:'セルをクリックするとそのホテルの詳細が開きます。',
+  others:'他の結果',files_n:'ファイル {n} 件'}
+};
+function L(){return T[lang]?lang:'en';}
+function tx(k,v){var s=T[L()][k];if(s==null)s=T.en[k];if(s==null)return k;if(v)Object.keys(v).forEach(function(n){s=s.split('{'+n+'}').join(v[n]);});return s;}
+var E=_esc,RES={yes:1,no:1,na:1,hold:1},RL={yes:'Yes',no:'No',na:'N/A',hold:'Hold'},MAX=20*1024*1024;
+var S={files:[],groups:[],tab:'hotels',open:null,sort:'name',dir:1,fsec:'',frisk:'',fhold:false,fq:'',msgs:[],hiddenN:0,
+  local:sessionStorage.getItem('cpa_agg_local')!=='0'};
+function items(svc){return svc==='focused'?FOCUSED_AUDIT_DATA:auditData;}
+function secs(svc){return svc==='focused'?FOCUSED_SECS:SECS;}
+function typeL(svc){return svc==='focused'?'Focus':'Full';}
+function wsText(it,svc,l){
+  l=l||L();
+  if(l==='ko'&&it.wsKR)return it.wsKR;
+  if(l==='ja'){var m=svc==='focused'?FOCUSED_JP_WS:JP_WS;if(m&&m[it.id])return m[it.id];}
+  return it.wsEN||'';
+}
+function cmp(a,b){a=a||'';b=b||'';return a<b?-1:a>b?1:0;}
+function pct(y,n){return (y+n)>0?y/(y+n)*100:null;}
+function fmt(p){return p===null?'—':p.toFixed(2)+'%';}
+function heat(p){if(p===null)return '#c9d1d0';if(p>=95)return '#3C6E58';if(p>=85)return '#6f8f4e';if(p>=75)return '#B8862E';return '#9C4B3E';}
+function cap(w){return w?w.charAt(0).toUpperCase()+w.slice(1):w;}
+
+/* ---- own storage (IndexedDB "cpa2026_agg"; never the audit database) ---- */
+var _dbp=null;
+function db(){
+  if(!_dbp)_dbp=new Promise(function(ok,bad){
+    var r=indexedDB.open('cpa2026_agg',1);
+    r.onupgradeneeded=function(){if(!r.result.objectStoreNames.contains('files'))r.result.createObjectStore('files',{keyPath:'id'});};
+    r.onsuccess=function(){ok(r.result);};r.onerror=function(){_dbp=null;bad(r.error);};
+  });
+  return _dbp;
+}
+function st(mode,fn){
+  return db().then(function(d){return new Promise(function(ok,bad){
+    var t=d.transaction('files',mode),q=fn(t.objectStore('files'));
+    t.oncomplete=function(){ok(q?q.result:undefined);};t.onerror=function(){bad(t.error);};t.onabort=function(){bad(t.error);};
+  });});
+}
+
+/* ---- reading files: keep only known items and allowed values ---- */
+function norm(data,svc){
+  var ids={};items(svc).forEach(function(i){ids[String(i.id)]=1;});
+  var out={results:{},notes:{},samples:{},tstamps:{}},unk={};
+  ['results','notes','samples','tstamps'].forEach(function(k){
+    var src=_isObj(data[k])?data[k]:{};
+    Object.keys(src).forEach(function(id){
+      if(!ids[id]){unk[id]=1;return;}
+      var v=src[id];if(v===null||v===undefined||v===''||typeof v==='object')return;
+      v=String(v);if(k==='results'&&!RES[v])return;
+      out[k][id]=v.slice(0,20000);
+    });
+  });
+  return {data:out,unknown:Object.keys(unk).length};
+}
+function parseFile(text){
+  if(text.length>MAX)throw 'big';
+  var d;try{d=JSON.parse(text);}catch(e){throw 'json';}
+  if(!_isObj(d))throw 'notcpa';
+  if(d.format==='jkm-csa-file')throw 'csa';
+  if(d.format==='cpa-origin-move')throw 'move';
+  var data=_isObj(d.data)?d.data:null;
+  if(!data||!(_isObj(data.results)||_isObj(data.notes)||_isObj(data.samples)))throw 'notcpa';
+  var hi=_isObj(data.hotel)?data.hotel:{};
+  var hotel=String(d.hotelName||hi.hotel||'').trim().slice(0,200);
+  if(!hotel)throw 'nohotel';
+  var svc=(d.serviceType==='full'||d.serviceType==='focused')?d.serviceType:null;
+  if(!svc){var ks=Object.keys(data.results||{});svc=ks.length&&ks.every(function(k){return /^f\d+$/.test(k);})?'focused':'full';}
+  var r=norm(data,svc);
+  if(!Object.keys(r.data.results).length&&!Object.keys(r.data.notes).length&&!Object.keys(r.data.samples).length)throw 'noresults';
+  return {hotel:hotel,svc:svc,auditor:String(d.auditorName||hi.auditor||'').trim().slice(0,200),at:String(d.exportedAt||d.savedAt||'').slice(0,30),data:r.data,unknown:r.unknown};
+}
+function localSources(){
+  var out=[],hid=_hiddenHotels(),names={},hiddenN=0;
+  ['full','focused'].forEach(function(t){try{(JSON.parse(localStorage.getItem('cpa2026_hotels__'+t)||'[]')||[]).forEach(function(n){names[t+':'+_slug(n)]=n;});}catch(e){}});
+  _lsKeys().forEach(function(k){
+    var m=/^cpa2026v2__(.+)__(full|focused)$/.exec(k);if(!m)return;
+    var slug=_slug(m[1]),svc=m[2],d;
+    try{d=JSON.parse(localStorage.getItem(k));}catch(e){return;}
+    if(!_isObj(d))return;
+    var r=norm(d,svc);
+    if(!Object.keys(r.data.results).length&&!Object.keys(r.data.notes).length)return;
+    if(hid[svc+':'+slug]){hiddenN++;return;}
+    var hi=_isObj(d.hotel)?d.hotel:{};
+    var name=hi.hotel&&_slug(hi.hotel)===slug?hi.hotel:(names[svc+':'+slug]||slug.split('_').map(cap).join(' '));
+    out.push({id:'local:'+k,kind:'local',name:tx('thisPC'),hotel:String(name).trim(),svc:svc,auditor:String(hi.auditor||'').trim(),at:'',data:r.data});
+  });
+  S.hiddenN=hiddenN;
+  return out;
+}
+
+/* ---- combining: per hotel + service type, per item the latest entry wins ---- */
+function combine(srcs){
+  var g={},order=[];
+  srcs.forEach(function(s){var k=s.svc+':'+_slug(s.hotel);if(!g[k]){g[k]={key:k,svc:s.svc,srcs:[]};order.push(k);}g[k].srcs.push(s);});
+  return order.map(function(k){return summarize(g[k]);});
+}
+function summarize(G){
+  var its=items(G.svc),m={},conf=0,last='',c={yes:0,no:0,na:0,hold:0},risk={Key:{y:0,n:0},HR:{y:0,n:0}},sec={};
+  secs(G.svc).forEach(function(s){sec[s]={y:0,n:0,a:0,h:0,t:0};});
+  its.forEach(function(it){
+    var id=String(it.id),cand=[];
+    if(sec[it.section])sec[it.section].t++;
+    G.srcs.forEach(function(s){var d=s.data;if(d.results[id]||d.notes[id]||d.samples[id])cand.push({s:s,res:d.results[id]||'',note:d.notes[id]||'',smp:d.samples[id]||'',ts:d.tstamps[id]||''});});
+    if(!cand.length)return;
+    cand.sort(function(a,b){return cmp(b.ts,a.ts)||cmp(b.s.at,a.s.at)||((b.res?1:0)-(a.res?1:0));});
+    var withRes=cand.filter(function(x){return x.res;}),w=withRes[0]||cand[0];
+    var r={res:w.res,ts:w.ts,src:w.s.name,note:w.note,smp:w.smp,alts:[]};
+    if(!r.note)cand.some(function(x){if(x.note){r.note=x.note;return true;}});
+    if(!r.smp)cand.some(function(x){if(x.smp){r.smp=x.smp;return true;}});
+    var seen={};withRes.forEach(function(x){seen[x.res]=1;});
+    if(Object.keys(seen).length>1){conf++;r.alts=withRes.slice(1).filter(function(x){return x.res!==w.res;}).map(function(x){return {res:x.res,ts:x.ts,src:x.s.name};});}
+    if(r.ts&&r.ts>last)last=r.ts;
+    if(r.res){c[r.res]++;
+      if(risk[it.risk]){if(r.res==='yes')risk[it.risk].y++;else if(r.res==='no')risk[it.risk].n++;}
+      var q=sec[it.section];if(q){if(r.res==='yes')q.y++;else if(r.res==='no')q.n++;else if(r.res==='na')q.a++;else q.h++;}}
+    m[id]=r;
+  });
+  var latest=G.srcs.slice().sort(function(a,b){return cmp(b.at,a.at)||(a.kind==='local'?-1:1);})[0];
+  var auds={};G.srcs.forEach(function(s){if(s.auditor)auds[s.auditor]=1;});
+  var total=its.length,done=c.yes+c.no+c.na+c.hold;
+  return {key:G.key,svc:G.svc,name:latest.hotel,srcs:G.srcs,auditors:Object.keys(auds),items:m,c:c,total:total,done:done,pend:total-done,
+    prog:total?done/total*100:0,score:pct(c.yes,c.no),key_:pct(risk.Key.y,risk.Key.n),hr:pct(risk.HR.y,risk.HR.n),sec:sec,conf:conf,last:last};
+}
+
+/* ---- loading ---- */
+function readFiles(list){
+  var arr=[].slice.call(list||[]);if(!arr.length)return;
+  S.msgs=[];
+  var chain=Promise.resolve();
+  arr.forEach(function(f){
+    chain=chain.then(function(){
+      if(f.size>MAX){S.msgs.push(['er','✕ '+f.name+' — '+tx('e_big')]);return;}
+      return f.text().then(function(text){
+        var p;try{p=parseFile(text);}catch(code){S.msgs.push(['er','✕ '+f.name+' — '+tx('e_'+(typeof code==='string'?code:'notcpa'))]);return;}
+        var id=_hash(text);
+        return st('readonly',function(s){return s.get(id);}).then(function(ex){
+          if(ex){S.msgs.push(['wa',tx('dup',{f:f.name})]);return;}
+          var rec={id:id,name:f.name.slice(0,200),addedAt:new Date().toISOString(),src:p};
+          return st('readwrite',function(s){s.put(rec);}).then(function(){
+            S.msgs.push(['ok',tx('ok',{f:f.name,h:p.hotel,t:typeL(p.svc),n:Object.keys(p.data.results).length})+(p.unknown?tx('unk',{n:p.unknown}):'')]);
+          });
+        });
+      }).catch(function(){S.msgs.push(['er','✕ '+f.name+' — '+tx('e_db')]);});
+    });
+  });
+  chain.then(refresh);
+}
+function refresh(){
+  return st('readonly',function(s){return s.getAll();}).catch(function(){return [];}).then(function(recs){
+    S.files=(recs||[]).sort(function(a,b){return cmp(a.addedAt,b.addedAt);});
+    var srcs=S.files.map(function(r){var p=r.src;return {id:r.id,kind:'file',name:r.name,hotel:p.hotel,svc:p.svc,auditor:p.auditor,at:p.at||r.addedAt.slice(0,10),data:p.data};});
+    S.hiddenN=0;
+    if(S.local)srcs=srcs.concat(localSources());
+    S.groups=combine(srcs);
+    draw();
+  });
+}
+
+/* ---- screen ---- */
+function hdr(){
+  var b='<div class="ag-hdr"><div class="ag-title">📊 '+E(tx('title'))+'<small>'+E(tx('sub'))+'</small></div>';
+  ['hotels','heat','find'].forEach(function(k){b+='<button data-tab="'+k+'" class="'+(S.tab===k&&!S.open?'on':'')+'">'+E(tx(k))+'</button>';});
+  b+='<span class="ag-sep"></span>';
+  ['ko','en','ja'].forEach(function(l){b+='<button data-lang="'+l+'" class="'+(L()===l?'on':'')+'">'+l.toUpperCase()+'</button>';});
+  b+='<span class="ag-sep"></span><button data-act="excel">'+E(tx('excel'))+'</button><button data-act="print">'+E(tx('print'))+'</button>';
+  if(typeof openGuide==='function')b+='<button data-act="guide">❓</button>';
+  b+='<button data-act="logout">'+E(tx('logout'))+'</button></div>';
+  return b;
+}
+function loader(){
+  var b='<div class="ag-card ag-noprint"><div class="ag-ct">'+E(tx('load'))+'<div class="ag-r"><label><input type="checkbox" id="ag-local"'+(S.local?' checked':'')+'> '+E(tx('local'))+'</label></div></div><div class="ag-cb">'
+   +'<p class="ag-help">'+E(tx('loadHelp'))+'</p>'
+   +'<div class="ag-drop" id="ag-drop" tabindex="0" role="button">⇧ '+E(tx('drop'))+'</div><input type="file" id="ag-file" accept=".json,application/json" multiple style="display:none">';
+  if(S.msgs.length)b+='<div class="ag-msg">'+S.msgs.map(function(x){return '<div class="'+x[0]+'">'+E(x[1])+'</div>';}).join('')+'</div>';
+  if(S.files.length){
+    b+='<div class="ag-srcs"><b style="font-size:11.5px;align-self:center">'+E(tx('files'))+' ('+S.files.length+')</b>';
+    S.files.forEach(function(r){b+='<span class="ag-src" title="'+E(r.src.hotel+' · '+typeL(r.src.svc)+(r.src.auditor?' · '+r.src.auditor:'')+(r.src.at?' · '+r.src.at:''))+'">'+E(r.name)+'<button data-rm="'+E(r.id)+'" title="✕">×</button></span>';});
+    b+='<button class="ag-btn" data-act="rmall" style="padding:2px 9px">'+E(tx('removeAll'))+'</button></div>';
+  }
+  if(S.hiddenN)b+='<p class="ag-help" style="margin:8px 0 0">'+E(tx('hidden',{n:S.hiddenN}))+'</p>';
+  return b+'</div></div>';
+}
+function bar(g){
+  var t=g.total||1;
+  return '<div class="ag-bar">'+['yes','no','na','hold'].map(function(k){return g.c[k]?'<i class="b-'+k+'" style="width:'+(g.c[k]/t*100)+'%"></i>':'';}).join('')+'</div>';
+}
+function srcLabel(g){
+  var f=g.srcs.filter(function(s){return s.kind==='file';}).length,l=g.srcs.some(function(s){return s.kind==='local';});
+  return [f?tx('files_n',{n:f}):'',l?tx('thisPC'):''].filter(Boolean).join(' + ');
+}
+function sorted(){
+  var k=S.sort,d=S.dir;
+  var val=function(g){return k==='name'?g.name.toLowerCase():k==='type'?g.svc:k==='prog'?g.prog:k==='score'?(g.score===null?-1:g.score):k==='key'?(g.key_===null?-1:g.key_):k==='hr'?(g.hr===null?-1:g.hr):k==='no'?g.c.no:k==='hold'?g.c.hold:k==='last'?g.last:0;};
+  return S.groups.slice().sort(function(a,b){var x=val(a),y=val(b);return (x<y?-1:x>y?1:0)*d||cmp(a.name.toLowerCase(),b.name.toLowerCase());});
+}
+function th(k,label,cls){return '<th data-sort="'+k+'" class="'+(cls||'')+'">'+E(label)+(S.sort===k?(S.dir>0?' ▲':' ▼'):'')+'</th>';}
+function hotelsView(){
+  var b='<div class="ag-card"><div class="ag-ct">'+E(tx('hotels'))+' ('+S.groups.length+')<div class="ag-r">'+legendHtml()+'</div></div><div class="ag-tw"><table><thead><tr>'
+   +th('name',tx('hotel'))+th('type',tx('type'))+'<th>'+E(tx('auditor'))+'</th><th>'+E(tx('src'))+'</th>'+th('last',tx('last'))+th('prog',tx('prog'))
+   +th('score',tx('score'),'n')+th('key','Key','n')+th('hr','HR','n')+th('no','No','n')+th('hold','Hold','n')+'<th class="n">'+E(tx('conf'))+'</th></tr></thead><tbody>';
+  sorted().forEach(function(g){
+    b+='<tr class="ag-row"><td><a class="ag-h" data-open="'+E(g.key)+'">'+E(g.name)+'</a></td>'
+     +'<td><span class="ag-badge'+(g.svc==='focused'?' fo':'')+'">'+typeL(g.svc)+'</span></td>'
+     +'<td>'+E(g.auditors.join(', ')||'—')+'</td><td>'+E(srcLabel(g))+'</td><td class="n">'+E(g.last||'—')+'</td>'
+     +'<td style="min-width:130px"><b>'+Math.round(g.prog)+'%</b> <span class="ag-sub" style="display:inline">'+g.done+' / '+g.total+' · '+E(tx('pend'))+' '+g.pend+'</span>'+bar(g)+'</td>'
+     +'<td class="n"><b>'+fmt(g.score)+'</b><div class="ag-sub">'+g.c.yes+' / '+(g.c.yes+g.c.no)+'</div></td><td class="n">'+fmt(g.key_)+'</td><td class="n">'+fmt(g.hr)+'</td>'
+     +'<td class="n" style="color:#9C4B3E;font-weight:700">'+g.c.no+'</td><td class="n" style="color:#B8862E;font-weight:700">'+g.c.hold+'</td>'
+     +'<td class="n">'+(g.conf?'<span class="ag-warn" title="'+E(tx('confHelp'))+'">⚠ '+g.conf+'</span>':'—')+'</td></tr>';
+  });
+  return b+'</tbody></table></div></div>';
+}
+function legendHtml(){
+  return '<span class="ag-legend"><span><i class="b-yes"></i>Yes</span><span><i class="b-no"></i>No</span><span><i class="b-na"></i>N/A</span><span><i class="b-hold"></i>Hold</span></span><span class="ag-sub" style="margin:0">'+E(tx('legend'))+'</span>';
+}
+function heatView(){
+  var b='<div class="ag-card"><div class="ag-ct">'+E(tx('heat'))+'<div class="ag-r"><span class="ag-legend"><span><i style="background:#3C6E58"></i>≥95</span><span><i style="background:#6f8f4e"></i>85–95</span><span><i style="background:#B8862E"></i>75–85</span><span><i style="background:#9C4B3E"></i>&lt;75</span><span><i style="background:#c9d1d0"></i>—</span></span></div></div>'
+   +'<div class="ag-cb" style="padding-bottom:0"><p class="ag-help">'+E(tx('heatHelp'))+' '+E(tx('legend'))+'</p></div><div class="ag-tw"><table><thead><tr><th>'+E(tx('hotel'))+'</th><th class="n">'+E(tx('score'))+'</th>';
+  SECS.forEach(function(s){b+='<th class="c">'+E(s)+'</th>';});
+  b+='</tr></thead><tbody>';
+  sorted().forEach(function(g){
+    b+='<tr><td><a class="ag-h" data-open="'+E(g.key)+'">'+E(g.name)+'</a> <span class="ag-badge'+(g.svc==='focused'?' fo':'')+'">'+typeL(g.svc)+'</span></td><td class="n"><b>'+fmt(g.score)+'</b></td>';
+    SECS.forEach(function(s){
+      var q=g.sec[s];
+      if(!q){b+='<td class="hc" style="background:#f3f5f5"></td>';return;}
+      var p=pct(q.y,q.n);
+      b+='<td class="hc" data-open="'+E(g.key)+'" style="cursor:pointer;background:'+heat(p)+'" title="'+E(s+' · Yes '+q.y+' / No '+q.n+' / N/A '+q.a+' / Hold '+q.h+' · '+(q.y+q.n+q.a+q.h)+'/'+q.t)+'">'+(p===null?'—':p.toFixed(1))+'</td>';
+    });
+    b+='</tr>';
+  });
+  return b+'</tbody></table></div></div>';
+}
+function findRows(){
+  var q=S.fq.trim().toLowerCase(),out=[];
+  sorted().forEach(function(g){
+    items(g.svc).forEach(function(it){
+      var r=g.items[String(it.id)];if(!r)return;
+      if(!(r.res==='no'||(S.fhold&&r.res==='hold')))return;
+      if(S.fsec&&it.section!==S.fsec)return;if(S.frisk&&it.risk!==S.frisk)return;
+      var ws=wsText(it,g.svc);
+      if(q&&(g.name+' '+ws+' '+r.note+' '+r.smp+' '+it.section).toLowerCase().indexOf(q)<0)return;
+      out.push({g:g,it:it,r:r,ws:ws});
+    });
+  });
+  return out;
+}
+function findView(){
+  var rows=findRows();
+  var b='<div class="ag-card"><div class="ag-ct">'+E(tx('find'))+' ('+rows.length+')<div class="ag-r ag-noprint">'
+   +'<select id="ag-fsec"><option value="">'+E(tx('allSec'))+'</option>'+SECS.map(function(s){return '<option'+(S.fsec===s?' selected':'')+'>'+E(s)+'</option>';}).join('')+'</select>'
+   +'<select id="ag-frisk"><option value="">'+E(tx('allRisk'))+'</option>'+['Key','HR'].map(function(s){return '<option'+(S.frisk===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>'
+   +'<label><input type="checkbox" id="ag-fhold"'+(S.fhold?' checked':'')+'> '+E(tx('withHold'))+'</label>'
+   +'<input type="search" id="ag-fq" placeholder="'+E(tx('search'))+'" value="'+E(S.fq)+'"></div></div><div class="ag-tw"><table><thead><tr>'
+   +'<th>'+E(tx('hotel'))+'</th><th>'+E(tx('sec'))+'</th><th>'+E(tx('no'))+'</th><th>'+E(tx('risk'))+'</th><th>'+E(tx('item'))+'</th><th>'+E(tx('res'))+'</th><th>'+E(tx('sample'))+'</th><th>'+E(tx('notes'))+'</th><th>'+E(tx('at'))+'</th></tr></thead><tbody>';
+  if(!rows.length)b+='<tr><td colspan="9" class="ag-empty">—</td></tr>';
+  rows.forEach(function(x){
+    b+='<tr class="ag-row"><td><a class="ag-h" data-open="'+E(x.g.key)+'">'+E(x.g.name)+'</a><div class="ag-sub">'+typeL(x.g.svc)+'</div></td><td>'+E(x.it.section)+'</td><td>'+E(dispId(x.it.id))+'</td>'
+     +'<td><span class="ag-rk '+E(x.it.risk)+'">'+E(x.it.risk)+'</span></td><td class="ag-ws">'+E(x.ws)+'</td><td>'+resChip(x.r)+'</td>'
+     +'<td class="ag-pre">'+E(x.r.smp||'')+'</td><td class="ag-pre">'+E(x.r.note||'')+'</td><td class="n">'+E(x.r.ts||'')+'</td></tr>';
+  });
+  return b+'</tbody></table></div></div>';
+}
+function resChip(r){
+  var b='<span class="ag-res r-'+E(r.res||'')+'">'+E(RL[r.res]||'—')+'</span>';
+  if(r.alts&&r.alts.length)b+=' <span class="ag-warn" title="'+E(tx('confHelp')+'\n'+tx('others')+': '+r.alts.map(function(a){return (RL[a.res]||a.res)+' ('+a.src+(a.ts?' · '+a.ts:'')+')';}).join(', '))+'">⚠</span>';
+  return b;
+}
+function detailView(g){
+  var b='<div class="ag-noprint" style="margin-bottom:10px"><button class="ag-btn" data-act="back">'+E(tx('back'))+'</button></div>'
+   +'<div class="ag-card"><div class="ag-ct" style="font-size:16px">'+E(g.name)+' <span class="ag-badge'+(g.svc==='focused'?' fo':'')+'">'+typeL(g.svc)+'</span>'
+   +'<div class="ag-r">'+E(tx('auditor'))+': '+E(g.auditors.join(', ')||'—')+' · '+E(tx('src'))+': '+E(g.srcs.map(function(s){return s.name;}).join(', '))+'</div></div><div class="ag-cb"><div class="ag-kpis">'
+   +kpi(Math.round(g.prog)+'%',tx('prog')+' · '+g.done+'/'+g.total)+kpi(fmt(g.score),tx('score'))+kpi(fmt(g.key_),'Key')+kpi(fmt(g.hr),'HR')
+   +kpi(g.c.no,'No','#9C4B3E')+kpi(g.c.hold,'Hold','#B8862E')+kpi(g.pend,tx('pend'),'#8B93A0')+(g.conf?kpi('⚠ '+g.conf,tx('conf'),'#B8862E'):'')
+   +'</div>'+bar(g)+'</div></div>';
+  var multi=g.srcs.length>1;
+  b+='<div class="ag-card"><div class="ag-tw"><table><thead><tr><th>'+E(tx('no'))+'</th><th>'+E(tx('risk'))+'</th><th>'+E(tx('item'))+'</th><th>'+E(tx('res'))+'</th><th>'+E(tx('sample'))+'</th><th>'+E(tx('notes'))+'</th><th>'+E(tx('at'))+'</th>'+(multi?'<th>'+E(tx('src'))+'</th>':'')+'</tr></thead><tbody>';
+  secs(g.svc).forEach(function(s){
+    var q=g.sec[s],p=pct(q.y,q.n);
+    b+='<tr class="ag-sec"><td colspan="'+(multi?8:7)+'">'+E(s)+' <span class="ag-sub" style="display:inline;font-weight:400">· '+(q.y+q.n+q.a+q.h)+'/'+q.t+' '+E(tx('answered'))+' · '+fmt(p)+'</span></td></tr>';
+    items(g.svc).filter(function(it){return it.section===s;}).forEach(function(it){
+      var r=g.items[String(it.id)]||{res:'',note:'',smp:'',ts:'',src:''};
+      b+='<tr class="ag-row"><td>'+E(dispId(it.id))+'</td><td><span class="ag-rk '+E(it.risk)+'">'+E(it.risk)+'</span></td><td class="ag-ws">'+E(wsText(it,g.svc))+'</td><td>'+resChip(r)+'</td>'
+       +'<td class="ag-pre">'+E(r.smp||'')+'</td><td class="ag-pre">'+E(r.note||'')+'</td><td class="n">'+E(r.ts||'')+'</td>'+(multi?'<td class="ag-sub">'+E(r.src||'')+'</td>':'')+'</tr>';
+    });
+  });
+  return b+'</tbody></table></div></div>';
+}
+function kpi(v,l,c){return '<div class="ag-kpi"'+(c?' style="border-top-color:'+c+'"':'')+'><b'+(c?' style="color:'+c+'"':'')+'>'+E(v)+'</b><span>'+E(l)+'</span></div>';}
+function draw(){
+  var el=document.getElementById('agg');if(!el)return;
+  var keepY=el.scrollTop,g=S.open&&S.groups.filter(function(x){return x.key===S.open;})[0];
+  if(S.open&&!g)S.open=null;
+  var b=hdr()+'<div class="ag-body">';
+  if(g)b+=detailView(g);
+  else{
+    b+=loader();
+    if(!S.groups.length)b+='<div class="ag-card"><div class="ag-empty">'+E(tx('empty'))+'</div></div>';
+    else b+=S.tab==='heat'?heatView():S.tab==='find'?findView():hotelsView();
+  }
+  el.innerHTML=b+'</div>';
+  document.title=tx('title');
+  wire(el);
+  el.scrollTop=g?0:keepY;
+}
+function wire(el){
+  el.querySelectorAll('[data-tab]').forEach(function(x){x.onclick=function(){S.tab=x.getAttribute('data-tab');S.open=null;draw();};});
+  el.querySelectorAll('[data-lang]').forEach(function(x){x.onclick=function(){lang=x.getAttribute('data-lang');try{sessionStorage.setItem('cpa_lang',lang);}catch(e){}document.documentElement.lang=lang;refresh();};});
+  el.querySelectorAll('[data-open]').forEach(function(x){x.onclick=function(e){e.preventDefault();S.open=x.getAttribute('data-open');draw();};});
+  el.querySelectorAll('[data-sort]').forEach(function(x){x.onclick=function(){var k=x.getAttribute('data-sort');if(S.sort===k)S.dir=-S.dir;else{S.sort=k;S.dir=(k==='name'||k==='type')?1:-1;}draw();};});
+  el.querySelectorAll('[data-rm]').forEach(function(x){x.onclick=function(){
+    var id=x.getAttribute('data-rm'),r=S.files.filter(function(f){return f.id===id;})[0];if(!r)return;
+    if(!confirm(tx('rmOne',{f:r.name})))return;
+    st('readwrite',function(s){s.delete(id);}).then(function(){S.msgs=[];refresh();});
+  };});
+  var a=function(n,f){var x=el.querySelector('[data-act="'+n+'"]');if(x)x.onclick=f;};
+  a('rmall',function(){if(!confirm(tx('rmAll',{n:S.files.length})))return;st('readwrite',function(s){s.clear();}).then(function(){S.msgs=[];refresh();});});
+  a('back',function(){S.open=null;draw();});
+  a('excel',exportExcel);
+  a('print',function(){document.body.classList.add('print-agg');window.print();});
+  a('guide',function(){openGuide();});
+  a('logout',function(){try{sessionStorage.removeItem('cpa_auth');}catch(e){}location.reload();});
+  var drop=el.querySelector('#ag-drop'),inp=el.querySelector('#ag-file');
+  if(drop&&inp){
+    drop.onclick=function(){inp.click();};
+    drop.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click();}};
+    inp.onchange=function(){readFiles(inp.files);inp.value='';};
+    drop.ondragover=function(e){e.preventDefault();drop.classList.add('over');};
+    drop.ondragleave=function(){drop.classList.remove('over');};
+    drop.ondrop=function(e){e.preventDefault();drop.classList.remove('over');readFiles(e.dataTransfer&&e.dataTransfer.files);};
+  }
+  var lc=el.querySelector('#ag-local');if(lc)lc.onchange=function(){S.local=lc.checked;try{sessionStorage.setItem('cpa_agg_local',S.local?'1':'0');}catch(e){}refresh();};
+  var fs=el.querySelector('#ag-fsec');if(fs)fs.onchange=function(){S.fsec=fs.value;draw();};
+  var fr=el.querySelector('#ag-frisk');if(fr)fr.onchange=function(){S.frisk=fr.value;draw();};
+  var fh=el.querySelector('#ag-fhold');if(fh)fh.onchange=function(){S.fhold=fh.checked;draw();};
+  var fq=el.querySelector('#ag-fq');if(fq)fq.oninput=function(){S.fq=fq.value;clearTimeout(fq._t);fq._t=setTimeout(function(){draw();var n=document.getElementById('ag-fq');if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length);}},250);};
+}
+window.addEventListener('afterprint',function(){document.body.classList.remove('print-agg');});
+
+/* ---- Excel (sheets Hotels, Heatmap, Findings, Items) ---- */
+function r2(p){return p===null?'':Math.round(p*100)/100;}
+function exportExcel(){
+  if(!S.groups.length||typeof XLSX==='undefined')return;
+  var gs=sorted();
+  var hotels=[['Hotel','Type','Auditors','Sources','Last entry','Items','Answered','Progress %','Yes','No','N/A','Hold','Pending','CPA Total Score %','Key %','HR %','Conflicts']];
+  gs.forEach(function(g){hotels.push([g.name,typeL(g.svc),g.auditors.join(', '),g.srcs.map(function(s){return s.name;}).join(', '),g.last,g.total,g.done,Math.round(g.prog*10)/10,g.c.yes,g.c.no,g.c.na,g.c.hold,g.pend,r2(g.score),r2(g.key_),r2(g.hr),g.conf]);});
+  var heatS=[['Hotel','Type','CPA Total Score %'].concat(SECS)];
+  gs.forEach(function(g){heatS.push([g.name,typeL(g.svc),r2(g.score)].concat(SECS.map(function(s){return g.sec[s]?r2(pct(g.sec[s].y,g.sec[s].n)):'';})));});
+  var head=['Hotel','Type','Section','No.','Risk','Work Step','Result','Sample Tested','Notes','Entered','Source','Other results (conflict)'];
+  var find=[head],all=[head];
+  gs.forEach(function(g){items(g.svc).forEach(function(it){
+    var r=g.items[String(it.id)]||{res:'',note:'',smp:'',ts:'',src:'',alts:[]};
+    var row=[g.name,typeL(g.svc),it.section,dispId(it.id),it.risk,wsText(it,g.svc,'en'),RL[r.res]||'',r.smp||'',r.note||'',r.ts||'',r.src||'',(r.alts||[]).map(function(a){return (RL[a.res]||a.res)+' ('+a.src+(a.ts?' '+a.ts:'')+')';}).join('; ')];
+    all.push(row);if(r.res==='no')find.push(row);
+  });});
+  var wb=XLSX.utils.book_new();
+  [['Hotels',hotels],['Heatmap',heatS],['Findings',find],['Items',all]].forEach(function(x){
+    var ws=XLSX.utils.aoa_to_sheet(x[1]);
+    ws['!cols']=x[1][0].map(function(h,i){return {wch:(h==='Work Step'||h==='Notes')?60:i===0?28:14};});
+    XLSX.utils.book_append_sheet(wb,ws,x[0]);
+  });
+  var d=new Date(),p=function(n){return n<10?'0'+n:''+n;};
+  XLSX.writeFile(wb,'CPA2026_Consolidated_'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'.xlsx');
+}
+
+window.openAgg=function(){
+  window._cpaAgg=true;
+  var pg=document.getElementById('pw-gate');if(pg)pg.style.display='none';
+  var hg=document.getElementById('hotel-gate');if(hg)hg.style.display='none';
+  document.getElementById('agg').classList.add('open');
+  document.documentElement.lang=L();
+  refresh();
+};
+if(sessionStorage.getItem('cpa_auth')==='agg')window.openAgg();
+})();
+</script>
+<!--/AGG-->
 <!--GUIDE-->
 <style>
 #guide-modal{display:none;position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.45)}
@@ -4303,7 +4789,7 @@ window.addEventListener('beforeunload',function(e){
 </div>
 <script>
 /* User guide (generated by build_guide.py from the KO/EN/JA markdown; edit the markdown, not this block). */
-var GUIDE={"html": {"ko": "<h1>CPA 2026 Peer Audit Dashboard — 사용설명서<\/h1>\n<blockquote>\n<p><strong>대상<\/strong>: CPA(Compliance &amp; Policy Audit) 2026 감사 담당자<br />\n<strong>주소<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> (Edge 또는 Chrome 권장)<br />\n이 설명서는 대시보드 상단 <strong>❓ 사용설명서<\/strong> 버튼으로 언제든 다시 볼 수 있습니다. 설명서 안의 KO / EN / JA 버튼으로 언어를 바꿔 볼 수 있습니다.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s1\">1. 시작하기<\/h2>\n<ol>\n<li>브라우저에서 <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> 를 엽니다.<\/li>\n<li>안내받은 비밀번호를 입력하고 Enter를 누릅니다.<\/li>\n<li><strong>이전에 작업한 호텔이 있으면<\/strong> 최근 호텔 목록(Full / Focus 표시)이 바로 뜹니다. 클릭하면 바로 들어갑니다.<ul>\n<li>마지막으로 열었던 호텔은 비밀번호 입력 후 자동으로 열립니다.<\/li>\n<li>새 호텔은 <strong>+ 새 호텔 추가<\/strong>를 누릅니다.<\/li>\n<\/ul>\n<\/li>\n<li><strong>서비스 유형 선택<\/strong>: 감사 대상 호텔에 맞게 <strong>Full Service<\/strong>(80문항) 또는 <strong>Focus Service<\/strong>(65문항)를 고릅니다.<\/li>\n<li><strong>호텔명 입력<\/strong>: 호텔명을 입력하고 <strong>Start →<\/strong>를 누릅니다.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>호텔명은 매번 같은 이름으로 입력하세요.<\/strong> 대소문자·띄어쓰기 차이는 같은 호텔로 인식하지만, 다른 이름이나 오타는 <strong>새 빈 호텔<\/strong>이 되어 이전 작업과 연결되지 않습니다. <strong>서비스 유형(Full / Focus)도 데이터를 나누는 기준<\/strong>이라, 같은 호텔이라도 Full과 Focus는 별개의 데이터입니다.<\/p>\n<p>호텔별·서비스 유형별 데이터는 서로 섞이지 않습니다.<\/p>\n<\/blockquote>\n<p><strong>호텔 바꾸기<\/strong>: 상단 🏨 버튼 → 호텔 선택 화면. 목록의 ×는 <strong>목록에서만 숨기며 데이터는 지우지 않습니다.<\/strong><\/p>\n<hr />\n<h2 id=\"g-s2\">2. 준비 서류 체크하기 (Prep 탭)<\/h2>\n<p>감사를 시작하기 전에 <strong>Prep<\/strong> 탭에서 받아야 할 서류를 체크리스트로 확인합니다.<\/p>\n<ul>\n<li>문항마다 필요한 자료, 기간, 참조가 나옵니다.<\/li>\n<li>형태를 고릅니다: <code>DOCMX<\/code>(시스템에서 확보) / <code>File<\/code>(파일 제출) / <code>Paper<\/code>(종이 서류). 체크하면 취소선이 그어집니다.<\/li>\n<li>비고란에 메모를 남길 수 있습니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s3\">3. 감사 결과 입력하기<\/h2>\n<ol>\n<li>위쪽 탭에서 섹션(AP, AR, Cash 등)을 고르고 → 왼쪽 목록에서 항목을 클릭합니다.<\/li>\n<li>결과를 고릅니다: <strong>Yes<\/strong>(적합) / <strong>No<\/strong>(부적합) / <strong>N/A<\/strong>(해당 없음) / <strong>Hold<\/strong>(판정 보류)<\/li>\n<li>필요하면 <strong>Sample Tested<\/strong>(테스트한 샘플)와 <strong>Notes<\/strong>(메모)를 씁니다.<\/li>\n<li>관련 정책 번호를 누르면 정책 PDF가 열립니다.<\/li>\n<\/ol>\n<p><strong>테스트 시트가 있는 항목<\/strong>(CPA Validation 대상)은 표 형식 입력창이 함께 열립니다.<\/p>\n<ul>\n<li>Excel에서 여러 셀을 복사해 표에 붙여넣으면(Ctrl+V) 칸에 맞춰 채워집니다.<\/li>\n<li><strong>Copy<\/strong> 버튼으로 표를 복사해 AuditBoard나 Excel에 그대로 붙여넣을 수 있습니다.<\/li>\n<li>Validation 대상 항목은 결과 입력 시 <strong>Test Notes 작성이 필수<\/strong>입니다.<\/li>\n<\/ul>\n<p><strong>Balance Sheet를 계정별로 더 자세히 보기<\/strong>: <strong>BS Guide<\/strong> 탭에서 Balance Sheet 감사를 39개 계정 단위로 나눠 체크할 수 있습니다. 여기서 쓴 메모만 모아 보려면 <strong>BS Notes<\/strong> 탭을 엽니다.<\/p>\n<blockquote>\n<p>입력 내용은 이 브라우저에 자동 저장됩니다(입력 직후, 그리고 30초마다). 상단의 ✓ Saved 표시로 확인할 수 있습니다.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s4\">4. 진행 상황 확인하기<\/h2>\n<ul>\n<li><strong>상단 진행률 바<\/strong>: 완료한 문항 수 / 전체 문항 수 (Hold는 미완료로 계산)<\/li>\n<li><strong>Overview<\/strong> 탭: 전체 진행률, <strong>CPA Total Score<\/strong>, 위험 등급(Key / HR)별 점수, 섹션별 진행 막대<ul>\n<li>CPA Total Score = Yes ÷ (Yes + No) × 100 (N/A와 Hold는 제외)<\/li>\n<\/ul>\n<\/li>\n<li>각 탭의 숫자(예: <code>3/13<\/code>)는 완료 / 전체 문항 수입니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s5\">5. 부적합·보류 항목 정리하기<\/h2>\n<table>\n<thead>\n<tr>\n<th>확인 목적<\/th>\n<th>탭<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>통제 미흡(No) 항목만 모아 보기<\/td>\n<td><strong>Findings<\/strong><\/td>\n<\/tr>\n<tr>\n<td>결론 미확정(Hold) 항목만 모아 보기<\/td>\n<td><strong>Hold<\/strong><\/td>\n<\/tr>\n<tr>\n<td>Validation 대상 항목을 한 화면에서 처리<\/td>\n<td><strong>✓ Validation<\/strong><\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<h2 id=\"g-s6\">6. 백업 · 공유 · 복원<\/h2>\n<p>데이터는 <strong>이 PC의 이 브라우저<\/strong>에만 저장됩니다. 다른 PC나 다른 브라우저에서는 보이지 않으며, 브라우저 데이터를 지우면 사라질 수 있습니다. 아래 방법으로 꼭 백업하세요.<\/p>\n<h3>🛟 Backup (자동 백업 · 복원 지점)<\/h3>\n<ul>\n<li><strong>자동 파일 백업<\/strong>: 🛟 Backup → <strong>폴더 선택<\/strong>. 고른 폴더에 <code>…_LATEST.json<\/code>(항상 최신)과 날짜별 파일이 내용이 바뀔 때마다 자동 저장됩니다. <strong>OneDrive 폴더를 고르면<\/strong> 브라우저 데이터가 지워져도 안전합니다. (Edge·Chrome만 지원)<ul>\n<li>브라우저를 새로 열면 <strong>다시 연결<\/strong>을 한 번 눌러야 할 수 있습니다.<\/li>\n<\/ul>\n<\/li>\n<li><strong>복원 지점<\/strong>: 작업 중 자동으로, 그리고 Import·Reset·복원 직전에 이 브라우저 안에 저장됩니다. 🛟 Backup 창에서 원하는 시점을 골라 <strong>복원<\/strong>하면 됩니다(지금 상태도 먼저 복원 지점으로 저장됨).<\/li>\n<li>날짜별 백업 파일과 복원 지점은 최근 30일치를 보관합니다.<\/li>\n<\/ul>\n<h3>⇧ Export / ⇩ Import (파일로 주고받기)<\/h3>\n<ul>\n<li><strong>⇧ Export<\/strong>: 내보낼 페이지(Prep, 각 섹션, BS Guide)를 골라 <code>.json<\/code> 파일로 저장합니다.<\/li>\n<li><strong>⇩ Import<\/strong>: <code>.json<\/code> 파일을 골라 <strong>Merge<\/strong>(권장: 기존 데이터를 지키며 합침) 또는 <strong>Overwrite<\/strong>(고른 페이지를 완전히 바꿈)를 선택합니다.<\/li>\n<li>자동 백업 파일(<code>…_LATEST.json<\/code>)도 Import로 불러올 수 있습니다.<\/li>\n<li>브라우저 탭을 닫으려 하면 백업했는지 묻는 경고가 나옵니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s7\">7. 보고서 출력<\/h2>\n<ul>\n<li><strong>⇓ Excel<\/strong>: 전체 문항과 결과를 Excel 파일(<code>.xlsx<\/code>)로 저장합니다. KO·JA 화면에서는 해당 언어 열이 함께 들어갑니다.<\/li>\n<li><strong>🖶 Print<\/strong>: 지금 보고 있는 화면을 인쇄합니다(전체는 섹션별로 반복 인쇄).<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s8\">8. 기타 기능<\/h2>\n<ul>\n<li><strong>언어 변경<\/strong>: 상단 KO / EN / JA<\/li>\n<li><strong>RESET<\/strong>: 현재 호텔의 결과를 모두 지웁니다. 지우기 직전 상태는 복원 지점으로 자동 저장되지만, 실행 전에 Export로 백업해 두세요.<\/li>\n<li><strong>BSR Checklist<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/BSR_Checklist.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/BSR_Checklist.html<\/a> 로 열면 BS Guide·BS Notes만 보이는 화면이 됩니다. 이 화면의 Export·Import·Reset은 BS 데이터만 다룹니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s9\">9. 자주 묻는 질문 (Q&amp;A)<\/h2>\n<p><strong>Q. 예전 주소(rlee1829.github.io)에서 작업한 데이터가 새 주소에서 안 보여요.<\/strong><br />\nA. 브라우저는 주소마다 저장 공간이 따로라서 직접 옮겨야 합니다. 작업하던 PC에서 예전 주소(https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html)를 열고 <strong>「새 주소로 데이터 옮기기」<\/strong>를 누르세요. 예전 주소의 데이터는 지워지지 않으며, 다시 옮겨도 중복되지 않습니다. 자동 파일 백업을 쓰고 있었다면 새 주소에서 🛟 Backup 폴더를 한 번 다시 연결하세요.<\/p>\n<p><strong>Q. 내가 작업한 결과를 다른 사람에게 보내서 공유하고 싶어요.<\/strong><br />\nA. <strong>⇧ Export<\/strong> → 내보낼 페이지 선택(전체 또는 일부) → <code>.json<\/code> 파일을 이메일이나 Teams로 전달합니다. 받는 사람은 <strong>같은 호텔명 + 같은 서비스 유형<\/strong>으로 들어간 뒤 <strong>⇩ Import<\/strong>(Merge)로 불러옵니다.<\/p>\n<p><strong>Q. 여러 명이 각자 다른 섹션을 작업한 걸 한 명이 취합하려면?<\/strong><\/p>\n<ol>\n<li>모두 <strong>같은 호텔명 + 같은 서비스 유형(Full / Focus)<\/strong>으로 들어가 각자 맡은 섹션만 입력합니다.<\/li>\n<li>각자 <strong>⇧ Export<\/strong>에서 자기가 작업한 페이지만 골라 내보냅니다(예: A는 AP만, B는 AR만).<\/li>\n<li>취합 담당자는 같은 호텔·같은 서비스 유형을 연 뒤, 받은 파일을 하나씩 <strong>⇩ Import<\/strong>하면서 <strong>반드시 Merge<\/strong>를 고릅니다.<\/li>\n<li>모두 불러오면 하나로 합쳐집니다. 끝나면 <strong>⇧ Export(전체)<\/strong>로 최종 백업 파일을 만들어 두세요.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ 취합할 때 <strong>Overwrite는 쓰지 마세요.<\/strong> 고른 페이지의 기존 데이터를 지우고 바꾸기 때문에, 먼저 불러온 사람의 작업이 사라질 수 있습니다.<\/p>\n<p>파일의 호텔명이 지금 호텔과 다르면 \"계속 진행하시겠습니까?\" 확인창이 뜹니다. 같은 호텔인데 표기만 다른 경우라면 계속 진행하면 됩니다.<\/p>\n<\/blockquote>\n<p><strong>Q. 실수로 호텔명을 다르게 입력해서 빈 호텔이 생겼어요. 합칠 수 있나요?<\/strong><br />\nA. 네. 잘못 만든 호텔에서 <strong>⇧ Export<\/strong>로 내보낸 뒤, 원래 호텔로 바꿔 <strong>⇩ Import → Merge<\/strong>로 불러오면 합쳐집니다. 잘못 만든 호텔은 호텔 목록의 ×로 숨길 수 있습니다.<\/p>\n<p><strong>Q. 실수로 지웠거나 잘못 Import했어요.<\/strong><br />\nA. <strong>🛟 Backup<\/strong> → 복원 지점 목록에서 그 전 시점을 골라 <strong>복원<\/strong>하세요. 자동 파일 백업을 켜 두었다면 그 폴더의 파일을 Import해도 됩니다.<\/p>\n<hr />\n<h2 id=\"g-s10\">빠른 참고 요약<\/h2>\n<table>\n<thead>\n<tr>\n<th>하고 싶은 일<\/th>\n<th>방법<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>새 호텔 시작<\/td>\n<td>로그인 → + 새 호텔 추가 → 서비스 유형 → 이름 입력 → Start →<\/td>\n<\/tr>\n<tr>\n<td>호텔 바꾸기<\/td>\n<td>🏨 버튼<\/td>\n<\/tr>\n<tr>\n<td>준비 서류 체크<\/td>\n<td>Prep 탭<\/td>\n<\/tr>\n<tr>\n<td>결과 입력<\/td>\n<td>섹션 탭 → 항목 클릭 → Yes / No / N/A / Hold<\/td>\n<\/tr>\n<tr>\n<td>BS 계정별 상세 검토<\/td>\n<td>BS Guide / BS Notes 탭<\/td>\n<\/tr>\n<tr>\n<td>진행률·점수 확인<\/td>\n<td>상단 진행률 바, Overview 탭<\/td>\n<\/tr>\n<tr>\n<td>부적합 / 보류 항목<\/td>\n<td>Findings / Hold 탭<\/td>\n<\/tr>\n<tr>\n<td>Validation 항목 일괄 처리<\/td>\n<td>✓ Validation 탭<\/td>\n<\/tr>\n<tr>\n<td>자동 백업·되돌리기<\/td>\n<td>🛟 Backup<\/td>\n<\/tr>\n<tr>\n<td>파일로 백업·공유<\/td>\n<td>⇧ Export → 페이지 선택 → .json 저장<\/td>\n<\/tr>\n<tr>\n<td>불러오기·취합<\/td>\n<td>⇩ Import → .json 선택 → Merge<\/td>\n<\/tr>\n<tr>\n<td>Excel 출력<\/td>\n<td>⇓ Excel<\/td>\n<\/tr>\n<tr>\n<td>언어 변경<\/td>\n<td>KO / EN / JA<\/td>\n<\/tr>\n<tr>\n<td>이 설명서 다시 보기<\/td>\n<td>❓ 사용설명서<\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<p><em>CPA 2026 Peer Audit Dashboard<\/em><br />\n<em>작성: Rebecca Lee (Conrad Seoul Finance)<\/em><br />\n<em>최종 업데이트: 2026-11-27<\/em><\/p>", "en": "<h1>CPA 2026 Peer Audit Dashboard — User Guide<\/h1>\n<blockquote>\n<p><strong>For<\/strong>: CPA (Compliance &amp; Policy Audit) 2026 auditors<br />\n<strong>Address<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> (Edge or Chrome recommended)<br />\nYou can open this guide again at any time with the <strong>❓ Guide<\/strong> button at the top of the dashboard. Use the KO / EN / JA buttons inside the guide to switch its language.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s1\">1. Getting started<\/h2>\n<ol>\n<li>Open <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> in your browser.<\/li>\n<li>Enter the password you were given and press Enter.<\/li>\n<li><strong>If you have worked on a hotel before<\/strong>, the recent hotel list (marked Full / Focus) appears. Click a hotel to go straight in.<ul>\n<li>The hotel you opened last opens automatically after the password.<\/li>\n<li>For a new hotel, click <strong>+ Add New Hotel<\/strong>.<\/li>\n<\/ul>\n<\/li>\n<li><strong>Choose the service type<\/strong>: <strong>Full Service<\/strong> (80 items) or <strong>Focus Service<\/strong> (65 items), as applies to the audited hotel.<\/li>\n<li><strong>Enter the hotel name<\/strong> and click <strong>Start →<\/strong>.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>Always enter the hotel name the same way.<\/strong> Differences in upper/lower case or spacing are treated as the same hotel, but a different name or a typo creates a <strong>new, empty hotel<\/strong> that is not linked to your earlier work. <strong>The service type (Full / Focus) also separates the data<\/strong>: the same hotel under Full and under Focus is two separate sets of data.<\/p>\n<p>Data for each hotel and service type is kept separate and never mixes.<\/p>\n<\/blockquote>\n<p><strong>Switching hotels<\/strong>: the 🏨 button at the top → hotel selection. The × in the list <strong>only hides the hotel from the list; its data is not deleted.<\/strong><\/p>\n<hr />\n<h2 id=\"g-s2\">2. Checking preparation documents (Prep tab)<\/h2>\n<p>Before the audit, use the <strong>Prep<\/strong> tab as a checklist of the documents to collect.<\/p>\n<ul>\n<li>Each item shows the material needed, the period and a reference.<\/li>\n<li>Choose the form: <code>DOCMX<\/code> (taken from the system) / <code>File<\/code> (submitted as a file) / <code>Paper<\/code> (paper document). Checked items are struck through.<\/li>\n<li>You can add a remark to each item.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s3\">3. Entering audit results<\/h2>\n<ol>\n<li>Choose a section tab at the top (AP, AR, Cash …) → click an item in the list on the left.<\/li>\n<li>Choose the result: <strong>Yes<\/strong> (compliant) / <strong>No<\/strong> (non-compliant) / <strong>N/A<\/strong> (not applicable) / <strong>Hold<\/strong> (conclusion pending)<\/li>\n<li>If needed, fill in <strong>Sample Tested<\/strong> and <strong>Notes<\/strong>.<\/li>\n<li>Click the policy number to open the policy PDF.<\/li>\n<\/ol>\n<p><strong>Items with a test sheet<\/strong> (CPA Validation items) also open a table.<\/p>\n<ul>\n<li>Copy several cells in Excel and paste them into the table (Ctrl+V); they fill the grid.<\/li>\n<li>The <strong>Copy<\/strong> button copies the table so you can paste it straight into AuditBoard or Excel.<\/li>\n<li>For Validation items, <strong>Test Notes are required<\/strong> when you enter a result.<\/li>\n<\/ul>\n<p><strong>Balance Sheet account by account<\/strong>: the <strong>BS Guide<\/strong> tab splits the Balance Sheet audit into 39 accounts that you can check one by one. To see only the notes written there, open the <strong>BS Notes<\/strong> tab.<\/p>\n<blockquote>\n<p>Your entries are saved automatically in this browser (right after you type, and every 30 seconds). The ✓ Saved indicator at the top confirms it.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s4\">4. Checking progress<\/h2>\n<ul>\n<li><strong>Progress bar at the top<\/strong>: items completed / all items (Hold counts as not completed)<\/li>\n<li><strong>Overview<\/strong> tab: overall progress, <strong>CPA Total Score<\/strong>, scores by risk level (Key / HR), progress bars by section<ul>\n<li>CPA Total Score = Yes ÷ (Yes + No) × 100 (N/A and Hold are excluded)<\/li>\n<\/ul>\n<\/li>\n<li>The number on each tab (e.g. <code>3/13<\/code>) is completed / total items.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s5\">5. Reviewing non-compliant and pending items<\/h2>\n<table>\n<thead>\n<tr>\n<th>Purpose<\/th>\n<th>Tab<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>Only items with a control gap (No)<\/td>\n<td><strong>Findings<\/strong><\/td>\n<\/tr>\n<tr>\n<td>Only items with no conclusion yet (Hold)<\/td>\n<td><strong>Hold<\/strong><\/td>\n<\/tr>\n<tr>\n<td>All Validation items on one screen<\/td>\n<td><strong>✓ Validation<\/strong><\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<h2 id=\"g-s6\">6. Backup · sharing · restore<\/h2>\n<p>Data is stored <strong>only in this browser on this PC<\/strong>. It does not appear on another PC or in another browser, and it can be lost if browser data is cleared. Please back it up as follows.<\/p>\n<h3>🛟 Backup (automatic backup · restore points)<\/h3>\n<ul>\n<li><strong>Auto file backup<\/strong>: 🛟 Backup → <strong>Choose folder<\/strong>. <code>…_LATEST.json<\/code> (always the newest) and a dated file are written to that folder whenever the data changes. <strong>Choose a OneDrive folder<\/strong> to stay safe even if browser data is cleared. (Edge and Chrome only)<ul>\n<li>After reopening the browser you may need to click <strong>Reconnect<\/strong> once.<\/li>\n<\/ul>\n<\/li>\n<li><strong>Restore points<\/strong>: saved inside this browser automatically while you work, and right before Import, Reset and Restore. In the 🛟 Backup window, choose a point in time and click <strong>Restore<\/strong> (the current state is saved as a restore point first).<\/li>\n<li>Dated backup files and restore points are kept for the last 30 days.<\/li>\n<\/ul>\n<h3>⇧ Export / ⇩ Import (exchanging files)<\/h3>\n<ul>\n<li><strong>⇧ Export<\/strong>: choose the pages to export (Prep, each section, BS Guide) and save a <code>.json<\/code> file.<\/li>\n<li><strong>⇩ Import<\/strong>: choose a <code>.json<\/code> file, then <strong>Merge<\/strong> (recommended: keeps existing data and combines) or <strong>Overwrite<\/strong> (replaces the chosen pages completely).<\/li>\n<li>Auto backup files (<code>…_LATEST.json<\/code>) can be loaded with Import too.<\/li>\n<li>When you try to close the browser tab, a warning asks whether you have backed up.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s7\">7. Reports<\/h2>\n<ul>\n<li><strong>⇓ Excel<\/strong>: saves all items and results as an Excel file (<code>.xlsx<\/code>). On the KO and JA screens, columns in that language are added.<\/li>\n<li><strong>🖶 Print<\/strong>: prints the current screen (for everything, print each section in turn).<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s8\">8. Other functions<\/h2>\n<ul>\n<li><strong>Language<\/strong>: KO / EN / JA at the top<\/li>\n<li><strong>RESET<\/strong>: clears all results of the current hotel. The state right before is saved as a restore point automatically, but please Export a backup before you reset.<\/li>\n<li><strong>BSR Checklist<\/strong>: opening <a href=\"https://jkm-finance.github.io/cpa/BSR_Checklist.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/BSR_Checklist.html<\/a> shows only BS Guide and BS Notes. Export, Import and Reset on this screen handle BS data only.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s9\">9. Frequently asked questions<\/h2>\n<p><strong>Q. My data from the old address (rlee1829.github.io) does not appear at the new address.<\/strong><br />\nA. Browsers keep separate storage for each address, so the data has to be moved once. On the PC you worked on, open the old address (https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html) and click <strong>“Move my data to the new address”<\/strong>. The data at the old address is not deleted, and moving again does not create duplicates. If you used the auto file backup, connect the 🛟 Backup folder once again at the new address.<\/p>\n<p><strong>Q. I want to send my results to someone else.<\/strong><br />\nA. <strong>⇧ Export<\/strong> → choose the pages (all or some) → send the <code>.json<\/code> file by email or Teams. The recipient opens <strong>the same hotel name + the same service type<\/strong> and loads it with <strong>⇩ Import<\/strong> (Merge).<\/p>\n<p><strong>Q. Several people worked on different sections. How does one person combine them?<\/strong><\/p>\n<ol>\n<li>Everyone opens <strong>the same hotel name + the same service type (Full / Focus)<\/strong> and fills in only their own sections.<\/li>\n<li>Each person uses <strong>⇧ Export<\/strong> and selects only the pages they worked on (e.g. A selects AP only, B selects AR only).<\/li>\n<li>The person combining opens the same hotel and service type, then loads the files one by one with <strong>⇩ Import<\/strong>, <strong>always choosing Merge<\/strong>.<\/li>\n<li>After the last file everything is combined. Then make a final backup with <strong>⇧ Export (all)<\/strong>.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>Do not use Overwrite when combining.<\/strong> It deletes the existing data of the chosen pages and replaces it, so work imported earlier can be lost.<\/p>\n<p>If the hotel name in the file differs from the current hotel, a “Continue?” confirmation appears. If it is the same hotel written differently, continue.<\/p>\n<\/blockquote>\n<p><strong>Q. I typed the hotel name differently by mistake and got an empty hotel. Can I combine them?<\/strong><br />\nA. Yes. In the wrongly created hotel, <strong>⇧ Export<\/strong> your entries, switch to the original hotel and load them with <strong>⇩ Import → Merge<\/strong>. You can hide the wrong hotel with the × in the hotel list.<\/p>\n<p><strong>Q. I deleted something or imported the wrong file.<\/strong><br />\nA. <strong>🛟 Backup<\/strong> → choose an earlier point in the restore point list and click <strong>Restore<\/strong>. If the auto file backup is on, you can also Import a file from that folder.<\/p>\n<hr />\n<h2 id=\"g-s10\">Quick reference<\/h2>\n<table>\n<thead>\n<tr>\n<th>I want to…<\/th>\n<th>How<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>Start a new hotel<\/td>\n<td>Log in → + Add New Hotel → service type → name → Start →<\/td>\n<\/tr>\n<tr>\n<td>Switch hotels<\/td>\n<td>🏨 button<\/td>\n<\/tr>\n<tr>\n<td>Check preparation documents<\/td>\n<td>Prep tab<\/td>\n<\/tr>\n<tr>\n<td>Enter results<\/td>\n<td>Section tab → click item → Yes / No / N/A / Hold<\/td>\n<\/tr>\n<tr>\n<td>Review BS by account<\/td>\n<td>BS Guide / BS Notes tabs<\/td>\n<\/tr>\n<tr>\n<td>Check progress and score<\/td>\n<td>Progress bar, Overview tab<\/td>\n<\/tr>\n<tr>\n<td>Non-compliant / pending items<\/td>\n<td>Findings / Hold tabs<\/td>\n<\/tr>\n<tr>\n<td>Handle all Validation items<\/td>\n<td>✓ Validation tab<\/td>\n<\/tr>\n<tr>\n<td>Automatic backup, go back in time<\/td>\n<td>🛟 Backup<\/td>\n<\/tr>\n<tr>\n<td>Back up or share as a file<\/td>\n<td>⇧ Export → choose pages → save .json<\/td>\n<\/tr>\n<tr>\n<td>Load or combine<\/td>\n<td>⇩ Import → choose .json → Merge<\/td>\n<\/tr>\n<tr>\n<td>Excel output<\/td>\n<td>⇓ Excel<\/td>\n<\/tr>\n<tr>\n<td>Change language<\/td>\n<td>KO / EN / JA<\/td>\n<\/tr>\n<tr>\n<td>Open this guide again<\/td>\n<td>❓ Guide<\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<p><em>CPA 2026 Peer Audit Dashboard<\/em><br />\n<em>Author: Rebecca Lee (Conrad Seoul Finance)<\/em><br />\n<em>Last updated: 2026-11-27<\/em><\/p>", "ja": "<h1>CPA 2026 Peer Audit Dashboard — 利用ガイド<\/h1>\n<blockquote>\n<p><strong>対象<\/strong>: CPA（Compliance &amp; Policy Audit）2026 監査担当者<br />\n<strong>アドレス<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> （Edge または Chrome 推奨）<br />\nこのガイドは、ダッシュボード上部の <strong>❓ 利用ガイド<\/strong> ボタンでいつでも開けます。ガイド内の KO / EN / JA ボタンで言語を切り替えられます。<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s1\">1. はじめに<\/h2>\n<ol>\n<li>ブラウザで <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> を開きます。<\/li>\n<li>案内されたパスワードを入力して Enter を押します。<\/li>\n<li><strong>以前に作業したホテルがある場合<\/strong>、最近のホテル一覧（Full / Focus 表示）がすぐに表示されます。クリックするとそのまま入れます。<ul>\n<li>最後に開いたホテルは、パスワード入力後に自動で開きます。<\/li>\n<li>新しいホテルは <strong>+ Add New Hotel<\/strong> を押します。<\/li>\n<\/ul>\n<\/li>\n<li><strong>サービスタイプの選択<\/strong>: 監査対象ホテルに合わせて <strong>Full Service<\/strong>（80項目）または <strong>Focus Service<\/strong>（65項目）を選びます。<\/li>\n<li><strong>ホテル名の入力<\/strong>: ホテル名を入力して <strong>Start →<\/strong> を押します。<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>ホテル名は毎回同じ表記で入力してください。<\/strong> 大文字・小文字やスペースの違いは同じホテルとして扱われますが、異なる名前や誤字は <strong>新しい空のホテル<\/strong> になり、これまでの作業とつながりません。<strong>サービスタイプ（Full / Focus）もデータを分ける基準<\/strong>のため、同じホテルでも Full と Focus は別のデータです。<\/p>\n<p>ホテルごと・サービスタイプごとのデータは混ざりません。<\/p>\n<\/blockquote>\n<p><strong>ホテルの切り替え<\/strong>: 上部の 🏨 ボタン → ホテル選択画面。一覧の × は <strong>一覧から隠すだけで、データは削除しません。<\/strong><\/p>\n<hr />\n<h2 id=\"g-s2\">2. 準備書類のチェック（Prep タブ）<\/h2>\n<p>監査を始める前に、<strong>Prep<\/strong> タブで受け取るべき書類をチェックリストで確認します。<\/p>\n<ul>\n<li>項目ごとに必要な資料、期間、参照が表示されます。<\/li>\n<li>形式を選びます: <code>DOCMX<\/code>（システムから取得）/ <code>File<\/code>（ファイルで提出）/ <code>Paper<\/code>（紙の書類）。チェックすると取り消し線が付きます。<\/li>\n<li>備考欄にメモを残せます。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s3\">3. 監査結果の入力<\/h2>\n<ol>\n<li>上部のタブでセクション（AP、AR、Cash など）を選び → 左側の一覧から項目をクリックします。<\/li>\n<li>結果を選びます: <strong>Yes<\/strong>（適合）/ <strong>No<\/strong>（不適合）/ <strong>N/A<\/strong>（該当なし）/ <strong>Hold<\/strong>（判定保留）<\/li>\n<li>必要に応じて <strong>Sample Tested<\/strong>（テストしたサンプル）と <strong>Notes<\/strong>（メモ）を記入します。<\/li>\n<li>関連ポリシー番号を押すと、ポリシーの PDF が開きます。<\/li>\n<\/ol>\n<p><strong>テストシートがある項目<\/strong>（CPA Validation 対象）は、表形式の入力画面が一緒に開きます。<\/p>\n<ul>\n<li>Excel で複数のセルをコピーして表に貼り付けると（Ctrl+V）、マスに合わせて入力されます。<\/li>\n<li><strong>Copy<\/strong> ボタンで表をコピーし、AuditBoard や Excel にそのまま貼り付けられます。<\/li>\n<li>Validation 対象項目は、結果入力時に <strong>Test Notes の記入が必須<\/strong> です。<\/li>\n<\/ul>\n<p><strong>Balance Sheet を勘定科目ごとに詳しく見る<\/strong>: <strong>BS Guide<\/strong> タブでは、Balance Sheet 監査を39の勘定科目単位に分けてチェックできます。ここで書いたメモだけを見るには <strong>BS Notes<\/strong> タブを開きます。<\/p>\n<blockquote>\n<p>入力内容はこのブラウザに自動保存されます（入力直後と30秒ごと）。上部の ✓ Saved 表示で確認できます。<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s4\">4. 進捗状況の確認<\/h2>\n<ul>\n<li><strong>上部の進捗バー<\/strong>: 完了した項目数 / 全項目数（Hold は未完了として計算）<\/li>\n<li><strong>Overview<\/strong> タブ: 全体の進捗率、<strong>CPA Total Score<\/strong>、リスク区分（Key / HR）別スコア、セクション別の進捗バー<ul>\n<li>CPA Total Score = Yes ÷（Yes + No）× 100（N/A と Hold は除外）<\/li>\n<\/ul>\n<\/li>\n<li>各タブの数字（例: <code>3/13<\/code>）は 完了 / 全項目数 です。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s5\">5. 不適合・保留項目の整理<\/h2>\n<table>\n<thead>\n<tr>\n<th>確認目的<\/th>\n<th>タブ<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>不備（No）の項目だけを見る<\/td>\n<td><strong>Findings<\/strong><\/td>\n<\/tr>\n<tr>\n<td>結論未確定（Hold）の項目だけを見る<\/td>\n<td><strong>Hold<\/strong><\/td>\n<\/tr>\n<tr>\n<td>Validation 対象項目を1画面で処理<\/td>\n<td><strong>✓ Validation<\/strong><\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<h2 id=\"g-s6\">6. バックアップ・共有・復元<\/h2>\n<p>データは <strong>このPCのこのブラウザ<\/strong> にだけ保存されます。別のPCや別のブラウザでは表示されず、ブラウザのデータを削除すると失われることがあります。以下の方法で必ずバックアップしてください。<\/p>\n<h3>🛟 Backup（自動バックアップ・復元ポイント）<\/h3>\n<ul>\n<li><strong>自動ファイルバックアップ<\/strong>: 🛟 Backup → <strong>フォルダ選択<\/strong>。選んだフォルダに <code>…_LATEST.json<\/code>（常に最新）と日付別ファイルが、内容が変わるたびに自動保存されます。<strong>OneDrive フォルダを選ぶ<\/strong> と、ブラウザのデータが消えても安全です。（Edge・Chrome のみ対応）<ul>\n<li>ブラウザを開き直したときは <strong>再接続<\/strong> を一度押す必要がある場合があります。<\/li>\n<\/ul>\n<\/li>\n<li><strong>復元ポイント<\/strong>: 作業中に自動で、また Import・Reset・復元の直前に、このブラウザ内に保存されます。🛟 Backup 画面で戻したい時点を選び <strong>復元<\/strong> を押します（現在の状態も先に復元ポイントとして保存されます）。<\/li>\n<li>日付別バックアップファイルと復元ポイントは、直近30日分を保管します。<\/li>\n<\/ul>\n<h3>⇧ Export / ⇩ Import（ファイルでのやり取り）<\/h3>\n<ul>\n<li><strong>⇧ Export<\/strong>: 書き出すページ（Prep、各セクション、BS Guide）を選んで <code>.json<\/code> ファイルに保存します。<\/li>\n<li><strong>⇩ Import<\/strong>: <code>.json<\/code> ファイルを選び、<strong>Merge<\/strong>（推奨: 既存データを残して統合）または <strong>Overwrite<\/strong>（選んだページを完全に置き換え）を選びます。<\/li>\n<li>自動バックアップファイル（<code>…_LATEST.json<\/code>）も Import で読み込めます。<\/li>\n<li>ブラウザのタブを閉じようとすると、バックアップしたかを確認する警告が表示されます。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s7\">7. レポート出力<\/h2>\n<ul>\n<li><strong>⇓ Excel<\/strong>: 全項目と結果を Excel ファイル（<code>.xlsx<\/code>）で保存します。KO・JA 画面では、その言語の列も含まれます。<\/li>\n<li><strong>🖶 Print<\/strong>: 現在表示している画面を印刷します（全体はセクションごとに繰り返し印刷）。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s8\">8. その他の機能<\/h2>\n<ul>\n<li><strong>言語切替<\/strong>: 上部の KO / EN / JA<\/li>\n<li><strong>RESET<\/strong>: 現在のホテルの結果をすべて消去します。直前の状態は復元ポイントに自動保存されますが、実行前に Export でバックアップしてください。<\/li>\n<li><strong>BSR Checklist<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/BSR_Checklist.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/BSR_Checklist.html<\/a> で開くと、BS Guide・BS Notes だけの画面になります。この画面の Export・Import・Reset は BS データだけを扱います。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s9\">9. よくある質問（Q&amp;A）<\/h2>\n<p><strong>Q. 旧アドレス（rlee1829.github.io）で作業したデータが新アドレスで表示されません。<\/strong><br />\nA. ブラウザはアドレスごとに保存領域が分かれているため、一度移す必要があります。作業していたPCで旧アドレス（<a href=\"https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html<\/a>）を開き、<strong>「新アドレスへデータを移す」<\/strong> を押してください。旧アドレスのデータは削除されず、もう一度移しても重複しません。自動ファイルバックアップを使っていた場合は、新アドレスで 🛟 Backup のフォルダをもう一度接続してください。<\/p>\n<p><strong>Q. 自分の作業結果を他の人に送って共有したいです。<\/strong><br />\nA. <strong>⇧ Export<\/strong> → 書き出すページを選択（全体または一部）→ <code>.json<\/code> ファイルをメールや Teams で送ります。受け取った人は <strong>同じホテル名 + 同じサービスタイプ<\/strong> で入り、<strong>⇩ Import<\/strong>（Merge）で読み込みます。<\/p>\n<p><strong>Q. 複数人が別々のセクションを作業した結果を、1人でまとめるには？<\/strong><\/p>\n<ol>\n<li>全員が <strong>同じホテル名 + 同じサービスタイプ（Full / Focus）<\/strong> で入り、担当セクションだけを入力します。<\/li>\n<li>各自 <strong>⇧ Export<\/strong> で自分が作業したページだけを選んで書き出します（例: A は AP のみ、B は AR のみ）。<\/li>\n<li>まとめる担当者は同じホテル・同じサービスタイプを開き、受け取ったファイルを1つずつ <strong>⇩ Import<\/strong> し、<strong>必ず Merge<\/strong> を選びます。<\/li>\n<li>すべて読み込むと1つにまとまります。最後に <strong>⇧ Export（全体）<\/strong> で最終バックアップファイルを作っておいてください。<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ まとめるときは <strong>Overwrite を使わないでください。<\/strong> 選んだページの既存データを消して置き換えるため、先に読み込んだ人の作業が消えることがあります。<\/p>\n<p>ファイルのホテル名が現在のホテルと異なる場合、「続行しますか？」という確認が表示されます。同じホテルで表記だけが違う場合は続行してください。<\/p>\n<\/blockquote>\n<p><strong>Q. ホテル名を間違えて入力し、空のホテルができてしまいました。まとめられますか？<\/strong><br />\nA. はい。間違えて作ったホテルで <strong>⇧ Export<\/strong> し、元のホテルに切り替えて <strong>⇩ Import → Merge<\/strong> で読み込むとまとまります。間違えたホテルはホテル一覧の × で隠せます。<\/p>\n<p><strong>Q. 誤って消してしまった、または間違ったファイルを Import してしまいました。<\/strong><br />\nA. <strong>🛟 Backup<\/strong> → 復元ポイント一覧から以前の時点を選んで <strong>復元<\/strong> してください。自動ファイルバックアップを有効にしていれば、そのフォルダのファイルを Import することもできます。<\/p>\n<hr />\n<h2 id=\"g-s10\">クイックリファレンス<\/h2>\n<table>\n<thead>\n<tr>\n<th>やりたいこと<\/th>\n<th>方法<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>新しいホテルを始める<\/td>\n<td>ログイン → + Add New Hotel → サービスタイプ → 名前入力 → Start →<\/td>\n<\/tr>\n<tr>\n<td>ホテルの切り替え<\/td>\n<td>🏨 ボタン<\/td>\n<\/tr>\n<tr>\n<td>準備書類のチェック<\/td>\n<td>Prep タブ<\/td>\n<\/tr>\n<tr>\n<td>結果入力<\/td>\n<td>セクションタブ → 項目クリック → Yes / No / N/A / Hold<\/td>\n<\/tr>\n<tr>\n<td>BS 勘定科目別の詳細確認<\/td>\n<td>BS Guide / BS Notes タブ<\/td>\n<\/tr>\n<tr>\n<td>進捗・スコアの確認<\/td>\n<td>上部の進捗バー、Overview タブ<\/td>\n<\/tr>\n<tr>\n<td>不適合 / 保留項目<\/td>\n<td>Findings / Hold タブ<\/td>\n<\/tr>\n<tr>\n<td>Validation 項目の一括処理<\/td>\n<td>✓ Validation タブ<\/td>\n<\/tr>\n<tr>\n<td>自動バックアップ・元に戻す<\/td>\n<td>🛟 Backup<\/td>\n<\/tr>\n<tr>\n<td>ファイルでバックアップ・共有<\/td>\n<td>⇧ Export → ページ選択 → .json 保存<\/td>\n<\/tr>\n<tr>\n<td>読み込み・統合<\/td>\n<td>⇩ Import → .json 選択 → Merge<\/td>\n<\/tr>\n<tr>\n<td>Excel 出力<\/td>\n<td>⇓ Excel<\/td>\n<\/tr>\n<tr>\n<td>言語切替<\/td>\n<td>KO / EN / JA<\/td>\n<\/tr>\n<tr>\n<td>このガイドをもう一度見る<\/td>\n<td>❓ 利用ガイド<\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<p><em>CPA 2026 Peer Audit Dashboard<\/em><br />\n<em>作成: Rebecca Lee (Conrad Seoul Finance)<\/em><br />\n<em>最終更新: 2026-11-27<\/em><\/p>"}, "label": {"ko": "❓ 사용설명서", "en": "❓ Guide", "ja": "❓ 利用ガイド"}, "ui": {"ko": {"close": "닫기", "print": "🖶 인쇄", "toc": "목차"}, "en": {"close": "Close", "print": "🖶 Print", "toc": "Contents"}, "ja": {"close": "閉じる", "print": "🖶 印刷", "toc": "目次"}}};
+var GUIDE={"html": {"ko": "<h1>CPA 2026 Peer Audit Dashboard — 사용설명서<\/h1>\n<blockquote>\n<p><strong>대상<\/strong>: CPA(Compliance &amp; Policy Audit) 2026 감사 담당자<br />\n<strong>주소<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> (Edge 또는 Chrome 권장)<br />\n이 설명서는 대시보드 상단 <strong>❓ 사용설명서<\/strong> 버튼으로 언제든 다시 볼 수 있습니다. 설명서 안의 KO / EN / JA 버튼으로 언어를 바꿔 볼 수 있습니다.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s1\">1. 시작하기<\/h2>\n<ol>\n<li>브라우저에서 <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> 를 엽니다.<\/li>\n<li>안내받은 비밀번호를 입력하고 Enter를 누릅니다.<\/li>\n<li><strong>이전에 작업한 호텔이 있으면<\/strong> 최근 호텔 목록(Full / Focus 표시)이 바로 뜹니다. 클릭하면 바로 들어갑니다.<ul>\n<li>마지막으로 열었던 호텔은 비밀번호 입력 후 자동으로 열립니다.<\/li>\n<li>새 호텔은 <strong>+ 새 호텔 추가<\/strong>를 누릅니다.<\/li>\n<\/ul>\n<\/li>\n<li><strong>서비스 유형 선택<\/strong>: 감사 대상 호텔에 맞게 <strong>Full Service<\/strong>(80문항) 또는 <strong>Focus Service<\/strong>(65문항)를 고릅니다.<\/li>\n<li><strong>호텔명 입력<\/strong>: 호텔명을 입력하고 <strong>Start →<\/strong>를 누릅니다.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>호텔명은 매번 같은 이름으로 입력하세요.<\/strong> 대소문자·띄어쓰기 차이는 같은 호텔로 인식하지만, 다른 이름이나 오타는 <strong>새 빈 호텔<\/strong>이 되어 이전 작업과 연결되지 않습니다. <strong>서비스 유형(Full / Focus)도 데이터를 나누는 기준<\/strong>이라, 같은 호텔이라도 Full과 Focus는 별개의 데이터입니다.<\/p>\n<p>호텔별·서비스 유형별 데이터는 서로 섞이지 않습니다.<\/p>\n<\/blockquote>\n<p><strong>호텔 바꾸기<\/strong>: 상단 🏨 버튼 → 호텔 선택 화면. 목록의 ×는 <strong>목록에서만 숨기며 데이터는 지우지 않습니다.<\/strong><\/p>\n<hr />\n<h2 id=\"g-s2\">2. 준비 서류 체크하기 (Prep 탭)<\/h2>\n<p>감사를 시작하기 전에 <strong>Prep<\/strong> 탭에서 받아야 할 서류를 체크리스트로 확인합니다.<\/p>\n<ul>\n<li>문항마다 필요한 자료, 기간, 참조가 나옵니다.<\/li>\n<li>형태를 고릅니다: <code>DOCMX<\/code>(시스템에서 확보) / <code>File<\/code>(파일 제출) / <code>Paper<\/code>(종이 서류). 체크하면 취소선이 그어집니다.<\/li>\n<li>비고란에 메모를 남길 수 있습니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s3\">3. 감사 결과 입력하기<\/h2>\n<ol>\n<li>위쪽 탭에서 섹션(AP, AR, Cash 등)을 고르고 → 왼쪽 목록에서 항목을 클릭합니다.<\/li>\n<li>결과를 고릅니다: <strong>Yes<\/strong>(적합) / <strong>No<\/strong>(부적합) / <strong>N/A<\/strong>(해당 없음) / <strong>Hold<\/strong>(판정 보류)<\/li>\n<li>필요하면 <strong>Sample Tested<\/strong>(테스트한 샘플)와 <strong>Notes<\/strong>(메모)를 씁니다.<\/li>\n<li>관련 정책 번호를 누르면 정책 PDF가 열립니다.<\/li>\n<\/ol>\n<p><strong>테스트 시트가 있는 항목<\/strong>(CPA Validation 대상)은 표 형식 입력창이 함께 열립니다.<\/p>\n<ul>\n<li>Excel에서 여러 셀을 복사해 표에 붙여넣으면(Ctrl+V) 칸에 맞춰 채워집니다.<\/li>\n<li><strong>Copy<\/strong> 버튼으로 표를 복사해 AuditBoard나 Excel에 그대로 붙여넣을 수 있습니다.<\/li>\n<li>Validation 대상 항목은 결과 입력 시 <strong>Test Notes 작성이 필수<\/strong>입니다.<\/li>\n<\/ul>\n<p><strong>Balance Sheet를 계정별로 더 자세히 보기<\/strong>: <strong>BS Guide<\/strong> 탭에서 Balance Sheet 감사를 39개 계정 단위로 나눠 체크할 수 있습니다. 여기서 쓴 메모만 모아 보려면 <strong>BS Notes<\/strong> 탭을 엽니다.<\/p>\n<blockquote>\n<p>입력 내용은 이 브라우저에 자동 저장됩니다(입력 직후, 그리고 30초마다). 상단의 ✓ Saved 표시로 확인할 수 있습니다.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s4\">4. 진행 상황 확인하기<\/h2>\n<ul>\n<li><strong>상단 진행률 바<\/strong>: 완료한 문항 수 / 전체 문항 수 (Hold는 미완료로 계산)<\/li>\n<li><strong>Overview<\/strong> 탭: 전체 진행률, <strong>CPA Total Score<\/strong>, 위험 등급(Key / HR)별 점수, 섹션별 진행 막대<ul>\n<li>CPA Total Score = Yes ÷ (Yes + No) × 100 (N/A와 Hold는 제외)<\/li>\n<\/ul>\n<\/li>\n<li>각 탭의 숫자(예: <code>3/13<\/code>)는 완료 / 전체 문항 수입니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s5\">5. 부적합·보류 항목 정리하기<\/h2>\n<table>\n<thead>\n<tr>\n<th>확인 목적<\/th>\n<th>탭<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>통제 미흡(No) 항목만 모아 보기<\/td>\n<td><strong>Findings<\/strong><\/td>\n<\/tr>\n<tr>\n<td>결론 미확정(Hold) 항목만 모아 보기<\/td>\n<td><strong>Hold<\/strong><\/td>\n<\/tr>\n<tr>\n<td>Validation 대상 항목을 한 화면에서 처리<\/td>\n<td><strong>✓ Validation<\/strong><\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<h2 id=\"g-s6\">6. 백업 · 공유 · 복원<\/h2>\n<p>데이터는 <strong>이 PC의 이 브라우저<\/strong>에만 저장됩니다. 다른 PC나 다른 브라우저에서는 보이지 않으며, 브라우저 데이터를 지우면 사라질 수 있습니다. 아래 방법으로 꼭 백업하세요.<\/p>\n<h3>🛟 Backup (자동 백업 · 복원 지점)<\/h3>\n<ul>\n<li><strong>자동 파일 백업<\/strong>: 🛟 Backup → <strong>폴더 선택<\/strong>. 고른 폴더에 <code>…_LATEST.json<\/code>(항상 최신)과 날짜별 파일이 내용이 바뀔 때마다 자동 저장됩니다. <strong>OneDrive 폴더를 고르면<\/strong> 브라우저 데이터가 지워져도 안전합니다. (Edge·Chrome만 지원)<ul>\n<li>브라우저를 새로 열면 <strong>다시 연결<\/strong>을 한 번 눌러야 할 수 있습니다.<\/li>\n<\/ul>\n<\/li>\n<li><strong>복원 지점<\/strong>: 작업 중 자동으로, 그리고 Import·Reset·복원 직전에 이 브라우저 안에 저장됩니다. 🛟 Backup 창에서 원하는 시점을 골라 <strong>복원<\/strong>하면 됩니다(지금 상태도 먼저 복원 지점으로 저장됨).<\/li>\n<li>날짜별 백업 파일과 복원 지점은 최근 30일치를 보관합니다.<\/li>\n<\/ul>\n<h3>⇧ Export / ⇩ Import (파일로 주고받기)<\/h3>\n<ul>\n<li><strong>⇧ Export<\/strong>: 내보낼 페이지(Prep, 각 섹션, BS Guide)를 골라 <code>.json<\/code> 파일로 저장합니다.<\/li>\n<li><strong>⇩ Import<\/strong>: <code>.json<\/code> 파일을 골라 <strong>Merge<\/strong>(권장: 기존 데이터를 지키며 합침) 또는 <strong>Overwrite<\/strong>(고른 페이지를 완전히 바꿈)를 선택합니다.<\/li>\n<li>자동 백업 파일(<code>…_LATEST.json<\/code>)도 Import로 불러올 수 있습니다.<\/li>\n<li>브라우저 탭을 닫으려 하면 백업했는지 묻는 경고가 나옵니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s7\">7. 보고서 출력<\/h2>\n<ul>\n<li><strong>⇓ Excel<\/strong>: 전체 문항과 결과를 Excel 파일(<code>.xlsx<\/code>)로 저장합니다. KO·JA 화면에서는 해당 언어 열이 함께 들어갑니다.<\/li>\n<li><strong>🖶 Print<\/strong>: 지금 보고 있는 화면을 인쇄합니다(전체는 섹션별로 반복 인쇄).<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s8\">8. 기타 기능<\/h2>\n<ul>\n<li><strong>언어 변경<\/strong>: 상단 KO / EN / JA<\/li>\n<li><strong>RESET<\/strong>: 현재 호텔의 결과를 모두 지웁니다. 지우기 직전 상태는 복원 지점으로 자동 저장되지만, 실행 전에 Export로 백업해 두세요.<\/li>\n<li><strong>BSR Checklist<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/BSR_Checklist.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/BSR_Checklist.html<\/a> 로 열면 BS Guide·BS Notes만 보이는 화면이 됩니다. 이 화면의 Export·Import·Reset은 BS 데이터만 다룹니다.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s9\">9. 호텔별 결과 취합 (리전·에어리어 담당자)<\/h2>\n<p>여러 호텔의 감사 결과를 한 화면에 모아 봅니다. <strong>읽기 전용<\/strong>이라 감사 데이터는 바뀌지 않습니다.<\/p>\n<ol>\n<li>대시보드 주소에서 <strong>취합용 비밀번호<\/strong>(별도 안내)를 입력하면 <strong>📊 CPA 2026 취합<\/strong> 화면이 열립니다.<\/li>\n<li>감사자에게 받은 <strong>⇧ Export 파일<\/strong>(.json)이나 자동 백업 <code>…_LATEST.json<\/code>을 <strong>여러 개 한꺼번에<\/strong> 끌어다 놓거나 눌러서 고릅니다.<ul>\n<li>같은 호텔·같은 서비스 유형(Full/Focus) 파일은 <strong>문항마다 가장 최근에 입력한 결과<\/strong>로 합칩니다. 여러 명이 섹션을 나눠 감사한 파일도 그대로 넣으면 됩니다.<\/li>\n<li>파일마다 결과가 다른 문항은 <strong>충돌 ⚠<\/strong>로 표시하고, 마우스를 올리면 다른 결과와 출처가 보입니다.<\/li>\n<li>같은 파일을 두 번 넣으면 한 번만 반영합니다. CSA 파일 등 다른 파일은 이유와 함께 거절합니다.<\/li>\n<\/ul>\n<\/li>\n<li><strong>이 PC에서 감사한 호텔도 포함<\/strong>을 켜 두면 이 브라우저에서 직접 감사한 호텔도 함께 집계합니다(목록에서 숨긴 호텔은 제외).<\/li>\n<li>화면 구성<ul>\n<li><strong>호텔별<\/strong>: 진행률, CPA 총점, Key·HR 점수, No·Hold 건수, 충돌. 제목을 누르면 정렬됩니다.<\/li>\n<li><strong>섹션 히트맵<\/strong>: 호텔 × 섹션 점수를 색으로 표시(95 이상 / 85 / 75 / 75 미만).<\/li>\n<li><strong>전체 Findings<\/strong>: 모든 호텔의 No 항목. 섹션·Risk·검색으로 거르고, Hold도 함께 볼 수 있습니다.<\/li>\n<li>호텔명(또는 히트맵 칸)을 누르면 그 호텔의 전체 문항 결과가 나옵니다.<\/li>\n<\/ul>\n<\/li>\n<li><strong>⇓ 취합 Excel<\/strong>: Hotels · Heatmap · Findings · Items 시트로 저장합니다.<\/li>\n<\/ol>\n<blockquote>\n<p>점수는 대시보드 Overview와 같은 방식입니다: Yes ÷ (Yes + No) × 100, N/A·Hold 제외.<\/p>\n<p>불러온 파일은 이 브라우저의 취합 전용 공간에 남아 다음에 다시 열 수 있습니다. × 또는 <strong>모두 빼기<\/strong>는 취합에서만 빼며 원본 파일과 감사 데이터는 그대로입니다.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s10\">10. 자주 묻는 질문 (Q&amp;A)<\/h2>\n<p><strong>Q. 예전 주소(rlee1829.github.io)에서 작업한 데이터가 새 주소에서 안 보여요.<\/strong><br />\nA. 브라우저는 주소마다 저장 공간이 따로라서 직접 옮겨야 합니다. 작업하던 PC에서 예전 주소(https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html)를 열고 <strong>「새 주소로 데이터 옮기기」<\/strong>를 누르세요. 예전 주소의 데이터는 지워지지 않으며, 다시 옮겨도 중복되지 않습니다. 자동 파일 백업을 쓰고 있었다면 새 주소에서 🛟 Backup 폴더를 한 번 다시 연결하세요.<\/p>\n<p><strong>Q. 내가 작업한 결과를 다른 사람에게 보내서 공유하고 싶어요.<\/strong><br />\nA. <strong>⇧ Export<\/strong> → 내보낼 페이지 선택(전체 또는 일부) → <code>.json<\/code> 파일을 이메일이나 Teams로 전달합니다. 받는 사람은 <strong>같은 호텔명 + 같은 서비스 유형<\/strong>으로 들어간 뒤 <strong>⇩ Import<\/strong>(Merge)로 불러옵니다.<\/p>\n<p><strong>Q. 여러 명이 각자 다른 섹션을 작업한 걸 한 명이 취합하려면?<\/strong><\/p>\n<ol>\n<li>모두 <strong>같은 호텔명 + 같은 서비스 유형(Full / Focus)<\/strong>으로 들어가 각자 맡은 섹션만 입력합니다.<\/li>\n<li>각자 <strong>⇧ Export<\/strong>에서 자기가 작업한 페이지만 골라 내보냅니다(예: A는 AP만, B는 AR만).<\/li>\n<li>취합 담당자는 같은 호텔·같은 서비스 유형을 연 뒤, 받은 파일을 하나씩 <strong>⇩ Import<\/strong>하면서 <strong>반드시 Merge<\/strong>를 고릅니다.<\/li>\n<li>모두 불러오면 하나로 합쳐집니다. 끝나면 <strong>⇧ Export(전체)<\/strong>로 최종 백업 파일을 만들어 두세요.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ 취합할 때 <strong>Overwrite는 쓰지 마세요.<\/strong> 고른 페이지의 기존 데이터를 지우고 바꾸기 때문에, 먼저 불러온 사람의 작업이 사라질 수 있습니다.<\/p>\n<p>파일의 호텔명이 지금 호텔과 다르면 \"계속 진행하시겠습니까?\" 확인창이 뜹니다. 같은 호텔인데 표기만 다른 경우라면 계속 진행하면 됩니다.<\/p>\n<\/blockquote>\n<p><strong>Q. 실수로 호텔명을 다르게 입력해서 빈 호텔이 생겼어요. 합칠 수 있나요?<\/strong><br />\nA. 네. 잘못 만든 호텔에서 <strong>⇧ Export<\/strong>로 내보낸 뒤, 원래 호텔로 바꿔 <strong>⇩ Import → Merge<\/strong>로 불러오면 합쳐집니다. 잘못 만든 호텔은 호텔 목록의 ×로 숨길 수 있습니다.<\/p>\n<p><strong>Q. 실수로 지웠거나 잘못 Import했어요.<\/strong><br />\nA. <strong>🛟 Backup<\/strong> → 복원 지점 목록에서 그 전 시점을 골라 <strong>복원<\/strong>하세요. 자동 파일 백업을 켜 두었다면 그 폴더의 파일을 Import해도 됩니다.<\/p>\n<hr />\n<h2 id=\"g-s11\">빠른 참고 요약<\/h2>\n<table>\n<thead>\n<tr>\n<th>하고 싶은 일<\/th>\n<th>방법<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>새 호텔 시작<\/td>\n<td>로그인 → + 새 호텔 추가 → 서비스 유형 → 이름 입력 → Start →<\/td>\n<\/tr>\n<tr>\n<td>호텔 바꾸기<\/td>\n<td>🏨 버튼<\/td>\n<\/tr>\n<tr>\n<td>준비 서류 체크<\/td>\n<td>Prep 탭<\/td>\n<\/tr>\n<tr>\n<td>결과 입력<\/td>\n<td>섹션 탭 → 항목 클릭 → Yes / No / N/A / Hold<\/td>\n<\/tr>\n<tr>\n<td>BS 계정별 상세 검토<\/td>\n<td>BS Guide / BS Notes 탭<\/td>\n<\/tr>\n<tr>\n<td>진행률·점수 확인<\/td>\n<td>상단 진행률 바, Overview 탭<\/td>\n<\/tr>\n<tr>\n<td>부적합 / 보류 항목<\/td>\n<td>Findings / Hold 탭<\/td>\n<\/tr>\n<tr>\n<td>Validation 항목 일괄 처리<\/td>\n<td>✓ Validation 탭<\/td>\n<\/tr>\n<tr>\n<td>자동 백업·되돌리기<\/td>\n<td>🛟 Backup<\/td>\n<\/tr>\n<tr>\n<td>파일로 백업·공유<\/td>\n<td>⇧ Export → 페이지 선택 → .json 저장<\/td>\n<\/tr>\n<tr>\n<td>불러오기·취합<\/td>\n<td>⇩ Import → .json 선택 → Merge<\/td>\n<\/tr>\n<tr>\n<td>Excel 출력<\/td>\n<td>⇓ Excel<\/td>\n<\/tr>\n<tr>\n<td>언어 변경<\/td>\n<td>KO / EN / JA<\/td>\n<\/tr>\n<tr>\n<td>여러 호텔 결과 모아 보기<\/td>\n<td>취합용 비밀번호 → Export 파일 끌어다 놓기<\/td>\n<\/tr>\n<tr>\n<td>이 설명서 다시 보기<\/td>\n<td>❓ 사용설명서<\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<p><em>CPA 2026 Peer Audit Dashboard<\/em><br />\n<em>작성: Rebecca Lee (Conrad Seoul Finance)<\/em><br />\n<em>최종 업데이트: 2026-11-27<\/em><\/p>", "en": "<h1>CPA 2026 Peer Audit Dashboard — User Guide<\/h1>\n<blockquote>\n<p><strong>For<\/strong>: CPA (Compliance &amp; Policy Audit) 2026 auditors<br />\n<strong>Address<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> (Edge or Chrome recommended)<br />\nYou can open this guide again at any time with the <strong>❓ Guide<\/strong> button at the top of the dashboard. Use the KO / EN / JA buttons inside the guide to switch its language.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s1\">1. Getting started<\/h2>\n<ol>\n<li>Open <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> in your browser.<\/li>\n<li>Enter the password you were given and press Enter.<\/li>\n<li><strong>If you have worked on a hotel before<\/strong>, the recent hotel list (marked Full / Focus) appears. Click a hotel to go straight in.<ul>\n<li>The hotel you opened last opens automatically after the password.<\/li>\n<li>For a new hotel, click <strong>+ Add New Hotel<\/strong>.<\/li>\n<\/ul>\n<\/li>\n<li><strong>Choose the service type<\/strong>: <strong>Full Service<\/strong> (80 items) or <strong>Focus Service<\/strong> (65 items), as applies to the audited hotel.<\/li>\n<li><strong>Enter the hotel name<\/strong> and click <strong>Start →<\/strong>.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>Always enter the hotel name the same way.<\/strong> Differences in upper/lower case or spacing are treated as the same hotel, but a different name or a typo creates a <strong>new, empty hotel<\/strong> that is not linked to your earlier work. <strong>The service type (Full / Focus) also separates the data<\/strong>: the same hotel under Full and under Focus is two separate sets of data.<\/p>\n<p>Data for each hotel and service type is kept separate and never mixes.<\/p>\n<\/blockquote>\n<p><strong>Switching hotels<\/strong>: the 🏨 button at the top → hotel selection. The × in the list <strong>only hides the hotel from the list; its data is not deleted.<\/strong><\/p>\n<hr />\n<h2 id=\"g-s2\">2. Checking preparation documents (Prep tab)<\/h2>\n<p>Before the audit, use the <strong>Prep<\/strong> tab as a checklist of the documents to collect.<\/p>\n<ul>\n<li>Each item shows the material needed, the period and a reference.<\/li>\n<li>Choose the form: <code>DOCMX<\/code> (taken from the system) / <code>File<\/code> (submitted as a file) / <code>Paper<\/code> (paper document). Checked items are struck through.<\/li>\n<li>You can add a remark to each item.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s3\">3. Entering audit results<\/h2>\n<ol>\n<li>Choose a section tab at the top (AP, AR, Cash …) → click an item in the list on the left.<\/li>\n<li>Choose the result: <strong>Yes<\/strong> (compliant) / <strong>No<\/strong> (non-compliant) / <strong>N/A<\/strong> (not applicable) / <strong>Hold<\/strong> (conclusion pending)<\/li>\n<li>If needed, fill in <strong>Sample Tested<\/strong> and <strong>Notes<\/strong>.<\/li>\n<li>Click the policy number to open the policy PDF.<\/li>\n<\/ol>\n<p><strong>Items with a test sheet<\/strong> (CPA Validation items) also open a table.<\/p>\n<ul>\n<li>Copy several cells in Excel and paste them into the table (Ctrl+V); they fill the grid.<\/li>\n<li>The <strong>Copy<\/strong> button copies the table so you can paste it straight into AuditBoard or Excel.<\/li>\n<li>For Validation items, <strong>Test Notes are required<\/strong> when you enter a result.<\/li>\n<\/ul>\n<p><strong>Balance Sheet account by account<\/strong>: the <strong>BS Guide<\/strong> tab splits the Balance Sheet audit into 39 accounts that you can check one by one. To see only the notes written there, open the <strong>BS Notes<\/strong> tab.<\/p>\n<blockquote>\n<p>Your entries are saved automatically in this browser (right after you type, and every 30 seconds). The ✓ Saved indicator at the top confirms it.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s4\">4. Checking progress<\/h2>\n<ul>\n<li><strong>Progress bar at the top<\/strong>: items completed / all items (Hold counts as not completed)<\/li>\n<li><strong>Overview<\/strong> tab: overall progress, <strong>CPA Total Score<\/strong>, scores by risk level (Key / HR), progress bars by section<ul>\n<li>CPA Total Score = Yes ÷ (Yes + No) × 100 (N/A and Hold are excluded)<\/li>\n<\/ul>\n<\/li>\n<li>The number on each tab (e.g. <code>3/13<\/code>) is completed / total items.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s5\">5. Reviewing non-compliant and pending items<\/h2>\n<table>\n<thead>\n<tr>\n<th>Purpose<\/th>\n<th>Tab<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>Only items with a control gap (No)<\/td>\n<td><strong>Findings<\/strong><\/td>\n<\/tr>\n<tr>\n<td>Only items with no conclusion yet (Hold)<\/td>\n<td><strong>Hold<\/strong><\/td>\n<\/tr>\n<tr>\n<td>All Validation items on one screen<\/td>\n<td><strong>✓ Validation<\/strong><\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<h2 id=\"g-s6\">6. Backup · sharing · restore<\/h2>\n<p>Data is stored <strong>only in this browser on this PC<\/strong>. It does not appear on another PC or in another browser, and it can be lost if browser data is cleared. Please back it up as follows.<\/p>\n<h3>🛟 Backup (automatic backup · restore points)<\/h3>\n<ul>\n<li><strong>Auto file backup<\/strong>: 🛟 Backup → <strong>Choose folder<\/strong>. <code>…_LATEST.json<\/code> (always the newest) and a dated file are written to that folder whenever the data changes. <strong>Choose a OneDrive folder<\/strong> to stay safe even if browser data is cleared. (Edge and Chrome only)<ul>\n<li>After reopening the browser you may need to click <strong>Reconnect<\/strong> once.<\/li>\n<\/ul>\n<\/li>\n<li><strong>Restore points<\/strong>: saved inside this browser automatically while you work, and right before Import, Reset and Restore. In the 🛟 Backup window, choose a point in time and click <strong>Restore<\/strong> (the current state is saved as a restore point first).<\/li>\n<li>Dated backup files and restore points are kept for the last 30 days.<\/li>\n<\/ul>\n<h3>⇧ Export / ⇩ Import (exchanging files)<\/h3>\n<ul>\n<li><strong>⇧ Export<\/strong>: choose the pages to export (Prep, each section, BS Guide) and save a <code>.json<\/code> file.<\/li>\n<li><strong>⇩ Import<\/strong>: choose a <code>.json<\/code> file, then <strong>Merge<\/strong> (recommended: keeps existing data and combines) or <strong>Overwrite<\/strong> (replaces the chosen pages completely).<\/li>\n<li>Auto backup files (<code>…_LATEST.json<\/code>) can be loaded with Import too.<\/li>\n<li>When you try to close the browser tab, a warning asks whether you have backed up.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s7\">7. Reports<\/h2>\n<ul>\n<li><strong>⇓ Excel<\/strong>: saves all items and results as an Excel file (<code>.xlsx<\/code>). On the KO and JA screens, columns in that language are added.<\/li>\n<li><strong>🖶 Print<\/strong>: prints the current screen (for everything, print each section in turn).<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s8\">8. Other functions<\/h2>\n<ul>\n<li><strong>Language<\/strong>: KO / EN / JA at the top<\/li>\n<li><strong>RESET<\/strong>: clears all results of the current hotel. The state right before is saved as a restore point automatically, but please Export a backup before you reset.<\/li>\n<li><strong>BSR Checklist<\/strong>: opening <a href=\"https://jkm-finance.github.io/cpa/BSR_Checklist.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/BSR_Checklist.html<\/a> shows only BS Guide and BS Notes. Export, Import and Reset on this screen handle BS data only.<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s9\">9. Results by hotel (regional and area reviewers)<\/h2>\n<p>See the audit results of several hotels on one screen. It is <strong>read-only<\/strong>: audit data is not changed.<\/p>\n<ol>\n<li>At the dashboard address, enter the <strong>consolidation password<\/strong> (given separately). The <strong>📊 CPA 2026 Consolidation<\/strong> screen opens.<\/li>\n<li>Drop <strong>several ⇧ Export files<\/strong> (.json) or auto-backup <code>…_LATEST.json<\/code> files from the auditors at once, or click to choose them.<ul>\n<li>Files for the same hotel and service type (Full/Focus) are combined <strong>item by item, using the most recently entered result<\/strong>. Files from people who split the sections can simply all be dropped.<\/li>\n<li>Items where files disagree are marked <strong>conflict ⚠<\/strong>; hover to see the other results and where they came from.<\/li>\n<li>The same file dropped twice counts once. Other files (e.g. CSA files) are refused with the reason.<\/li>\n<\/ul>\n<\/li>\n<li>With <strong>Also include hotels audited on this PC<\/strong> on, the hotels you audited in this browser are included too (hotels hidden from the list are left out).<\/li>\n<li>Screens<ul>\n<li><strong>Hotels<\/strong>: progress, CPA Total Score, Key and HR scores, No and Hold counts, conflicts. Click a column title to sort.<\/li>\n<li><strong>Section heatmap<\/strong>: hotel × section scores in colour (95 and above / 85 / 75 / below 75).<\/li>\n<li><strong>All findings<\/strong>: the No items of every hotel. Filter by section, risk or text; Hold can be included.<\/li>\n<li>Click a hotel name (or a heatmap cell) to see all of that hotel's items.<\/li>\n<\/ul>\n<\/li>\n<li><strong>⇓ Consolidated Excel<\/strong>: saves the sheets Hotels · Heatmap · Findings · Items.<\/li>\n<\/ol>\n<blockquote>\n<p>Scores are calculated as in the dashboard Overview: Yes ÷ (Yes + No) × 100, N/A and Hold excluded.<\/p>\n<p>Loaded files stay in this browser's consolidation storage for next time. × or <strong>Remove all<\/strong> only removes them from the consolidation; the original files and the audit data are not changed.<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s10\">10. Frequently asked questions<\/h2>\n<p><strong>Q. My data from the old address (rlee1829.github.io) does not appear at the new address.<\/strong><br />\nA. Browsers keep separate storage for each address, so the data has to be moved once. On the PC you worked on, open the old address (https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html) and click <strong>“Move my data to the new address”<\/strong>. The data at the old address is not deleted, and moving again does not create duplicates. If you used the auto file backup, connect the 🛟 Backup folder once again at the new address.<\/p>\n<p><strong>Q. I want to send my results to someone else.<\/strong><br />\nA. <strong>⇧ Export<\/strong> → choose the pages (all or some) → send the <code>.json<\/code> file by email or Teams. The recipient opens <strong>the same hotel name + the same service type<\/strong> and loads it with <strong>⇩ Import<\/strong> (Merge).<\/p>\n<p><strong>Q. Several people worked on different sections. How does one person combine them?<\/strong><\/p>\n<ol>\n<li>Everyone opens <strong>the same hotel name + the same service type (Full / Focus)<\/strong> and fills in only their own sections.<\/li>\n<li>Each person uses <strong>⇧ Export<\/strong> and selects only the pages they worked on (e.g. A selects AP only, B selects AR only).<\/li>\n<li>The person combining opens the same hotel and service type, then loads the files one by one with <strong>⇩ Import<\/strong>, <strong>always choosing Merge<\/strong>.<\/li>\n<li>After the last file everything is combined. Then make a final backup with <strong>⇧ Export (all)<\/strong>.<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>Do not use Overwrite when combining.<\/strong> It deletes the existing data of the chosen pages and replaces it, so work imported earlier can be lost.<\/p>\n<p>If the hotel name in the file differs from the current hotel, a “Continue?” confirmation appears. If it is the same hotel written differently, continue.<\/p>\n<\/blockquote>\n<p><strong>Q. I typed the hotel name differently by mistake and got an empty hotel. Can I combine them?<\/strong><br />\nA. Yes. In the wrongly created hotel, <strong>⇧ Export<\/strong> your entries, switch to the original hotel and load them with <strong>⇩ Import → Merge<\/strong>. You can hide the wrong hotel with the × in the hotel list.<\/p>\n<p><strong>Q. I deleted something or imported the wrong file.<\/strong><br />\nA. <strong>🛟 Backup<\/strong> → choose an earlier point in the restore point list and click <strong>Restore<\/strong>. If the auto file backup is on, you can also Import a file from that folder.<\/p>\n<hr />\n<h2 id=\"g-s11\">Quick reference<\/h2>\n<table>\n<thead>\n<tr>\n<th>I want to…<\/th>\n<th>How<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>Start a new hotel<\/td>\n<td>Log in → + Add New Hotel → service type → name → Start →<\/td>\n<\/tr>\n<tr>\n<td>Switch hotels<\/td>\n<td>🏨 button<\/td>\n<\/tr>\n<tr>\n<td>Check preparation documents<\/td>\n<td>Prep tab<\/td>\n<\/tr>\n<tr>\n<td>Enter results<\/td>\n<td>Section tab → click item → Yes / No / N/A / Hold<\/td>\n<\/tr>\n<tr>\n<td>Review BS by account<\/td>\n<td>BS Guide / BS Notes tabs<\/td>\n<\/tr>\n<tr>\n<td>Check progress and score<\/td>\n<td>Progress bar, Overview tab<\/td>\n<\/tr>\n<tr>\n<td>Non-compliant / pending items<\/td>\n<td>Findings / Hold tabs<\/td>\n<\/tr>\n<tr>\n<td>Handle all Validation items<\/td>\n<td>✓ Validation tab<\/td>\n<\/tr>\n<tr>\n<td>Automatic backup, go back in time<\/td>\n<td>🛟 Backup<\/td>\n<\/tr>\n<tr>\n<td>Back up or share as a file<\/td>\n<td>⇧ Export → choose pages → save .json<\/td>\n<\/tr>\n<tr>\n<td>Load or combine<\/td>\n<td>⇩ Import → choose .json → Merge<\/td>\n<\/tr>\n<tr>\n<td>Excel output<\/td>\n<td>⇓ Excel<\/td>\n<\/tr>\n<tr>\n<td>Change language<\/td>\n<td>KO / EN / JA<\/td>\n<\/tr>\n<tr>\n<td>See results of several hotels<\/td>\n<td>Consolidation password → drop Export files<\/td>\n<\/tr>\n<tr>\n<td>Open this guide again<\/td>\n<td>❓ Guide<\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<p><em>CPA 2026 Peer Audit Dashboard<\/em><br />\n<em>Author: Rebecca Lee (Conrad Seoul Finance)<\/em><br />\n<em>Last updated: 2026-11-27<\/em><\/p>", "ja": "<h1>CPA 2026 Peer Audit Dashboard — 利用ガイド<\/h1>\n<blockquote>\n<p><strong>対象<\/strong>: CPA（Compliance &amp; Policy Audit）2026 監査担当者<br />\n<strong>アドレス<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> （Edge または Chrome 推奨）<br />\nこのガイドは、ダッシュボード上部の <strong>❓ 利用ガイド<\/strong> ボタンでいつでも開けます。ガイド内の KO / EN / JA ボタンで言語を切り替えられます。<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s1\">1. はじめに<\/h2>\n<ol>\n<li>ブラウザで <a href=\"https://jkm-finance.github.io/cpa/\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/<\/a> を開きます。<\/li>\n<li>案内されたパスワードを入力して Enter を押します。<\/li>\n<li><strong>以前に作業したホテルがある場合<\/strong>、最近のホテル一覧（Full / Focus 表示）がすぐに表示されます。クリックするとそのまま入れます。<ul>\n<li>最後に開いたホテルは、パスワード入力後に自動で開きます。<\/li>\n<li>新しいホテルは <strong>+ Add New Hotel<\/strong> を押します。<\/li>\n<\/ul>\n<\/li>\n<li><strong>サービスタイプの選択<\/strong>: 監査対象ホテルに合わせて <strong>Full Service<\/strong>（80項目）または <strong>Focus Service<\/strong>（65項目）を選びます。<\/li>\n<li><strong>ホテル名の入力<\/strong>: ホテル名を入力して <strong>Start →<\/strong> を押します。<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ <strong>ホテル名は毎回同じ表記で入力してください。<\/strong> 大文字・小文字やスペースの違いは同じホテルとして扱われますが、異なる名前や誤字は <strong>新しい空のホテル<\/strong> になり、これまでの作業とつながりません。<strong>サービスタイプ（Full / Focus）もデータを分ける基準<\/strong>のため、同じホテルでも Full と Focus は別のデータです。<\/p>\n<p>ホテルごと・サービスタイプごとのデータは混ざりません。<\/p>\n<\/blockquote>\n<p><strong>ホテルの切り替え<\/strong>: 上部の 🏨 ボタン → ホテル選択画面。一覧の × は <strong>一覧から隠すだけで、データは削除しません。<\/strong><\/p>\n<hr />\n<h2 id=\"g-s2\">2. 準備書類のチェック（Prep タブ）<\/h2>\n<p>監査を始める前に、<strong>Prep<\/strong> タブで受け取るべき書類をチェックリストで確認します。<\/p>\n<ul>\n<li>項目ごとに必要な資料、期間、参照が表示されます。<\/li>\n<li>形式を選びます: <code>DOCMX<\/code>（システムから取得）/ <code>File<\/code>（ファイルで提出）/ <code>Paper<\/code>（紙の書類）。チェックすると取り消し線が付きます。<\/li>\n<li>備考欄にメモを残せます。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s3\">3. 監査結果の入力<\/h2>\n<ol>\n<li>上部のタブでセクション（AP、AR、Cash など）を選び → 左側の一覧から項目をクリックします。<\/li>\n<li>結果を選びます: <strong>Yes<\/strong>（適合）/ <strong>No<\/strong>（不適合）/ <strong>N/A<\/strong>（該当なし）/ <strong>Hold<\/strong>（判定保留）<\/li>\n<li>必要に応じて <strong>Sample Tested<\/strong>（テストしたサンプル）と <strong>Notes<\/strong>（メモ）を記入します。<\/li>\n<li>関連ポリシー番号を押すと、ポリシーの PDF が開きます。<\/li>\n<\/ol>\n<p><strong>テストシートがある項目<\/strong>（CPA Validation 対象）は、表形式の入力画面が一緒に開きます。<\/p>\n<ul>\n<li>Excel で複数のセルをコピーして表に貼り付けると（Ctrl+V）、マスに合わせて入力されます。<\/li>\n<li><strong>Copy<\/strong> ボタンで表をコピーし、AuditBoard や Excel にそのまま貼り付けられます。<\/li>\n<li>Validation 対象項目は、結果入力時に <strong>Test Notes の記入が必須<\/strong> です。<\/li>\n<\/ul>\n<p><strong>Balance Sheet を勘定科目ごとに詳しく見る<\/strong>: <strong>BS Guide<\/strong> タブでは、Balance Sheet 監査を39の勘定科目単位に分けてチェックできます。ここで書いたメモだけを見るには <strong>BS Notes<\/strong> タブを開きます。<\/p>\n<blockquote>\n<p>入力内容はこのブラウザに自動保存されます（入力直後と30秒ごと）。上部の ✓ Saved 表示で確認できます。<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s4\">4. 進捗状況の確認<\/h2>\n<ul>\n<li><strong>上部の進捗バー<\/strong>: 完了した項目数 / 全項目数（Hold は未完了として計算）<\/li>\n<li><strong>Overview<\/strong> タブ: 全体の進捗率、<strong>CPA Total Score<\/strong>、リスク区分（Key / HR）別スコア、セクション別の進捗バー<ul>\n<li>CPA Total Score = Yes ÷（Yes + No）× 100（N/A と Hold は除外）<\/li>\n<\/ul>\n<\/li>\n<li>各タブの数字（例: <code>3/13<\/code>）は 完了 / 全項目数 です。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s5\">5. 不適合・保留項目の整理<\/h2>\n<table>\n<thead>\n<tr>\n<th>確認目的<\/th>\n<th>タブ<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>不備（No）の項目だけを見る<\/td>\n<td><strong>Findings<\/strong><\/td>\n<\/tr>\n<tr>\n<td>結論未確定（Hold）の項目だけを見る<\/td>\n<td><strong>Hold<\/strong><\/td>\n<\/tr>\n<tr>\n<td>Validation 対象項目を1画面で処理<\/td>\n<td><strong>✓ Validation<\/strong><\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<h2 id=\"g-s6\">6. バックアップ・共有・復元<\/h2>\n<p>データは <strong>このPCのこのブラウザ<\/strong> にだけ保存されます。別のPCや別のブラウザでは表示されず、ブラウザのデータを削除すると失われることがあります。以下の方法で必ずバックアップしてください。<\/p>\n<h3>🛟 Backup（自動バックアップ・復元ポイント）<\/h3>\n<ul>\n<li><strong>自動ファイルバックアップ<\/strong>: 🛟 Backup → <strong>フォルダ選択<\/strong>。選んだフォルダに <code>…_LATEST.json<\/code>（常に最新）と日付別ファイルが、内容が変わるたびに自動保存されます。<strong>OneDrive フォルダを選ぶ<\/strong> と、ブラウザのデータが消えても安全です。（Edge・Chrome のみ対応）<ul>\n<li>ブラウザを開き直したときは <strong>再接続<\/strong> を一度押す必要がある場合があります。<\/li>\n<\/ul>\n<\/li>\n<li><strong>復元ポイント<\/strong>: 作業中に自動で、また Import・Reset・復元の直前に、このブラウザ内に保存されます。🛟 Backup 画面で戻したい時点を選び <strong>復元<\/strong> を押します（現在の状態も先に復元ポイントとして保存されます）。<\/li>\n<li>日付別バックアップファイルと復元ポイントは、直近30日分を保管します。<\/li>\n<\/ul>\n<h3>⇧ Export / ⇩ Import（ファイルでのやり取り）<\/h3>\n<ul>\n<li><strong>⇧ Export<\/strong>: 書き出すページ（Prep、各セクション、BS Guide）を選んで <code>.json<\/code> ファイルに保存します。<\/li>\n<li><strong>⇩ Import<\/strong>: <code>.json<\/code> ファイルを選び、<strong>Merge<\/strong>（推奨: 既存データを残して統合）または <strong>Overwrite<\/strong>（選んだページを完全に置き換え）を選びます。<\/li>\n<li>自動バックアップファイル（<code>…_LATEST.json<\/code>）も Import で読み込めます。<\/li>\n<li>ブラウザのタブを閉じようとすると、バックアップしたかを確認する警告が表示されます。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s7\">7. レポート出力<\/h2>\n<ul>\n<li><strong>⇓ Excel<\/strong>: 全項目と結果を Excel ファイル（<code>.xlsx<\/code>）で保存します。KO・JA 画面では、その言語の列も含まれます。<\/li>\n<li><strong>🖶 Print<\/strong>: 現在表示している画面を印刷します（全体はセクションごとに繰り返し印刷）。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s8\">8. その他の機能<\/h2>\n<ul>\n<li><strong>言語切替<\/strong>: 上部の KO / EN / JA<\/li>\n<li><strong>RESET<\/strong>: 現在のホテルの結果をすべて消去します。直前の状態は復元ポイントに自動保存されますが、実行前に Export でバックアップしてください。<\/li>\n<li><strong>BSR Checklist<\/strong>: <a href=\"https://jkm-finance.github.io/cpa/BSR_Checklist.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://jkm-finance.github.io/cpa/BSR_Checklist.html<\/a> で開くと、BS Guide・BS Notes だけの画面になります。この画面の Export・Import・Reset は BS データだけを扱います。<\/li>\n<\/ul>\n<hr />\n<h2 id=\"g-s9\">9. ホテル別結果の集計（リージョン・エリア担当者）<\/h2>\n<p>複数ホテルの監査結果を1つの画面で見ます。<strong>閲覧のみ<\/strong> のため、監査データは変わりません。<\/p>\n<ol>\n<li>ダッシュボードのアドレスで <strong>集計用パスワード<\/strong>（別途案内）を入力すると、<strong>📊 CPA 2026 集計<\/strong> 画面が開きます。<\/li>\n<li>監査担当者から届いた <strong>⇧ Export ファイル<\/strong>（.json）や自動バックアップ <code>…_LATEST.json<\/code> を <strong>まとめて<\/strong> ドラッグするか、クリックして選びます。<ul>\n<li>同じホテル・同じサービスタイプ（Full/Focus）のファイルは、<strong>項目ごとに最も新しく入力された結果<\/strong> でまとめます。複数人でセクションを分担したファイルもそのまま入れてください。<\/li>\n<li>ファイルによって結果が異なる項目は <strong>不一致 ⚠<\/strong> と表示し、マウスを合わせると他の結果と出典が見られます。<\/li>\n<li>同じファイルを2回入れても1回だけ反映します。CSAファイルなど他のファイルは理由とともに受け付けません。<\/li>\n<\/ul>\n<\/li>\n<li><strong>このPCで監査したホテルも含める<\/strong> をオンにすると、このブラウザで直接監査したホテルも一緒に集計します（一覧から非表示にしたホテルは除外）。<\/li>\n<li>画面構成<ul>\n<li><strong>ホテル別<\/strong>: 進捗、CPA総合スコア、Key・HR スコア、No・Hold 件数、不一致。見出しをクリックすると並べ替えます。<\/li>\n<li><strong>セクション ヒートマップ<\/strong>: ホテル × セクションのスコアを色で表示（95以上 / 85 / 75 / 75未満）。<\/li>\n<li><strong>全 Findings<\/strong>: 全ホテルの No 項目。セクション・Risk・検索で絞り込み、Hold も含められます。<\/li>\n<li>ホテル名（またはヒートマップのセル）をクリックすると、そのホテルの全項目の結果が表示されます。<\/li>\n<\/ul>\n<\/li>\n<li><strong>⇓ 集計 Excel<\/strong>: Hotels・Heatmap・Findings・Items シートで保存します。<\/li>\n<\/ol>\n<blockquote>\n<p>スコアはダッシュボード Overview と同じ計算です: Yes ÷（Yes + No）× 100、N/A・Hold は除外。<\/p>\n<p>読み込んだファイルはこのブラウザの集計専用領域に残り、次回も開けます。× または <strong>すべて除外<\/strong> は集計から外すだけで、元のファイルと監査データはそのままです。<\/p>\n<\/blockquote>\n<hr />\n<h2 id=\"g-s10\">10. よくある質問（Q&amp;A）<\/h2>\n<p><strong>Q. 旧アドレス（rlee1829.github.io）で作業したデータが新アドレスで表示されません。<\/strong><br />\nA. ブラウザはアドレスごとに保存領域が分かれているため、一度移す必要があります。作業していたPCで旧アドレス（<a href=\"https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html\" target=\"_blank\" rel=\"noopener noreferrer\">https://rlee1829.github.io/CPA_2026_Audit_Dashboard.html<\/a>）を開き、<strong>「新アドレスへデータを移す」<\/strong> を押してください。旧アドレスのデータは削除されず、もう一度移しても重複しません。自動ファイルバックアップを使っていた場合は、新アドレスで 🛟 Backup のフォルダをもう一度接続してください。<\/p>\n<p><strong>Q. 自分の作業結果を他の人に送って共有したいです。<\/strong><br />\nA. <strong>⇧ Export<\/strong> → 書き出すページを選択（全体または一部）→ <code>.json<\/code> ファイルをメールや Teams で送ります。受け取った人は <strong>同じホテル名 + 同じサービスタイプ<\/strong> で入り、<strong>⇩ Import<\/strong>（Merge）で読み込みます。<\/p>\n<p><strong>Q. 複数人が別々のセクションを作業した結果を、1人でまとめるには？<\/strong><\/p>\n<ol>\n<li>全員が <strong>同じホテル名 + 同じサービスタイプ（Full / Focus）<\/strong> で入り、担当セクションだけを入力します。<\/li>\n<li>各自 <strong>⇧ Export<\/strong> で自分が作業したページだけを選んで書き出します（例: A は AP のみ、B は AR のみ）。<\/li>\n<li>まとめる担当者は同じホテル・同じサービスタイプを開き、受け取ったファイルを1つずつ <strong>⇩ Import<\/strong> し、<strong>必ず Merge<\/strong> を選びます。<\/li>\n<li>すべて読み込むと1つにまとまります。最後に <strong>⇧ Export（全体）<\/strong> で最終バックアップファイルを作っておいてください。<\/li>\n<\/ol>\n<blockquote>\n<p>⚠️ まとめるときは <strong>Overwrite を使わないでください。<\/strong> 選んだページの既存データを消して置き換えるため、先に読み込んだ人の作業が消えることがあります。<\/p>\n<p>ファイルのホテル名が現在のホテルと異なる場合、「続行しますか？」という確認が表示されます。同じホテルで表記だけが違う場合は続行してください。<\/p>\n<\/blockquote>\n<p><strong>Q. ホテル名を間違えて入力し、空のホテルができてしまいました。まとめられますか？<\/strong><br />\nA. はい。間違えて作ったホテルで <strong>⇧ Export<\/strong> し、元のホテルに切り替えて <strong>⇩ Import → Merge<\/strong> で読み込むとまとまります。間違えたホテルはホテル一覧の × で隠せます。<\/p>\n<p><strong>Q. 誤って消してしまった、または間違ったファイルを Import してしまいました。<\/strong><br />\nA. <strong>🛟 Backup<\/strong> → 復元ポイント一覧から以前の時点を選んで <strong>復元<\/strong> してください。自動ファイルバックアップを有効にしていれば、そのフォルダのファイルを Import することもできます。<\/p>\n<hr />\n<h2 id=\"g-s11\">クイックリファレンス<\/h2>\n<table>\n<thead>\n<tr>\n<th>やりたいこと<\/th>\n<th>方法<\/th>\n<\/tr>\n<\/thead>\n<tbody>\n<tr>\n<td>新しいホテルを始める<\/td>\n<td>ログイン → + Add New Hotel → サービスタイプ → 名前入力 → Start →<\/td>\n<\/tr>\n<tr>\n<td>ホテルの切り替え<\/td>\n<td>🏨 ボタン<\/td>\n<\/tr>\n<tr>\n<td>準備書類のチェック<\/td>\n<td>Prep タブ<\/td>\n<\/tr>\n<tr>\n<td>結果入力<\/td>\n<td>セクションタブ → 項目クリック → Yes / No / N/A / Hold<\/td>\n<\/tr>\n<tr>\n<td>BS 勘定科目別の詳細確認<\/td>\n<td>BS Guide / BS Notes タブ<\/td>\n<\/tr>\n<tr>\n<td>進捗・スコアの確認<\/td>\n<td>上部の進捗バー、Overview タブ<\/td>\n<\/tr>\n<tr>\n<td>不適合 / 保留項目<\/td>\n<td>Findings / Hold タブ<\/td>\n<\/tr>\n<tr>\n<td>Validation 項目の一括処理<\/td>\n<td>✓ Validation タブ<\/td>\n<\/tr>\n<tr>\n<td>自動バックアップ・元に戻す<\/td>\n<td>🛟 Backup<\/td>\n<\/tr>\n<tr>\n<td>ファイルでバックアップ・共有<\/td>\n<td>⇧ Export → ページ選択 → .json 保存<\/td>\n<\/tr>\n<tr>\n<td>読み込み・統合<\/td>\n<td>⇩ Import → .json 選択 → Merge<\/td>\n<\/tr>\n<tr>\n<td>Excel 出力<\/td>\n<td>⇓ Excel<\/td>\n<\/tr>\n<tr>\n<td>言語切替<\/td>\n<td>KO / EN / JA<\/td>\n<\/tr>\n<tr>\n<td>複数ホテルの結果をまとめて見る<\/td>\n<td>集計用パスワード → Export ファイルをドラッグ<\/td>\n<\/tr>\n<tr>\n<td>このガイドをもう一度見る<\/td>\n<td>❓ 利用ガイド<\/td>\n<\/tr>\n<\/tbody>\n<\/table>\n<hr />\n<p><em>CPA 2026 Peer Audit Dashboard<\/em><br />\n<em>作成: Rebecca Lee (Conrad Seoul Finance)<\/em><br />\n<em>最終更新: 2026-11-27<\/em><\/p>"}, "label": {"ko": "❓ 사용설명서", "en": "❓ Guide", "ja": "❓ 利用ガイド"}, "ui": {"ko": {"close": "닫기", "print": "🖶 인쇄", "toc": "목차"}, "en": {"close": "Close", "print": "🖶 Print", "toc": "Contents"}, "ja": {"close": "閉じる", "print": "🖶 印刷", "toc": "目次"}}};
 var _gdLang=null;
 function _gdRender(l){
   _gdLang=GUIDE.html[l]?l:'en';
