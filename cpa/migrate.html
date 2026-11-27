@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>CPA 2026 — Receive data</title>
+<style>
+body{margin:0;font-family:'Segoe UI','Malgun Gothic','Yu Gothic',sans-serif;background:#f4f5f7;color:#1B2A41}
+.box{max-width:640px;margin:48px auto;background:#fff;border-radius:14px;padding:28px 32px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+h1{font-size:19px;margin:0 0 6px}
+.sub{font-size:12px;color:#6b7380;margin-bottom:18px}
+.st{font-size:14px;line-height:1.6;margin:12px 0}
+.ok{color:#2f6b4f;font-weight:700}.bad{color:#a12c2c;font-weight:700}
+ul{font-size:13px;line-height:1.6;padding-left:20px}
+.btn{display:inline-block;padding:9px 18px;border-radius:8px;border:1px solid #1B2A41;background:#1B2A41;color:#fff;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;margin:6px 6px 0 0}
+.btn.o{background:#fff;color:#1B2A41}
+.langs{float:right}.langs button{border:1px solid #ccd;background:#fff;border-radius:6px;font-size:11px;padding:3px 8px;cursor:pointer;margin-left:4px}
+.note{font-size:12px;color:#6b7380;margin-top:16px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="langs"><button data-l="ko">한국어</button><button data-l="en">EN</button><button data-l="ja">日本語</button></div>
+  <h1 id="t-title"></h1>
+  <div class="sub">https://jkm-finance.github.io/cpa/</div>
+  <div id="main"></div>
+  <div class="note" id="t-note"></div>
+</div>
+<script>
+/* Receives the CPA data of the old address (rlee1829.github.io) and stores it here.
+   Browser storage is per address, so the old page sends it over postMessage (or as a move file).
+   Rules: missing/empty here -> added; identical -> skipped; different -> asked (the value here is
+   kept as a restore point first). Hotel lists are combined. Nothing is deleted at either address. */
+var OLD_ORIGIN='https://rlee1829.github.io';
+var DASH='CPA_2026_Audit_Dashboard.html';
+var DATA_BASES=['cpa2026v2','cpa_prep','cpa_prep_types','cpa_prep_remarks','cpa_ts','cpa_gen_prep'];
+var LIST_KEYS={'cpa2026_hotels':1,'cpa2026_hotels__full':1,'cpa2026_hotels__focused':1};
+var MAP_KEYS={'cpa2026_hidden_hotels':1,'cpa_legacy_merged':1};
+var T={
+ ko:{title:'CPA 2026 대시보드 — 데이터 받기',wait:'예전 주소에서 데이터를 기다리는 중입니다…',
+  noOpener:'이 화면은 예전 주소(rlee1829.github.io)의 「새 주소로 데이터 옮기기」 버튼으로 열립니다. 이동 파일을 저장해 두었다면 아래에서 불러오세요.',
+  file:'이동 파일 불러오기',dash:'대시보드 열기',bad:'받은 데이터 형식이 올바르지 않습니다.',
+  conflictQ:'새 주소에 이미 다른 내용이 있는 항목이 {n}개 있습니다. 어떻게 할까요?',
+  useOld:'예전 주소 내용으로 바꾸기',keepNew:'새 주소 내용 유지',
+  conflictNote:'바꾸는 경우에도 지금 새 주소의 내용은 복원 지점(🛟 Backup)에 먼저 보관됩니다.',
+  done:'옮기기 완료',added:'추가 {n}',same:'이미 같음 {n}',replaced:'바꿈 {n}',kept:'유지 {n}',snaps:'복원 지점 {n}',
+  hotels:'옮겨진 호텔',verifyFail:'저장 확인에 실패했습니다. 예전 주소의 데이터는 그대로 남아 있으니 다시 시도해 주세요.',
+  storeFail:'저장 공간이 부족하거나 저장이 막혀 있습니다: ',
+  note:'예전 주소의 데이터는 지워지지 않습니다. 대시보드의 🛟 Backup 폴더 자동 백업을 쓰고 있었다면 새 주소에서 폴더를 한 번 다시 연결해 주세요.'},
+ en:{title:'CPA 2026 Dashboard — Receive data',wait:'Waiting for data from the old address…',
+  noOpener:'This page is opened by the “Move my data to the new address” button on the old address (rlee1829.github.io). If you saved a move file, load it below.',
+  file:'Load move file',dash:'Open dashboard',bad:'The data received is not in the expected format.',
+  conflictQ:'{n} item(s) already have different content at the new address. What should happen?',
+  useOld:'Use the old address content',keepNew:'Keep the new address content',
+  conflictNote:'If you replace, the current content here is first kept as a restore point (🛟 Backup).',
+  done:'Move complete',added:'added {n}',same:'already identical {n}',replaced:'replaced {n}',kept:'kept {n}',snaps:'restore points {n}',
+  hotels:'Hotels moved',verifyFail:'Saving could not be verified. The data at the old address is unchanged — please try again.',
+  storeFail:'Storage is full or blocked: ',
+  note:'The data at the old address is not deleted. If you used the 🛟 Backup folder auto-backup, connect the folder once again at the new address.'},
+ ja:{title:'CPA 2026 ダッシュボード — データ受取',wait:'旧アドレスからのデータを待っています…',
+  noOpener:'この画面は旧アドレス（rlee1829.github.io）の「新アドレスへデータを移す」ボタンで開きます。移行ファイルを保存した場合は下から読み込んでください。',
+  file:'移行ファイルを読み込む',dash:'ダッシュボードを開く',bad:'受け取ったデータの形式が正しくありません。',
+  conflictQ:'新アドレスにすでに異なる内容がある項目が{n}件あります。どうしますか？',
+  useOld:'旧アドレスの内容に置き換える',keepNew:'新アドレスの内容を残す',
+  conflictNote:'置き換える場合も、現在の新アドレスの内容は先に復元ポイント（🛟 Backup）に保存されます。',
+  done:'移行完了',added:'追加 {n}',same:'同一 {n}',replaced:'置換 {n}',kept:'維持 {n}',snaps:'復元ポイント {n}',
+  hotels:'移行したホテル',verifyFail:'保存を確認できませんでした。旧アドレスのデータはそのままです。もう一度お試しください。',
+  storeFail:'保存容量が不足しているか保存がブロックされています: ',
+  note:'旧アドレスのデータは削除されません。🛟 Backup のフォルダ自動バックアップを使っていた場合は、新アドレスでフォルダをもう一度接続してください。'}
+};
+var lang=(function(){var l=(navigator.language||'ko').slice(0,2);return T[l]?l:'ko';})();
+function tr(k,n){return T[lang][k].replace('{n}',n);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function slug(h){return (h||'').trim().toLowerCase().replace(/\s+/g,'_');}
+function isObj(v){return !!v&&typeof v==='object'&&!Array.isArray(v);}
+function parseDataKey(k){
+  for(var i=0;i<DATA_BASES.length;i++){
+    var b=DATA_BASES[i];if(k.indexOf(b+'__')!==0)continue;
+    var rest=k.slice(b.length+2),m=rest.match(/^(.+)__(full|focused)$/);
+    return m?{base:b,slug:slug(m[1]),svc:m[2]}:{base:b,slug:slug(rest),svc:'full'};
+  }
+  return null;
+}
+function hasContent(raw){
+  if(!raw)return false;
+  try{var o=JSON.parse(raw);if(!isObj(o))return !!o&&(!Array.isArray(o)||o.length>0);
+    return Object.keys(o).some(function(k){if(k==='hotel')return false;var v=o[k];return isObj(v)?Object.keys(v).length>0:!!v;});
+  }catch(e){return !!raw;}
+}
+function hotelName(k,raw){
+  var p=parseDataKey(k);if(!p)return '';
+  var n='';try{var hn=(JSON.parse(raw).hotel||{}).hotel;if(hn&&slug(hn)===p.slug)n=hn;}catch(e){}
+  if(!n)n=p.slug.split('_').map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1):w;}).join(' ');
+  return n+(p.svc==='focused'?' (Focused)':'');
+}
+function idb(){return new Promise(function(res,rej){
+  var r=indexedDB.open('cpa2026_safety',1);
+  r.onupgradeneeded=function(){var db=r.result;
+    if(!db.objectStoreNames.contains('snaps')){var s=db.createObjectStore('snaps',{keyPath:'id',autoIncrement:true});s.createIndex('hk','hk');}
+    if(!db.objectStoreNames.contains('kv'))db.createObjectStore('kv');};
+  r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};
+});}
+function validate(p){
+  if(!isObj(p)||p.format!=='cpa-origin-move'||p.v!==1||!isObj(p.ls))return false;
+  var ok=Object.keys(p.ls).every(function(k){return /^cpa/.test(k)&&typeof p.ls[k]==='string';});
+  if(!ok)return false;
+  if(p.snaps!=null&&(!Array.isArray(p.snaps)||!p.snaps.every(function(s){return isObj(s)&&typeof s.hk==='string'&&typeof s.t==='number'&&isObj(s.data);})))return false;
+  return true;
+}
+function unionList(a,b){var out=a.slice();b.forEach(function(h){if(typeof h==='string'&&!out.some(function(x){return slug(x)===slug(h);}))out.push(h);});return out;}
+function plan(p){
+  var pl={add:[],same:[],conflict:[],merged:[]};
+  Object.keys(p.ls).forEach(function(k){
+    var v=p.ls[k],cur=localStorage.getItem(k);
+    if(cur===v){pl.same.push(k);return;}
+    if(LIST_KEYS[k]||MAP_KEYS[k]){
+      var a,b;try{a=JSON.parse(cur||'null');b=JSON.parse(v);}catch(e){a=null;b=null;}
+      if(LIST_KEYS[k]&&Array.isArray(b)){var m=unionList(Array.isArray(a)?a:[],b);pl.merged.push([k,JSON.stringify(m)]);return;}
+      if(MAP_KEYS[k]&&isObj(b)){var o=isObj(a)?a:{};Object.keys(b).forEach(function(x){if(!(x in o))o[x]=b[x];});pl.merged.push([k,JSON.stringify(o)]);return;}
+    }
+    if(cur==null||(parseDataKey(k)&&!hasContent(cur))){pl.add.push(k);return;}
+    if(!parseDataKey(k)){pl.same.push(k);return;}   /* settings such as last hotel: keep this address's own */
+    pl.conflict.push(k);
+  });
+  return pl;
+}
+function apply(p,pl,replace){
+  var t0=Date.now(),backup={},writes=[];
+  pl.add.forEach(function(k){writes.push([k,p.ls[k]]);});
+  pl.merged.forEach(function(kv){writes.push(kv);});
+  if(replace)pl.conflict.forEach(function(k){backup[k]=localStorage.getItem(k);writes.push([k,p.ls[k]]);});
+  pl.add.forEach(function(k){var c=localStorage.getItem(k);if(c!=null)backup[k]=c;});
+  /* restore points of what is here now, for every hotel whose current-format keys get replaced */
+  var hks={};Object.keys(backup).forEach(function(k){var d=parseDataKey(k);if(d&&k===d.base+'__'+d.slug+'__'+d.svc)hks[d.slug+'__'+d.svc]=d;});
+  return idb().then(function(db){return new Promise(function(res,rej){
+    var tx=db.transaction(['snaps','kv'],'readwrite'),st=tx.objectStore('snaps');
+    if(Object.keys(backup).length)tx.objectStore('kv').put({t:t0,from:p.from,values:backup},'moveBackup:'+t0);
+    Object.keys(hks).forEach(function(hk){
+      var d=hks[hk],data={};DATA_BASES.forEach(function(b){var v=localStorage.getItem(b+'__'+hk);if(v!=null)data[b]=v;});
+      st.add({hk:hk,hotel:d.slug.replace(/_/g,' '),svc:d.svc,t:t0,reason:'before-move',data:data});
+    });
+    var n=0,q=st.getAll();
+    q.onsuccess=function(){
+      var have={};(q.result||[]).forEach(function(r){have[r.hk+'|'+r.t+'|'+r.reason]=1;});
+      (p.snaps||[]).forEach(function(s){var key=s.hk+'|'+s.t+'|'+s.reason;if(have[key])return;have[key]=1;
+        var r={hk:s.hk,hotel:s.hotel,svc:s.svc,t:s.t,reason:s.reason,data:s.data};st.add(r);n++;});
+    };
+    tx.oncomplete=function(){res(n);};tx.onerror=function(){rej(tx.error);};tx.onabort=function(){rej(tx.error);};
+  });}).then(function(nSnaps){
+    writes.forEach(function(kv){localStorage.setItem(kv[0],kv[1]);});
+    var bad=writes.filter(function(kv){return localStorage.getItem(kv[0])!==kv[1];});
+    if(bad.length)throw new Error('verify');
+    var counts={added:pl.add.length,same:pl.same.length,replaced:replace?pl.conflict.length:0,kept:replace?0:pl.conflict.length,snaps:nSnaps};
+    localStorage.setItem('cpa_moved_from',JSON.stringify({t:t0,from:p.from,counts:counts}));
+    return counts;
+  });
+}
+var main=document.getElementById('main'),payload=null,source=null;
+function render(html){main.innerHTML=html;}
+function hotelsOf(p){var s={};Object.keys(p.ls).forEach(function(k){if(parseDataKey(k)&&hasContent(p.ls[k]))s[hotelName(k,p.ls[k])]=1;});return Object.keys(s).sort();}
+function dashHref(p){return DASH+(p&&p.view==='bs'?'?view=bs':'');}
+function finish(p,pl,replace){
+  apply(p,pl,replace).then(function(c){
+    var hs=hotelsOf(p);
+    render('<div class="st ok">✔ '+esc(tr('done'))+'</div><div class="st">'+[tr('added',c.added),tr('replaced',c.replaced),tr('kept',c.kept),tr('same',c.same),tr('snaps',c.snaps)].map(esc).join(' · ')+'</div>'+
+      (hs.length?'<div class="st">'+esc(tr('hotels'))+'</div><ul>'+hs.map(function(h){return '<li>'+esc(h)+'</li>';}).join('')+'</ul>':'')+
+      '<a class="btn" id="go" href="'+dashHref(p)+'">'+esc(tr('dash'))+'</a>');
+    if(source)source.postMessage({type:'cpa-move-done',counts:c,hotels:hs},OLD_ORIGIN);
+  }).catch(function(e){
+    var msg=e&&e.message==='verify'?tr('verifyFail'):tr('storeFail')+((e&&e.message)||e);
+    render('<div class="st bad">'+esc(msg)+'</div>');
+    if(source)source.postMessage({type:'cpa-move-failed',error:String((e&&e.message)||e)},OLD_ORIGIN);
+  });
+}
+function receive(p){
+  if(!validate(p)){render('<div class="st bad">'+esc(tr('bad'))+'</div>');return;}
+  payload=p;var pl=plan(p);
+  if(!pl.conflict.length){finish(p,pl,false);return;}
+  render('<div class="st">'+esc(tr('conflictQ',pl.conflict.length))+'</div><ul>'+pl.conflict.map(function(k){return '<li>'+esc(hotelName(k,p.ls[k])||k)+' — '+esc(k)+'</li>';}).join('')+'</ul>'+
+    '<button class="btn" id="use-old">'+esc(tr('useOld'))+'</button><button class="btn o" id="keep-new">'+esc(tr('keepNew'))+'</button><div class="note">'+esc(tr('conflictNote'))+'</div>');
+  document.getElementById('use-old').onclick=function(){finish(p,plan(p),true);};
+  document.getElementById('keep-new').onclick=function(){finish(p,plan(p),false);};
+}
+function start(){
+  document.getElementById('t-title').textContent=tr('title');
+  document.getElementById('t-note').textContent=tr('note');
+  if(payload)return;
+  var html=window.opener?'<div class="st" id="waiting">'+esc(tr('wait'))+'</div>':'<div class="st">'+esc(tr('noOpener'))+'</div>';
+  html+='<label class="btn o">'+esc(tr('file'))+'<input type="file" id="mf" accept=".json,application/json" style="display:none"></label> <a class="btn o" href="'+DASH+'">'+esc(tr('dash'))+'</a>';
+  render(html);
+  document.getElementById('mf').onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    f.text().then(function(s){var p;try{p=JSON.parse(s);}catch(x){p=null;}source=null;receive(p);});
+  };
+}
+document.querySelectorAll('.langs button').forEach(function(b){b.onclick=function(){lang=b.dataset.l;start();};});
+window.addEventListener('message',function(e){
+  if(e.origin!==OLD_ORIGIN||!window.opener||e.source!==window.opener)return;
+  var d=e.data;if(!isObj(d)||d.type!=='cpa-move-data'||payload)return;
+  source=e.source;receive(d.payload);
+});
+start();
+if(window.opener){
+  var tries=0,timer=setInterval(function(){
+    if(payload||++tries>150){clearInterval(timer);return;}
+    try{window.opener.postMessage({type:'cpa-move-ready'},OLD_ORIGIN);}catch(e){}
+  },200);
+}
+</script>
+</body>
+</html>

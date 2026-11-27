@@ -1,4 +1,4 @@
-// Policy reference -> PDF on the CPA site (the same documents the CPA dashboard opens; not copied here).
+// Policy reference -> PDF on the CPA site (jkm-finance.github.io/cpa/, the same documents the CPA dashboard opens; not copied into csa/).
 // Data from tools/sync_policies.py.
 import POLICIES from '../data/policies.js';
 import { h } from './dom.js';
@@ -11,7 +11,7 @@ export function policyCode(policy) {
 
 export function policyUrl(policy) {
   const f = POLICIES[policyCode(policy)];
-  return f && /^https:\/\/rlee1829\.github\.io\//.test(f) ? f : null;
+  return f && /^https:\/\/jkm-finance\.github\.io\/cpa\//.test(f) ? f : null;
 }
 
 // A link that opens the PDF in a new tab, or plain text when the reference is not a document.
