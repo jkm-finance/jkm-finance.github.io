@@ -40,6 +40,33 @@ button,input,textarea,select{font-family:inherit}
 .wsmeta{font-size:11px;color:var(--mu)}
 .gacts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .lang-row{display:flex;gap:4px;justify-content:center;margin-top:14px}
+.gname{display:flex;align-items:center;justify-content:flex-end;gap:8px;font-size:12px;color:var(--mu);margin:-8px 0 4px}
+.gin.gin-sm{width:200px;padding:5px 10px;font-size:13px;border-width:1px}
+.gfirst{background:#f4f8f7;border-radius:10px;padding:2px 14px 12px;margin-bottom:6px}
+.gfirst .wsmeta{margin-top:6px}
+.wslist{max-height:340px}
+.wsrow{padding:13px 14px}
+.wsrow .wsname{font-size:15px}
+.wsrole{font-size:11px;font-weight:700;border-radius:10px;padding:2px 9px;background:#e8f1ef;color:var(--p)}
+.wsrole.r-preparer{background:#fdf1e2;color:#9a5b12}
+.wsgo{font-size:22px;color:var(--mu);line-height:1}
+.ghidden{margin-top:8px;font-size:12px;color:var(--mu)}
+.gnew{margin-top:16px}
+.gnew>summary{cursor:pointer;font-weight:700;color:var(--p);font-size:14px;padding:10px 12px;border:2px dashed var(--bd);border-radius:8px;list-style:none;text-align:center}
+.gnew>summary::-webkit-details-marker{display:none}
+.gnew[open]>summary{border-style:solid;background:#f4f8f7}
+.gnew.solo>summary{display:none}
+.gnew.solo{margin-top:6px}
+.rcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rcard{border:1px solid var(--bd);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.rcard b{font-size:15px;color:var(--p)}
+.rcard p{font-size:12px;color:var(--mu);margin:0 0 auto;line-height:1.5}
+.rc-ic{font-size:22px}
+.gbtn.link{background:none;color:var(--p);border:none;padding:4px;margin-top:2px;font-weight:600;font-size:12px;text-decoration:underline}
+.gbtn.link:hover{background:none;color:var(--p2)}
+.grestore{text-align:center;margin-top:8px}
+.grestore .gbtn.link{width:auto;color:var(--mu)}
+@media(max-width:700px){.rcards{grid-template-columns:1fr}.gname{justify-content:flex-start;flex-wrap:wrap}}
 .svc-cards{display:flex;gap:12px;margin:8px 0}
 .svc-card{flex:1;padding:16px;border:2px solid var(--p);border-radius:12px;background:#fff;color:var(--p);cursor:pointer;text-align:center}
 .svc-card.act,.svc-card:hover{background:var(--p);color:#fff}

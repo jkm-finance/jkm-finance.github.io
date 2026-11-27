@@ -1,4 +1,4 @@
-// Start screen: user name, workspace list, new CSA, assignment / final / backup files (SPEC §3).
+// Start screen (SPEC §3): name once, continue a workspace, or start new by role (reviewer / preparer / results).
 import { YEAR, APP_VERSION } from './version.js';
 import { h, clear, modal, dropZone, toast, fmtTime } from './dom.js';
 import { t } from './i18n.js';
@@ -19,10 +19,11 @@ export async function renderStart(ctl) {
   box.appendChild(h('div', { class: 'glogo' }, h('span', { class: 'csa-badge', text: 'CSA' }), t('app.title')));
   box.appendChild(h('div', { class: 'gsub', text: t('app.subtitle') + ' · v' + APP_VERSION }));
 
-  const nameIn = h('input', { class: 'gin', value: s.me || '', placeholder: t('start.namePh'), maxlength: '80', 'aria-label': t('start.name') });
+  // Name: asked prominently once; afterwards a small editable line.
+  const nameIn = h('input', { class: 'gin' + (s.me ? ' gin-sm' : ''), value: s.me || '', placeholder: t('start.namePh'), maxlength: '80', 'aria-label': t('start.name') });
   nameIn.addEventListener('change', () => setUserName(nameIn.value.trim()));
-  box.appendChild(h('div', { class: 'gsec', text: t('start.name') }));
-  box.appendChild(nameIn);
+  if (s.me) box.appendChild(h('label', { class: 'gname' }, h('span', { text: '👤 ' + t('start.name') }), nameIn));
+  else box.appendChild(h('div', { class: 'gfirst' }, h('div', { class: 'gsec', text: t('start.name') }), nameIn, h('div', { class: 'wsmeta', text: t('start.nameHelp') })));
   const needName = () => {
     const v = nameIn.value.trim();
     if (!v) { toast(t('start.nameRequired')); nameIn.focus(); return null; }
@@ -30,35 +31,45 @@ export async function renderStart(ctl) {
     return v;
   };
 
+  // Continue: one big row per workspace (hotel · Full/Focus · year · role). The ID stays in the tooltip only.
   const list = await ctl.store.listWorkspaces();
   const visible = list.filter((w) => !w.hidden).sort((a, b) => String(b.lastOpenedAt).localeCompare(String(a.lastOpenedAt)));
   const hidden = list.filter((w) => w.hidden);
-  box.appendChild(h('div', { class: 'gsec', text: t('start.myWorkspaces') }));
-  if (!visible.length) box.appendChild(h('div', { class: 'wsmeta', text: t('start.noWorkspaces') }));
-  box.appendChild(h('div', { class: 'wslist' }, visible.map((w) => wsRow(w, () => { if (needName()) openWorkspace(w.wsId); }))));
+  const open = (w) => () => { if (needName()) openWorkspace(w.wsId); };
+  if (visible.length) box.appendChild(h('div', { class: 'gsec', text: t('start.continue') }));
+  box.appendChild(h('div', { class: 'wslist' }, visible.map((w) => wsRow(w, open(w)))));
   if (hidden.length) {
-    box.appendChild(h('details', null, h('summary', { text: t('start.hidden', { n: hidden.length }) }),
-      h('div', { class: 'wslist' }, hidden.map((w) => wsRow(w, () => { if (needName()) openWorkspace(w.wsId); })))));
+    box.appendChild(h('details', { class: 'ghidden' }, h('summary', { text: t('start.hidden', { n: hidden.length }) }),
+      h('div', { class: 'wslist' }, hidden.map((w) => wsRow(w, open(w))))));
   }
 
-  box.appendChild(h('div', { class: 'gsec', text: t('start.begin') }));
-  box.appendChild(h('div', { class: 'gacts' },
-    h('button', { class: 'gbtn', text: t('start.newCsa'), onclick: () => { const me = needName(); if (me) newCsaDialog(ctl, me); } }),
-    h('button', { class: 'gbtn', text: t('start.fromExport'), onclick: () => { const me = needName(); if (me) newFromExport(ctl, me, { openWorkspace }); } }),
-    h('button', { class: 'gbtn alt', text: t('start.loadAssignment'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'assignment', me); } }),
-    h('button', { class: 'gbtn alt', text: t('start.openFinal'), onclick: () => fileDialog(ctl, 'final') }),
-    h('button', { class: 'gbtn alt', text: t('start.restoreBackup'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'backup', me); } })));
-  // Hotel DOF: results opened before stay in this browser (read-only store) and can be reopened without the file.
+  // Start something new by what you do (reviewer / preparer / results). Folded away when there is work to continue.
   const savedFinals = await new FinalStore('view').open().then((fs) => fs.all()).catch(() => []);
-  if (savedFinals.length) box.appendChild(h('div', { class: 'gacts', style: { marginTop: '8px' } }, h('button', { class: 'gbtn alt', text: t('start.viewSaved') + ` (${new Set(savedFinals.map((r) => r.wsId)).size})`, onclick: () => openDof(null) })));
+  const nSaved = new Set(savedFinals.map((r) => r.wsId)).size;
+  const card = (cls, icon, title, desc, ...btns) => h('div', { class: 'rcard ' + cls }, h('div', { class: 'rc-ic', text: icon }), h('b', { text: title }), h('p', { text: desc }), ...btns);
+  const cards = h('div', { class: 'rcards' },
+    card('rc-reviewer', '📝', t('start.card.reviewer'), t('start.card.reviewerDesc'),
+      h('button', { class: 'gbtn', text: t('start.newCsa'), onclick: () => { const me = needName(); if (me) newCsaDialog(ctl, me); } }),
+      h('button', { class: 'gbtn link', text: t('start.fromExport'), onclick: () => { const me = needName(); if (me) newFromExport(ctl, me, { openWorkspace }); } })),
+    card('rc-preparer', '✍️', t('start.card.preparer'), t('start.card.preparerDesc'),
+      h('button', { class: 'gbtn', text: t('start.loadAssignment'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'assignment', me); } })),
+    card('rc-result', '👁', t('start.card.result'), t('start.card.resultDesc'),
+      h('button', { class: 'gbtn', text: t('start.openFinal'), onclick: () => fileDialog(ctl, 'final') }),
+      nSaved ? h('button', { class: 'gbtn link', text: t('start.viewSaved') + ` (${nSaved})`, onclick: () => openDof(null) }) : null));
+  const restore = h('div', { class: 'grestore' }, h('button', { class: 'gbtn link', text: t('start.restoreLink'), onclick: () => { const me = needName(); if (me) fileDialog(ctl, 'backup', me); } }));
+  const newer = h('details', { class: 'gnew' }, h('summary', { text: t('start.newOrOpen') }), h('div', { class: 'gsec', text: t('start.whatDo') }), cards, restore);
+  if (!visible.length) { newer.open = true; newer.classList.add('solo'); }   // nothing to continue: no fold, just the choices
+  box.appendChild(newer);
   box.appendChild(langRow(() => renderStart(ctl)));
 }
 
 function wsRow(w, onOpen) {
-  const row = h('div', { class: 'wsrow', tabindex: '0', role: 'button', onclick: onOpen, onkeydown: (e) => { if (e.key === 'Enter') onOpen(); } },
+  const row = h('div', { class: 'wsrow', tabindex: '0', role: 'button', title: 'ID ' + w.wsId.slice(0, 6), onclick: onOpen, onkeydown: (e) => { if (e.key === 'Enter') onOpen(); } },
     h('div', { class: 'wsname' }, w.hotelName,
-      h('div', { class: 'wsmeta', text: `${w.serviceType === 'full' ? 'Full' : 'Focus'} · ${w.year} · ${t('role.' + w.role)} · ${t('start.lastOpened')} ${fmtTime(w.lastOpenedAt)} · ID ${w.wsId.slice(0, 6)}` })),
-    w.finalized ? h('span', { class: 'badge st st-approved', text: t('final.badge') }) : null);
+      h('div', { class: 'wsmeta', text: `${w.serviceType === 'full' ? 'Full' : 'Focus'} · ${w.year} · ${t('start.lastOpened')} ${fmtTime(w.lastOpenedAt)}` })),
+    h('span', { class: 'wsrole r-' + w.role, text: t('role.' + w.role) }),
+    w.finalized ? h('span', { class: 'badge st st-approved', text: t('final.badge') }) : null,
+    h('span', { class: 'wsgo', text: '›' }));
   row.style.borderLeftColor = w.color || '';
   return row;
 }
