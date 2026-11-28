@@ -109,20 +109,35 @@ export async function setUserName(name) {
   await ctl.store.kvSet('userName', name);
 }
 
+// Opening reports its current step (shown if it takes too long) and never waits on the optional backup folder.
+const step = (name) => { ctl.state.openStep = name; };
+const within = (p, ms, fallback) => Promise.race([p, new Promise((r) => setTimeout(() => r(fallback), ms))]);
+
 export async function openWorkspace(wsId) {
+  step('close');
   await closeWorkspace();
   const s = ctl.state;
   let doc;
+  step('load');
   try { doc = await ctl.store.load(wsId); } catch (e) { toast(t('err.' + (e.code || 'storage'))); return renderStart(ctl); }
   if (!doc) { sessionStorage.removeItem('jkmcsa.current'); return renderStart(ctl); }
-  const lock = await tryEditLock(wsId);
+  step('lock');
+  const lockP = tryEditLock(wsId);
+  const lock = await within(lockP, 3000, null);
+  if (!lock) lockP.then((l) => l && l.release());   // a lock that arrives too late is handed back
   Object.assign(s, { doc, readonly: !lock, lock, view: 'overview', section: null, itemId: null, filters: {}, fatal: null, shrink: null, dirty: false, pendingEvents: [], lastSnapSeq: doc.saveSeq, lastSnapAt: Date.now() });
   s.backup = { status: 'none', dir: null, lastSeq: -1, lastAt: null, error: null };
   sessionStorage.setItem('jkmcsa.current', wsId);
   if (lock) {
     if (s.me && doc.local.me !== s.me) doc.local.me = s.me;
+    step('save');
     s.doc = await ctl.store.touch(doc, { lastOpenedAt: new Date().toISOString(), me: doc.local.me });
-    await initBackupDir();
+    step('backup');
+    await within(initBackupDir(), 3000, null);
+    if (s.backup.status === 'none' && s.backup.dir === null) {
+      const dir = await within(ctl.store.kvGet('backupDir').catch(() => null), 500, null);
+      if (dir) { s.backup.dir = dir; s.backup.status = 'needPermission'; }
+    }
   } else {
     s.unwait = waitEditLock(wsId, (l) => { s.pendingLock = l; refreshChrome(ctl); });
   }
@@ -131,7 +146,9 @@ export async function openWorkspace(wsId) {
     const fresh = await ctl.store.load(wsId);
     if (fresh) { s.doc = fresh; renderWorkspace(ctl); }
   });
+  step('render');
   renderWorkspace(ctl);
+  step('');
 }
 
 // Second tab: take over editing once the first tab has closed.

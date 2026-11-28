@@ -44,7 +44,14 @@ export async function renderStart(ctl) {
   const open = (w) => async (row) => {
     if (!needName() || row.classList.contains('busy')) return;
     row.classList.add('busy');
-    try { await openWorkspace(w.wsId); } catch (e) {
+    // If opening hangs, say where it stopped instead of spinning forever.
+    const slow = setTimeout(async () => {
+      if (!row.isConnected || !row.classList.contains('busy')) return;
+      const r = await modal({ title: t('start.openSlow'), body: h('div', null, h('p', { text: w.hotelName }), h('p', { class: 'ferr', text: t('start.openStep') + ': ' + (ctl.state.openStep || '?') + ' · v' + APP_VERSION }), h('p', { class: 'wsmeta', text: t('start.openSlowHelp') })), buttons: [{ label: t('start.keepWaiting'), value: null }, { label: t('start.reload'), cls: 'btn-p', value: 'reload' }] });
+      if (r === 'reload') location.reload();
+    }, 10000);
+    try { await openWorkspace(w.wsId); clearTimeout(slow); } catch (e) {
+      clearTimeout(slow);
       row.classList.remove('busy');
       await modal({ title: t('start.openFailed'), body: h('div', null, h('p', { text: w.hotelName }), h('p', { class: 'ferr', text: String((e && (e.message || e.name)) || e).slice(0, 300) }), h('p', { class: 'wsmeta', text: t('start.openFailedHelp') })), buttons: [{ label: t('btn.close'), cls: 'btn-p', value: null }] });
     }
