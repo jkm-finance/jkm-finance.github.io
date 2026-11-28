@@ -98,6 +98,9 @@ button,input,textarea,select{font-family:inherit}
 #hdr{background:var(--p);color:#fff;padding:8px 16px;display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--g);flex-wrap:wrap;position:relative}
 #hdr .wsband{position:absolute;left:0;top:0;bottom:0;width:6px}
 .hbrand{display:flex;align-items:center;gap:8px;padding-left:4px}
+.hhome{background:#fff;color:var(--p);border:1px solid #fff;font-weight:700;padding:6px 12px}
+.hhome:hover{background:var(--g);color:#fff;border-color:var(--g)}
+.hhome:disabled{opacity:.7;cursor:wait}
 .htitle{font-size:15px;font-weight:700;color:var(--g);white-space:nowrap}
 .hws{display:flex;align-items:center;gap:6px;flex:1;min-width:200px;flex-wrap:wrap}
 .hhotel{font-weight:800;font-size:14px}

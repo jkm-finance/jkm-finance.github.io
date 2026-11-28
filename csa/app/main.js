@@ -97,7 +97,8 @@ async function afterAuth() {
 async function enterRegional() { renderRegional(ctl); }
 
 export function goStart() {
-  closeWorkspace().then(() => renderStart(ctl));
+  // If saving fails we stay in the workspace (nothing is lost) and say so.
+  closeWorkspace().then(() => renderStart(ctl), (e) => { toast(t('err.' + ((e && e.code) || 'storage'))); renderWorkspace(ctl); });
 }
 
 export async function openDof(file) { return renderDofViewer(ctl, file); }
@@ -164,7 +165,8 @@ export async function takeOverEditing() {
 export async function closeWorkspace() {
   const s = ctl.state;
   if (!s.doc) return;
-  if (!s.readonly) { await flush(); await maybeBackup(true); }
+  // Saving to this PC always completes first; the optional backup-folder copy may not hold up leaving.
+  if (!s.readonly) { await flush(); await Promise.race([maybeBackup(true).catch(() => {}), new Promise((r) => setTimeout(r, 3000))]); }
   if (s.unsub) s.unsub();
   if (s.unwait) s.unwait();
   if (s.lock) s.lock.release();

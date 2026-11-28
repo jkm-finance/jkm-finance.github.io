@@ -55,6 +55,7 @@ function header(ctl) {
   const s = ctl.state, doc = s.doc;
   const band = h('div', { class: 'wsband' }); band.style.background = doc.local.color || 'var(--g)';
   return h('header', { id: 'hdr' }, band,
+    h('button', { class: 'btn hhome', id: 'hHome', text: '← ' + t('hdr.home'), title: t('hdr.homeTip'), onclick: (e) => { e.currentTarget.disabled = true; e.currentTarget.textContent = t('hdr.leaving'); goStart(); } }),
     h('div', { class: 'hbrand' }, h('span', { class: 'csa-badge', text: 'CSA' }), h('span', { class: 'htitle', text: t('app.short') })),
     h('div', { class: 'hws' },
       h('span', { class: 'hhotel', text: doc.hotelName }),
@@ -73,8 +74,7 @@ function header(ctl) {
       h('span', { class: 'save-ind', id: 'saveInd' }),
       h('span', { class: 'save-ind', id: 'backupInd' }),
       ['ko', 'en', 'ja'].map((l) => h('button', { class: 'btn btn-o' + (getLang() === l ? ' act' : ''), text: l.toUpperCase(), onclick: () => { setLang(l); document.documentElement.lang = l; renderWorkspace(ctl); } })),
-      guideLink(),
-      h('button', { class: 'btn btn-o', text: '🏨 ' + t('hdr.switch'), onclick: () => goStart() })));
+      guideLink()));
 }
 
 // ---- chrome refresh (no re-render of inputs) ------------------------------------

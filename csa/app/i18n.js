@@ -214,6 +214,9 @@ const D = {
 
   'hdr.readonly': ['읽기 전용', 'Read-only', '閲覧のみ'],
   'hdr.switch': ['작업공간', 'Workspaces', 'ワークスペース'],
+  'hdr.home': ['처음 화면', 'Start screen', '最初の画面'],
+  'hdr.homeTip': ['저장하고 처음 화면으로 — 다른 호텔을 고르거나 새로 만들기', 'Save and go to the start screen to pick or create another hotel', '保存して最初の画面へ — 別のホテルを選ぶ・新規作成'],
+  'hdr.leaving': ['저장 중…', 'Saving…', '保存中…'],
   'save.saving': ['저장 중…', 'Saving…', '保存中…'],
   'save.saved': ['저장됨 {time}', 'Saved {time}', '保存済 {time}'],
   'save.failed': ['저장 실패', 'Save failed', '保存失敗'],
